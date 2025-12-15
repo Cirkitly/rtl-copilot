@@ -422,6 +422,18 @@ Each task must have:
 - **Verify**: How to prove it worked
 - **Done**: Acceptance criteria
 
+**Assess TDD fit for each task:**
+
+TDD produces better design and catches bugs early. Use it when you can define expected behavior upfront.
+
+For each task, ask: Can I write `expect(fn(input)).toBe(output)` before writing `fn`?
+
+→ **Yes** (business logic, APIs, transformations, validation, state machines):
+  Structure test-first. Task action: "Implement X with TDD—write failing test, then implement to pass."
+
+→ **No** (UI layout, config, glue code, exploration):
+  Standard implementation. Add tests after if coverage needed.
+
 **Identify checkpoints:**
 
 - Claude automated work needing visual/functional verification? → checkpoint:human-verify

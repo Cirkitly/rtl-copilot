@@ -73,6 +73,39 @@ Plans are guides, not straitjackets. During execution:
 5. **Log enhancements** - Nice-to-haves, log to Issues, continue
 </deviation_rules>
 
+<test_driven_when_beneficial>
+
+Use TDD when the work WOULD benefit from it. Not dogma—pragmatism.
+
+**TDD candidates (write test first):**
+- Business logic with defined inputs/outputs
+- API endpoints and handlers
+- Data transformations and parsing
+- Validation rules
+- State machines and workflows
+- Anything where you can describe expected behavior before implementing
+
+**Skip TDD for:**
+- UI layout and styling
+- Exploratory prototyping
+- One-off scripts and migrations
+- Configuration changes
+- Glue code with no logic
+
+**Decision heuristic:**
+Can you write `expect(fn(input)).toBe(output)` before writing `fn`?
+→ Yes: TDD will help
+→ No: Write implementation first, add tests after if needed
+
+**TDD task structure:**
+When TDD applies, structure tasks as test-first:
+1. Write failing test (red)
+2. Implement to pass (green)
+3. Refactor if needed
+
+This is about design quality, not test coverage metrics.
+</test_driven_when_beneficial>
+
 <ship_fast>
 
 No enterprise process. No approval gates.
