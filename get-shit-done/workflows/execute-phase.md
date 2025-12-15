@@ -1118,6 +1118,7 @@ NEVER use:
 **1. Stage planning artifacts:**
 
 ```bash
+git add .planning/phases/XX-name/{phase}-{plan}-PLAN.md
 git add .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 git add .planning/STATE.md
 ```
