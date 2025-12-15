@@ -3,10 +3,12 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const readline = require('readline');
 
 // Colors
 const cyan = '\x1b[36m';
 const green = '\x1b[32m';
+const yellow = '\x1b[33m';
 const dim = '\x1b[2m';
 const reset = '\x1b[0m';
 
@@ -26,28 +28,80 @@ ${cyan}   ██████╗ ███████╗██████╗
   development system for Claude Code by TÂCHES.
 `;
 
+// Parse args
+const args = process.argv.slice(2);
+const hasGlobal = args.includes('--global') || args.includes('-g');
+const hasLocal = args.includes('--local') || args.includes('-l');
+
 console.log(banner);
 
-// Paths
-const src = path.join(__dirname, '..');
-const claudeDir = path.join(os.homedir(), '.claude');
-const commandsDir = path.join(claudeDir, 'commands');
+/**
+ * Install to the specified directory
+ */
+function install(isGlobal) {
+  const src = path.join(__dirname, '..');
+  const claudeDir = isGlobal
+    ? path.join(os.homedir(), '.claude')
+    : path.join(process.cwd(), '.claude');
 
-// Create directories
-fs.mkdirSync(commandsDir, { recursive: true });
+  const locationLabel = isGlobal
+    ? claudeDir.replace(os.homedir(), '~')
+    : claudeDir.replace(process.cwd(), '.');
 
-// Copy commands/gsd
-const gsdSrc = path.join(src, 'commands', 'gsd');
-const gsdDest = path.join(commandsDir, 'gsd');
-fs.cpSync(gsdSrc, gsdDest, { recursive: true });
-console.log(`  ${green}✓${reset} Installed commands/gsd`);
+  console.log(`  Installing to ${cyan}${locationLabel}${reset}\n`);
 
-// Copy get-shit-done
-const skillSrc = path.join(src, 'get-shit-done');
-const skillDest = path.join(claudeDir, 'get-shit-done');
-fs.cpSync(skillSrc, skillDest, { recursive: true });
-console.log(`  ${green}✓${reset} Installed get-shit-done`);
+  // Create commands directory
+  const commandsDir = path.join(claudeDir, 'commands');
+  fs.mkdirSync(commandsDir, { recursive: true });
 
-console.log(`
+  // Copy commands/gsd
+  const gsdSrc = path.join(src, 'commands', 'gsd');
+  const gsdDest = path.join(commandsDir, 'gsd');
+  fs.cpSync(gsdSrc, gsdDest, { recursive: true });
+  console.log(`  ${green}✓${reset} Installed commands/gsd`);
+
+  // Copy get-shit-done skill
+  const skillSrc = path.join(src, 'get-shit-done');
+  const skillDest = path.join(claudeDir, 'get-shit-done');
+  fs.cpSync(skillSrc, skillDest, { recursive: true });
+  console.log(`  ${green}✓${reset} Installed get-shit-done`);
+
+  console.log(`
   ${green}Done!${reset} Run ${cyan}/gsd:help${reset} to get started.
 `);
+}
+
+/**
+ * Prompt for install location
+ */
+function promptLocation() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  console.log(`  ${yellow}Where would you like to install?${reset}
+
+  ${cyan}1${reset}) Global ${dim}(~/.claude)${reset} - available in all projects
+  ${cyan}2${reset}) Local  ${dim}(./.claude)${reset} - this project only
+`);
+
+  rl.question(`  Choice ${dim}[1]${reset}: `, (answer) => {
+    rl.close();
+    const choice = answer.trim() || '1';
+    const isGlobal = choice !== '2';
+    install(isGlobal);
+  });
+}
+
+// Main
+if (hasGlobal && hasLocal) {
+  console.error(`  ${yellow}Cannot specify both --global and --local${reset}`);
+  process.exit(1);
+} else if (hasGlobal) {
+  install(true);
+} else if (hasLocal) {
+  install(false);
+} else {
+  promptLocation();
+}
