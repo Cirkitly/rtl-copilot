@@ -36,6 +36,9 @@ Phase number: $ARGUMENTS (optional - auto-detects next unplanned phase if not pr
 
 **Load roadmap:**
 @.planning/ROADMAP.md
+
+**Load phase context if exists (created by /gsd:discuss-phase):**
+Check for and read `.planning/phases/XX-name/{phase}-CONTEXT.md` - contains research findings, clarifications, and decisions from phase discussion.
 </context>
 
 <process>
