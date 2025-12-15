@@ -36,6 +36,31 @@ const hasLocal = args.includes('--local') || args.includes('-l');
 console.log(banner);
 
 /**
+ * Recursively copy directory, replacing paths in .md files
+ */
+function copyWithPathReplacement(srcDir, destDir, pathPrefix) {
+  fs.mkdirSync(destDir, { recursive: true });
+
+  const entries = fs.readdirSync(srcDir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const srcPath = path.join(srcDir, entry.name);
+    const destPath = path.join(destDir, entry.name);
+
+    if (entry.isDirectory()) {
+      copyWithPathReplacement(srcPath, destPath, pathPrefix);
+    } else if (entry.name.endsWith('.md')) {
+      // Replace ~/.claude/ with the appropriate prefix in markdown files
+      let content = fs.readFileSync(srcPath, 'utf8');
+      content = content.replace(/~\/\.claude\//g, pathPrefix);
+      fs.writeFileSync(destPath, content);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
+/**
  * Install to the specified directory
  */
 function install(isGlobal) {
@@ -48,22 +73,25 @@ function install(isGlobal) {
     ? claudeDir.replace(os.homedir(), '~')
     : claudeDir.replace(process.cwd(), '.');
 
+  // Path prefix for file references
+  const pathPrefix = isGlobal ? '~/.claude/' : './.claude/';
+
   console.log(`  Installing to ${cyan}${locationLabel}${reset}\n`);
 
   // Create commands directory
   const commandsDir = path.join(claudeDir, 'commands');
   fs.mkdirSync(commandsDir, { recursive: true });
 
-  // Copy commands/gsd
+  // Copy commands/gsd with path replacement
   const gsdSrc = path.join(src, 'commands', 'gsd');
   const gsdDest = path.join(commandsDir, 'gsd');
-  fs.cpSync(gsdSrc, gsdDest, { recursive: true });
+  copyWithPathReplacement(gsdSrc, gsdDest, pathPrefix);
   console.log(`  ${green}✓${reset} Installed commands/gsd`);
 
-  // Copy get-shit-done skill
+  // Copy get-shit-done skill with path replacement
   const skillSrc = path.join(src, 'get-shit-done');
   const skillDest = path.join(claudeDir, 'get-shit-done');
-  fs.cpSync(skillSrc, skillDest, { recursive: true });
+  copyWithPathReplacement(skillSrc, skillDest, pathPrefix);
   console.log(`  ${green}✓${reset} Installed get-shit-done`);
 
   console.log(`
