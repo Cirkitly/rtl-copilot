@@ -172,6 +172,19 @@ Create context handoff when pausing work mid-phase.
 
 Usage: `/gsd:pause-work`
 
+### Issue Management
+
+**`/gsd:consider-issues`**
+Review deferred issues with codebase context.
+
+- Analyzes all open issues against current codebase state
+- Identifies resolved issues (can close)
+- Identifies urgent issues (should address now)
+- Identifies natural fits for upcoming phases
+- Offers batch actions (close, insert phase, note for planning)
+
+Usage: `/gsd:consider-issues`
+
 ### Utility Commands
 
 **`/gsd:help`**
@@ -184,6 +197,7 @@ Show this command reference.
 ├── PROJECT.md            # Project vision
 ├── ROADMAP.md            # Current phase breakdown
 ├── STATE.md              # Project memory & context
+├── ISSUES.md             # Deferred enhancements (created when needed)
 ├── config.json           # Workflow mode & gates
 └── phases/
     ├── 01-foundation/

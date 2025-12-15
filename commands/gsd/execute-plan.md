@@ -10,6 +10,7 @@ allowed-tools:
   - Grep
   - Task
   - AskUserQuestion
+  - SlashCommand
 ---
 
 <objective>

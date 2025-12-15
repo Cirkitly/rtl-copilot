@@ -84,6 +84,7 @@ GSD handles it for you:
 | `STATE.md`   | Decisions, blockers, position — memory across sessions |
 | `PLAN.md`    | Atomic task with XML structure, verification steps     |
 | `SUMMARY.md` | What happened, what changed, committed to history      |
+| `ISSUES.md`  | Deferred enhancements tracked across sessions          |
 
 Size limits based on where Claude's quality degrades. Stay under, get consistent excellence.
 
@@ -109,11 +110,15 @@ Precise instructions. No guessing. Verification built in.
 
 ### Subagent Execution
 
-Plans run in fresh contexts:
+As Claude fills its context window, quality degrades. You've seen it: "Due to context limits, I'll be more concise now." That "concision" is code for cutting corners.
 
-- 0% overhead to start
-- Maximum quality, zero degradation
-- Walk away, come back to completed work
+GSD prevents this. Each plan is maximum 3 tasks. Each plan runs in a fresh subagent — 200k tokens purely for implementation, zero accumulated garbage.
+
+- Task 1: fresh context, full quality
+- Task 2: fresh context, full quality
+- Task 3: fresh context, full quality
+
+No degradation. Walk away, come back to completed work.
 
 ### Clean Git History
 
@@ -147,6 +152,7 @@ You're never locked in. The system adapts.
 | `/gsd:list-phase-assumptions [N]` | See what Claude thinks before you correct it                  |
 | `/gsd:pause-work`                 | Create handoff file when stopping mid-phase                   |
 | `/gsd:resume-work`                | Restore from last session                                     |
+| `/gsd:consider-issues`            | Review deferred issues, close resolved, identify urgent       |
 | `/gsd:help`                       | Show all commands and usage guide                             |
 
 ---

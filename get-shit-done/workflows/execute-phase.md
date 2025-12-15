@@ -1157,6 +1157,45 @@ EOF
 For commit message conventions and git workflow patterns, see ~/.claude/get-shit-done/references/git-integration.md
 </step>
 
+<step name="check_phase_issues">
+**Check if issues were created during this phase:**
+
+```bash
+# Check if ISSUES.md exists and has issues from current phase
+if [ -f .planning/ISSUES.md ]; then
+  grep -E "Phase ${PHASE}.*Task" .planning/ISSUES.md | grep -v "^#" || echo "NO_ISSUES_THIS_PHASE"
+fi
+```
+
+**If issues were created during this phase:**
+
+```
+📋 Issues logged during this phase:
+- ISS-XXX: [brief description]
+- ISS-YYY: [brief description]
+
+Review these now?
+```
+
+Use AskUserQuestion:
+- header: "Phase Issues"
+- question: "[N] issues were logged during this phase. Review now?"
+- options:
+  - "Review issues" - Analyze with /gsd:consider-issues
+  - "Continue" - Address later, proceed to next work
+
+**If "Review issues" selected:**
+- Invoke: `SlashCommand("/gsd:consider-issues")`
+- After consider-issues completes, return to offer_next
+
+**If "Continue" selected or no issues found:**
+- Proceed to offer_next step
+
+**In YOLO mode:**
+- Note issues were logged but don't prompt: `📋 [N] issues logged this phase (review later with /gsd:consider-issues)`
+- Continue to offer_next automatically
+</step>
+
 <step name="offer_next">
 **Check workflow config for gate behavior:**
 
