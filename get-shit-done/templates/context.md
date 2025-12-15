@@ -20,10 +20,10 @@ Template for `.planning/phases/XX-name/{phase}-CONTEXT.md` - phase context docum
 [Clear, specific description of what this phase delivers]
 
 **Primary goal:**
-[Main objective - what ships at the end]
+[Main objective from roadmap - what ships at the end]
 
-**Secondary goals:**
-[Supporting objectives or nice-to-haves]
+**Clarifications:**
+[Any clarified details about HOW the primary goal works - not additional features]
 
 **Out of scope:**
 [What this phase explicitly does NOT include - prevents scope creep]
@@ -178,10 +178,10 @@ Implement JWT-based authentication with secure session management.
 **Primary goal:**
 Users can register, login, logout with JWT tokens stored in httpOnly cookies. Protected routes verify authentication.
 
-**Secondary goals:**
-- Password reset flow via email
-- Remember me functionality
-- Session expiry and refresh
+**Clarifications:**
+- Tokens stored as httpOnly cookies (not localStorage) per security requirements
+- "Protected routes" means API routes + page-level middleware redirects
+- Password reset included per roadmap scope
 
 **Out of scope:**
 - OAuth providers (Google, GitHub) - deferred to Phase 4

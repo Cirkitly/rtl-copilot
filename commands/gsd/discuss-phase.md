@@ -32,10 +32,15 @@ Phase number: $ARGUMENTS (required)
 4. Follow discuss-phase.md workflow:
    - Present initial context from roadmap
    - Analyze gaps in: objectives, constraints, risks, success indicators, codebase context
-   - Ask 2-4 questions about genuine gaps (skip what roadmap provides)
+   - Ask 2-4 CLARIFYING questions (never suggest additions or expansions)
    - Present decision gate (ready / ask more / let me add context)
    - Create CONTEXT.md using template
 5. Offer next steps (typically: plan the phase)
+
+CRITICAL - NO SCOPE CREEP:
+- Questions clarify HOW to implement roadmap scope, not WHAT to add
+- Never ask "should we also..." or "do you want to add..."
+- If user adds scope, suggest updating ROADMAP first instead
 </process>
 
 <success_criteria>

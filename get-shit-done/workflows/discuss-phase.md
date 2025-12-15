@@ -99,17 +99,23 @@ Identify gaps where additional clarity would improve planning quality.
 <initial_questions>
 Ask 2-4 questions based on actual gaps. Use AskUserQuestion with structured options.
 
+CRITICAL: Questions must CLARIFY roadmap scope, not EXPAND it.
+- ASK: "How should X from the roadmap work?" (clarification)
+- ASK: "What constraints affect implementation?" (context)
+- ASK: "What existing code patterns should I follow?" (context)
+- NEVER ASK: "What else should we add?" (scope creep)
+- NEVER ASK: "Should we also include...?" (scope creep)
+- NEVER SUGGEST: Additional features beyond roadmap
+
 **If objectives are vague:**
 header: "Phase Objectives"
-question: "What should Phase ${PHASE} accomplish?"
+question: "The roadmap says [X]. How should this work specifically?"
 options:
 
-- "Create new functionality" - Build something that doesn't exist yet
-- "Modify existing system" - Change or enhance what's already there
-- "Fix or refactor" - Address bugs or improve code quality
-- "Integrate external service" - Connect to API, library, or third-party
-- "Infrastructure or setup" - Database, deployment, configuration
-- "Other" - Something different
+- "Minimal implementation" - Core functionality only, simplest approach
+- "Standard approach" - Follow common patterns for this type of work
+- "Match existing patterns" - Do it the way similar things are done in codebase
+- "I'll clarify" - Let me explain what I have in mind
 
 **If constraints are unclear:**
 header: "Constraints"
@@ -180,13 +186,18 @@ If "Not sure" selected, offer to scan codebase:
 Header: "Context Gathering"
 Options:
   1. "Create CONTEXT.md" - I have enough context, proceed
-  2. "Ask more questions" - There are details I want to clarify
-  3. "Let me add context" - I want to provide additional information
+  2. "Ask more questions" - I want to clarify how something should work
+  3. "Let me add context" - I have information that affects implementation
 ```
 
-If "Ask more questions" → generate 2-3 contextual follow-ups based on accumulated context → return to gate.
+If "Ask more questions" → generate 2-3 CLARIFYING follow-ups (never suggest additions) → return to gate.
 If "Let me add context" → receive input → return to gate.
 Loop until "Create CONTEXT.md" selected.
+
+SCOPE CREEP PREVENTION:
+- Follow-up questions must clarify roadmap items, not expand them
+- If user adds scope during "Let me add context", note it for ROADMAP update instead
+- CONTEXT.md documents HOW to implement roadmap scope, not WHAT additional things to add
 </decision_gate>
 
 </step>
