@@ -2,6 +2,8 @@
 
 **A meta-prompting, context engineering and spec-driven development system for Claude Code by TÂCHES.**
 
+![GSD Install](assets/terminal.svg)
+
 Vibecoding has a bad reputation. You describe what you want, AI generates code, and you get inconsistent garbage that falls apart at scale.
 
 GSD fixes that. It's the context engineering layer that makes Claude Code reliable. Describe your idea, let the system extract everything it needs to know, and then let Claude Code get to work.
