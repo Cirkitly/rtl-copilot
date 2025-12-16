@@ -5,6 +5,12 @@ Subagents write directly to `.planning/research/` to preserve main context.
 Maximum 4 parallel subagents, recommended batch size 3.
 </purpose>
 
+<required_reading>
+**Read before executing:**
+1. `~/.claude/get-shit-done/references/research-subagent-prompts.md` - Prompt templates for each category
+2. `~/.claude/get-shit-done/templates/project-research.md` - Output format subagents use
+</required_reading>
+
 <process>
 
 <step name="setup">
@@ -34,33 +40,45 @@ Each subagent researches ONE category and writes directly to `.planning/research
 <step name="batch_execution">
 ## Batched Subagent Spawning
 
+Read prompt templates from `~/.claude/get-shit-done/references/research-subagent-prompts.md`
+
 **Batch 1: Foundation research** (spawn in parallel)
 
 Spawn using Task tool with `subagent_type="general-purpose"`:
 
 ```
-Subagent 1: ecosystem.md
-Subagent 2: architecture.md
+Task 1:
+  description: "Research ecosystem for {domain}"
+  prompt: [ecosystem_subagent_prompt template filled with PROJECT.md context]
+
+Task 2:
+  description: "Research architecture for {domain}"
+  prompt: [architecture_subagent_prompt template filled with PROJECT.md context]
 ```
 
-**Wait for Batch 1 completion.**
+Send BOTH Task calls in a single message. Wait for Batch 1 completion.
 
 **Batch 2: Risk & quality research** (spawn in parallel)
 
 ```
-Subagent 3: pitfalls.md
-Subagent 4: standards.md
+Task 3:
+  description: "Research pitfalls for {domain}"
+  prompt: [pitfalls_subagent_prompt template filled with PROJECT.md context]
+
+Task 4:
+  description: "Research standards for {domain}"
+  prompt: [standards_subagent_prompt template filled with PROJECT.md context]
 ```
 
-**Wait for Batch 2 completion.**
+Send BOTH Task calls in a single message. Wait for Batch 2 completion.
 
-**Subagent prompt structure:**
+**Batch ordering rationale:**
+- Batch 1 (ecosystem + architecture): Core understanding of what to build and how
+- Batch 2 (pitfalls + standards): Refinements that build on core understanding
 
-Use prompts from `~/.claude/get-shit-done/references/research-subagent-prompts.md`
-
-Each subagent receives:
+**Each subagent receives:**
 - Domain context from PROJECT.md
-- Category assignment (ecosystem, architecture, etc.)
+- Category assignment (ecosystem, architecture, pitfalls, standards)
 - Output format from templates/project-research.md
 - Instruction to write directly to `.planning/research/{category}.md`
 </step>
