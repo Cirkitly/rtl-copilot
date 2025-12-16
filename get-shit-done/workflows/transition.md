@@ -373,18 +373,9 @@ Re-read the ROADMAP file:
 - If next phase exists: offer to plan it
 - If no next phase (milestone 100% complete): offer to complete milestone with parsed version
 
-**Check workflow config for gate behavior:**
-
-Read config (already parsed).
-
-- If `mode: "yolo"` → auto-continue
-- If `mode: "interactive"` → prompt user
-- If `mode: "custom"` → check `gates.confirm_transition` (reused for continuation)
-
 **If next phase exists:**
 
-**If auto-approved:**
-
+<if mode="yolo">
 ```
 Phase [X] marked complete.
 
@@ -394,9 +385,9 @@ Next: Phase [X+1] - [Name]
 ```
 
 Exit skill and invoke SlashCommand("/gsd:plan-phase [X+1]")
+</if>
 
-**If prompting:**
-
+<if mode="interactive" OR="custom with gates.confirm_transition true">
 ```
 Phase [X] marked complete.
 
@@ -409,10 +400,12 @@ What would you like to do?
 4. Take a break (done for now)
 ```
 
+Wait for user selection.
+</if>
+
 **If no next phase (milestone 100% complete):**
 
-**If auto-approved:**
-
+<if mode="yolo">
 ```
 Phase [X] marked complete.
 
@@ -422,9 +415,9 @@ Phase [X] marked complete.
 ```
 
 Exit skill and invoke SlashCommand("/gsd:complete-milestone [version]")
+</if>
 
-**If prompting:**
-
+<if mode="interactive" OR="custom with gates.confirm_transition true">
 ```
 Phase [X] marked complete.
 
@@ -435,6 +428,9 @@ What would you like to do?
 2. Review accomplishments
 3. Take a break (done for now)
 ```
+
+Wait for user selection.
+</if>
 
 </step>
 

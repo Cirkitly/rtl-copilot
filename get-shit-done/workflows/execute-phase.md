@@ -1055,17 +1055,11 @@ Resume file: [path to .continue-here if exists, else "None"]
 </step>
 
 <step name="issues_review_gate">
-Before proceeding, check SUMMARY.md content:
-
-**Check workflow config for gate behavior:**
-
-- If `mode: "yolo"` → auto-approve (but still log issues)
-- If `mode: "interactive"` → prompt user
+Before proceeding, check SUMMARY.md content.
 
 If "Issues Encountered" is NOT "None":
 
-**If auto-approved:**
-
+<if mode="yolo">
 ```
 ⚡ Auto-approved: Issues acknowledgment
 ⚠️ Note: Issues were encountered during execution:
@@ -1075,9 +1069,11 @@ If "Issues Encountered" is NOT "None":
 ```
 
 Continue without waiting.
+</if>
 
-**If prompting:**
-Present issues and wait for acknowledgment.
+<if mode="interactive" OR="custom with gates.issues_review true">
+Present issues and wait for acknowledgment before proceeding.
+</if>
 </step>
 
 <step name="update_roadmap">
@@ -1192,15 +1188,9 @@ Use AskUserQuestion:
 </step>
 
 <step name="offer_next">
-**Check workflow config for gate behavior:**
-
-- If `mode: "yolo"` → auto-continue to next action
-- If `mode: "interactive"` → prompt user
-
 **If more plans in this phase:**
 
-**If auto-approved:**
-
+<if mode="yolo">
 ```
 Plan {phase}-{plan} complete.
 Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
@@ -1211,9 +1201,9 @@ Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 ```
 
 Loop back to identify_plan step automatically.
+</if>
 
-**If prompting:**
-
+<if mode="interactive" OR="custom with gates.execute_next_plan true">
 ```
 Plan {phase}-{plan} complete.
 Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
@@ -1225,6 +1215,9 @@ What's next?
 2. Review what was built
 3. Done for now
 ```
+
+Wait for user selection.
+</if>
 
 **If phase complete (last plan done):**
 
