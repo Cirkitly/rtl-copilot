@@ -1,14 +1,42 @@
 <purpose>
-Orchestrate batched subagent research for domain ecosystems before roadmap creation.
+Research implementation context for Claude Code before roadmap creation.
 
-Subagents write directly to `.planning/research/` to preserve main context.
-Maximum 4 parallel subagents, recommended batch size 3.
+This is NOT research for human decision-making.
+This is CONTEXT INJECTION so Claude Code implements correctly.
+
+Research quality directly impacts implementation quality.
+Claude's training data may have outdated APIs, deprecated patterns, old syntax.
+This research provides current, accurate context to override stale knowledge.
 </purpose>
+
+<research_philosophy>
+## What This Research Is
+
+**Context injection for Claude Code implementation quality.**
+
+Claude Code will read these files during implementation. The research should:
+- Override outdated patterns Claude might default to
+- Provide current API syntax and code examples
+- Explicitly correct common mistakes Claude makes
+- Include version-specific details (as of 2024-2025)
+
+## What This Research Is NOT
+
+- A survey of options for humans to choose from
+- Generic "best practices" documentation
+- Padding with low-confidence "might be useful" items
+- Academic completeness over practical utility
+
+## Quality Bar
+
+**Include if:** High confidence, directly actionable, will improve Claude's implementation
+**Exclude if:** Low confidence, tangential, "might be relevant", padding
+</research_philosophy>
 
 <required_reading>
 **Read before executing:**
-1. `~/.claude/get-shit-done/references/research-subagent-prompts.md` - Prompt templates for each category
-2. `~/.claude/get-shit-done/templates/project-research.md` - Output format subagents use
+1. `~/.claude/get-shit-done/references/research-subagent-prompts.md` - Prompt templates
+2. `~/.claude/get-shit-done/templates/project-research.md` - Output format
 </required_reading>
 
 <process>
@@ -20,172 +48,176 @@ Create research directory:
 mkdir -p .planning/research
 ```
 
-Parse PROJECT.md to extract:
-- Domain keywords (technology mentions, problem space)
-- Constraints that affect ecosystem choices
-- Any mentioned preferences or requirements
+Parse PROJECT.md to create research manifest:
+
+```
+## Research Manifest
+
+### Features to Implement
+[Extract from Scope > Building]
+- Feature 1: [description]
+- Feature 2: [description]
+- Feature 3: [description]
+
+### Stack Constraints
+[Extract from Constraints]
+- [constraint 1]
+- [constraint 2]
+
+### Open Questions to Answer
+[Extract from Open Questions]
+- [question 1]
+- [question 2]
+
+### Decisions to Validate
+[Extract from Decisions Made]
+- [decision 1]: Any gotchas?
+```
+
+This manifest drives ALL research. Subagents research these specific items, not generic domain knowledge.
 </step>
 
 <step name="define_research_categories">
-Standard research categories:
+Three research categories, each PROJECT.md-driven:
 
-1. **ecosystem.md** - Libraries, frameworks, tools for this domain
-2. **architecture.md** - Patterns, project structure, component organization
-3. **pitfalls.md** - Common mistakes, what NOT to do, performance traps
-4. **standards.md** - Best practices, conventions, quality expectations
+1. **stack.md** - What to use for each feature
+   - For each feature in Scope: what library/tool?
+   - For each constraint: what works within it?
+   - Current versions, import statements, setup code
 
-Each subagent researches ONE category and writes directly to `.planning/research/{category}.md`
+2. **implementation.md** - How to implement correctly
+   - Current API patterns for chosen stack
+   - Actual code examples with correct syntax
+   - "Do this (current) not that (deprecated)"
+
+3. **risks.md** - What Claude might get wrong
+   - Deprecated patterns Claude may default to
+   - Common implementation mistakes
+   - Version-specific gotchas
+
+Each subagent writes directly to `.planning/research/{category}.md`
 </step>
 
-<step name="batch_execution">
-## Batched Subagent Spawning
+<step name="spawn_subagents">
+## Subagent Spawning
 
 Read prompt templates from `~/.claude/get-shit-done/references/research-subagent-prompts.md`
 
-**Batch 1: Foundation research** (spawn in parallel)
-
-Spawn using Task tool with `subagent_type="general-purpose"`:
+**Single batch (spawn all 3 in parallel):**
 
 ```
 Task 1:
-  description: "Research ecosystem for {domain}"
-  prompt: [ecosystem_subagent_prompt template filled with PROJECT.md context]
+  description: "Research stack for [project]"
+  prompt: [stack_subagent_prompt with research manifest]
 
 Task 2:
-  description: "Research architecture for {domain}"
-  prompt: [architecture_subagent_prompt template filled with PROJECT.md context]
-```
+  description: "Research implementation for [project]"
+  prompt: [implementation_subagent_prompt with research manifest]
 
-Send BOTH Task calls in a single message. Wait for Batch 1 completion.
-
-**Batch 2: Risk & quality research** (spawn in parallel)
-
-```
 Task 3:
-  description: "Research pitfalls for {domain}"
-  prompt: [pitfalls_subagent_prompt template filled with PROJECT.md context]
-
-Task 4:
-  description: "Research standards for {domain}"
-  prompt: [standards_subagent_prompt template filled with PROJECT.md context]
+  description: "Research risks for [project]"
+  prompt: [risks_subagent_prompt with research manifest]
 ```
 
-Send BOTH Task calls in a single message. Wait for Batch 2 completion.
-
-**Batch ordering rationale:**
-- Batch 1 (ecosystem + architecture): Core understanding of what to build and how
-- Batch 2 (pitfalls + standards): Refinements that build on core understanding
+Send ALL Task calls in a single message. Wait for completion.
 
 **Each subagent receives:**
-- Domain context from PROJECT.md
-- Category assignment (ecosystem, architecture, pitfalls, standards)
+- The research manifest (features, constraints, questions, decisions)
+- Category assignment (stack, implementation, risks)
 - Output format from templates/project-research.md
-- Instruction to write directly to `.planning/research/{category}.md`
+- Instruction: HIGH-CONFIDENCE ONLY
 </step>
 
 <step name="verify_outputs">
-After all batches complete:
+After subagents complete:
 
 ```bash
 # Check all files exist
 ls -la .planning/research/
 
 # Verify each file has content
-for f in ecosystem architecture pitfalls standards; do
+for f in stack implementation risks; do
   [ -s ".planning/research/${f}.md" ] && echo "✓ ${f}.md" || echo "✗ ${f}.md MISSING"
 done
 ```
 
-**If any file missing:**
-- Log which subagent failed
-- Optionally retry that specific subagent
-- Continue with available research (partial is better than none)
+**Quality verification (read each file):**
+
+For each file, check:
+- [ ] Addresses specific features from research manifest?
+- [ ] Contains actual code examples?
+- [ ] No low-confidence items included?
+- [ ] Current syntax (2024-2025)?
+
+**If quality issues found:**
+- Note specific problems
+- Consider re-running that subagent with stricter prompt
+- Or flag for manual review
 </step>
 
 <step name="aggregate">
-Read key findings from each research file for summary:
+Extract key findings for summary:
 
-```bash
-# Extract first few lines of each for summary
-for f in .planning/research/*.md; do
-  echo "=== $(basename $f) ==="
-  head -20 "$f"
-  echo ""
-done
-```
+From stack.md:
+- Primary libraries chosen for each feature
+- Any constraint-driven choices
 
-Extract for user summary:
-- Top library/framework recommendation from ecosystem.md
-- Primary architecture pattern from architecture.md
-- Most critical pitfall from pitfalls.md
-- Key quality standard from standards.md
+From implementation.md:
+- Most important API patterns
+- Key code examples
+
+From risks.md:
+- Critical mistakes to avoid
+- Deprecated patterns flagged
+
+Present summary to user with next steps.
 </step>
 
 </process>
 
-<batching_rules>
-## Batching Configuration
+<subagent_quality_rules>
+## Quality Rules for Subagents
 
-**Maximum parallel subagents:** 4 (API safety limit)
-**Recommended batch size:** 3 (reliable)
+**INCLUDE:**
+- High-confidence, verified information
+- Current API patterns with actual code
+- Direct answers to Open Questions from PROJECT.md
+- Specific recommendations for features in Scope
 
-**Batch ordering rationale:**
-- Batch 1 (ecosystem + architecture): Foundation knowledge that informs everything
-- Batch 2 (pitfalls + standards): Risk and quality that build on foundation
+**EXCLUDE:**
+- Low or medium confidence items
+- "Might be useful" padding
+- Generic advice not specific to this project
+- Old repos/articles marked as outdated
+- Options without clear recommendation
 
-**Between batches:**
-- Verify all subagents in batch completed
-- Check for failures, note for retry if needed
-- Proceed to next batch
-</batching_rules>
+**Format for Claude consumption:**
+```markdown
+## [Feature Name] Implementation
 
-<subagent_template>
-## Task Tool Invocation Pattern
+**Use:** [Library] v[X.Y]
 
-For each subagent, use:
-
+```[language]
+// Current pattern (2025)
+import { Thing } from 'library'
+const result = await Thing.doCorrectThing()
 ```
-Task tool parameters:
-- subagent_type: "general-purpose"
-- description: "Research {category} for {domain}"
-- prompt: [filled template from research-subagent-prompts.md]
+
+**NOT:**
+```[language]
+// Deprecated - Claude may generate this
+import Thing from 'library'  // Old syntax
+Thing.doOldThing()  // Removed in v2.0
 ```
-
-**Prompt template (simplified):**
-
 ```
-Research and write {category}.md for {domain} domain.
-
-## Context
-{Paste relevant sections from PROJECT.md}
-
-## Your Assignment
-File: .planning/research/{category}.md
-Category: {category}
-Purpose: {category-specific purpose}
-
-## Research Requirements
-Use WebSearch to find current information. Verify:
-- Libraries are actively maintained (commits in last 12 months)
-- Patterns are current best practice (not deprecated)
-- Examples are from 2024-2025 sources where possible
-
-## Output
-Write directly to .planning/research/{category}.md using the template structure:
-- research_summary
-- findings (specific discoveries with sources)
-- recommendations (actionable guidance)
-- sources (where info came from, confidence level)
-- open_questions (what couldn't be resolved)
-
-Quality bar: Someone reading this should be able to make informed decisions about the roadmap.
-```
-</subagent_template>
+</subagent_quality_rules>
 
 <success_criteria>
 Research workflow complete when:
-- [ ] All 4 research files exist in .planning/research/
-- [ ] Each file has substantive content (not empty/error)
-- [ ] Key findings extracted for summary
-- [ ] Main agent context preserved (minimal usage)
+- [ ] All 3 research files exist in .planning/research/
+- [ ] Each file addresses PROJECT.md features specifically
+- [ ] Open Questions from PROJECT.md are answered
+- [ ] Only high-confidence information included
+- [ ] Code examples use current syntax
+- [ ] Main agent context preserved
 </success_criteria>

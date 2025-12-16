@@ -11,14 +11,15 @@ allowed-tools:
 ---
 
 <objective>
-Research domain ecosystem via batched subagents before roadmap creation.
+Research implementation context for Claude Code before roadmap creation.
 
-Spawns 3-4 subagents in parallel to research:
+This is NOT research for human decision-making. This is context injection so Claude Code can implement correctly with current APIs, patterns, and best practices.
 
-- Ecosystem (libraries, frameworks, tools)
-- Architecture (patterns, project structure)
-- Pitfalls (common mistakes, what NOT to do)
-- Standards (best practices, conventions)
+Spawns 2-3 subagents in parallel to research PROJECT.md-specific needs:
+
+- **Stack** - What libraries/tools to use for THIS project's features
+- **Implementation** - Current API patterns, code examples, correct syntax
+- **Risks** - What Claude might get wrong, deprecated patterns to avoid
 
 Each subagent writes directly to `.planning/research/` preserving main context.
 </objective>
@@ -67,51 +68,97 @@ What would you like to do?
 Wait for user decision.
 </step>
 
-<step name="detect_domain">
-Parse PROJECT.md to identify the domain and research scope.
+<step name="parse_project">
+Read PROJECT.md and extract research targets:
 
-Look for:
+**From Scope (Building):**
+- List each feature/capability that needs implementation
+- These become specific research queries
 
-- Technologies mentioned (Three.js, WebGL, audio, etc.)
-- Problem domain (3D, games, real-time, etc.)
-- Technical constraints that suggest specific ecosystems
+**From Constraints:**
+- Tech stack requirements (language, framework, platform)
+- Performance requirements
+- Compatibility requirements
 
-If domain unclear, use AskUserQuestion:
+**From Open Questions:**
+- Questions that research should answer
+- These are explicit research targets
 
-- header: "Domain"
-- question: "What domain should we research?"
-- options:
-  - "3D/Graphics" - Three.js, WebGL, shaders
-  - "Games/Interactive" - Physics, collision, procedural
-  - "Audio/Music" - Web Audio, synthesis, DSP
-  - (other relevant options based on PROJECT.md)
-    </step>
+**From Decisions Made:**
+- Choices to validate ("any gotchas with X?")
+
+Create a research manifest:
+```
+Features to implement:
+- [feature 1]
+- [feature 2]
+- [feature 3]
+
+Stack constraints:
+- [constraint 1]
+- [constraint 2]
+
+Open questions to answer:
+- [question 1]
+- [question 2]
+
+Decisions to validate:
+- [decision 1]
+```
+
+If PROJECT.md is too vague for specific research targets, use AskUserQuestion:
+- header: "Research scope"
+- question: "What specific implementation questions should we research?"
+- options based on detected domain
+</step>
 
 <step name="research">
-Follow research-project.md workflow:
+Follow research-project.md workflow with PROJECT.md-driven research:
 
 1. Create `.planning/research/` directory
-2. Spawn first batch of subagents (ecosystem + architecture)
+2. Spawn subagents in parallel (all at once if ≤3):
+   - **stack.md** - Libraries/tools for each feature in Scope
+   - **implementation.md** - Current API patterns and code examples
+   - **risks.md** - What Claude might get wrong, deprecated patterns
 3. Wait for completion
-4. Spawn second batch (pitfalls + standards)
-5. Wait for completion
-6. Verify all outputs exist
-   </step>
+4. Verify all outputs exist and are high-quality
+</step>
+
+<step name="verify_quality">
+After subagents complete, verify quality:
+
+```bash
+# Check files exist
+for f in stack implementation risks; do
+  [ -s ".planning/research/${f}.md" ] && echo "✓ ${f}.md" || echo "✗ ${f}.md MISSING"
+done
+```
+
+**Quality check (read each file):**
+- Contains ONLY high-confidence information?
+- Includes actual code examples with current syntax?
+- Addresses specific features from PROJECT.md?
+- No low-confidence padding or "might be useful" items?
+
+If a file contains low-quality content, note it for summary.
+</step>
 
 <step name="summarize">
-After all subagents complete:
+After verification:
 
 ```
 Research complete:
-- .planning/research/ecosystem.md
-- .planning/research/architecture.md
-- .planning/research/pitfalls.md
-- .planning/research/standards.md
+- .planning/research/stack.md - [libraries/tools identified]
+- .planning/research/implementation.md - [patterns documented]
+- .planning/research/risks.md - [pitfalls to avoid]
 
-Key findings:
-- [Top ecosystem recommendation]
-- [Key architecture pattern]
-- [Critical pitfall to avoid]
+Key implementation context:
+- [Primary stack choice with rationale]
+- [Most important API pattern to use]
+- [Critical mistake Claude should avoid]
+
+Open questions remaining:
+- [Any questions research couldn't answer]
 
 What's next?
 1. Create roadmap (/gsd:create-roadmap) - Incorporates research
@@ -125,18 +172,16 @@ If user selects "Create roadmap" → invoke `/gsd:create-roadmap`
 </process>
 
 <output>
-- `.planning/research/ecosystem.md`
-- `.planning/research/architecture.md`
-- `.planning/research/pitfalls.md`
-- `.planning/research/standards.md`
+- `.planning/research/stack.md` - Libraries and tools for each feature
+- `.planning/research/implementation.md` - Current API patterns and code examples
+- `.planning/research/risks.md` - Deprecated patterns and common mistakes
 </output>
 
 <success_criteria>
-
-- [ ] PROJECT.md exists (prerequisite checked)
-- [ ] Domain detected or user clarified
-- [ ] Subagents spawned in batches of 3-4 max
-- [ ] All subagents wrote files directly to .planning/research/
-- [ ] All 4 research files exist
+- [ ] PROJECT.md parsed for specific research targets
+- [ ] Research addresses actual features from Scope
+- [ ] Open Questions from PROJECT.md answered (or noted as unanswerable)
+- [ ] All outputs are HIGH-CONFIDENCE only (no padding)
+- [ ] Code examples use current API syntax
 - [ ] User knows next steps (create-roadmap)
-      </success_criteria>
+</success_criteria>
