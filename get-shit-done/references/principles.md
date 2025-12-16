@@ -121,7 +121,7 @@ NEVER include:
 - Team structures, RACI matrices
 - Stakeholder management
 - Sprint ceremonies
-- Multi-week estimates
+- Human dev time estimates (hours, days, weeks—Claude works differently)
 - Change management processes
 - Documentation for documentation's sake
 

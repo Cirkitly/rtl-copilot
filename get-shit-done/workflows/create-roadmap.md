@@ -142,7 +142,7 @@ Select (comma-separate for multiple):
 </step>
 
 <step name="identify_phases">
-Based on the brief/context, identify 3-6 phases.
+Derive phases from the actual work needed. The phase count emerges from the project—don't impose a number.
 
 **Incorporate research if available:**
 
@@ -185,11 +185,20 @@ Use decimal phases (2.1, 2.2) for urgent insertions:
 **Phase execution order:**
 Numeric sort: 1 → 1.1 → 1.2 → 2 → 2.1 → 3
 
+**Deriving phases:**
+
+1. List all distinct systems/features/capabilities required
+2. Group related work into coherent deliverables
+3. Each phase should deliver ONE complete, verifiable thing
+4. If a phase delivers multiple unrelated capabilities: split it
+5. If a phase can't stand alone as a complete deliverable: merge it
+6. Order by dependencies
+
 Good phases are:
 
-- **Coherent**: Each delivers something complete
+- **Coherent**: Each delivers one complete, verifiable capability
 - **Sequential**: Later phases build on earlier
-- **Sized right**: 1-3 days of work each (for solo + Claude)
+- **Independent**: Can be verified and committed on its own
 
 Common phase patterns:
 
@@ -511,7 +520,7 @@ Numbers ensure ordering. Names describe content.
 - Don't create Gantt charts
 - Don't add resource allocation
 - Don't include risk matrices
-- Don't plan more than 6 phases (scope creep)
+- Don't impose arbitrary phase counts (let the work determine the count)
 
 Phases are buckets of work, not project management artifacts.
 </anti_patterns>
@@ -520,7 +529,7 @@ Phases are buckets of work, not project management artifacts.
 Roadmap is complete when:
 - [ ] `.planning/ROADMAP.md` exists
 - [ ] `.planning/STATE.md` exists (project memory initialized)
-- [ ] 3-6 phases defined with clear names
+- [ ] Phases defined with clear names (count derived from work, not imposed)
 - [ ] **Research flags assigned** (Likely/Unlikely for each phase)
 - [ ] **Research topics listed** for Likely phases
 - [ ] Phase directories created
