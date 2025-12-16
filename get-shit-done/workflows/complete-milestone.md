@@ -66,20 +66,13 @@ Appears to include:
 Total: 4 phases, 8 plans, all complete
 ```
 
-**Check workflow config for gate behavior:**
-
+<config-check>
 ```bash
 cat .planning/config.json 2>/dev/null
 ```
+</config-check>
 
-Parse the config:
-
-- If `mode: "yolo"` → auto-approve
-- If `mode: "interactive"` → prompt user
-- If `mode: "custom"` → check `gates.confirm_milestone_scope` (if exists)
-
-**If auto-approved:**
-
+<if mode="yolo">
 ```
 ⚡ Auto-approved: Milestone scope verification
 
@@ -88,8 +81,10 @@ Parse the config:
 Proceeding to stats gathering...
 ```
 
-**If prompting (interactive mode):**
+Proceed directly to gather_stats step.
+</if>
 
+<if mode="interactive" OR="custom with gates.confirm_milestone_scope true">
 ```
 Ready to mark this milestone as shipped?
 (yes / wait / adjust scope)
@@ -99,6 +94,7 @@ Wait for confirmation.
 
 If "adjust scope": Ask which phases should be included.
 If "wait": Stop, user will return when ready.
+</if>
 </step>
 
 <step name="gather_stats">

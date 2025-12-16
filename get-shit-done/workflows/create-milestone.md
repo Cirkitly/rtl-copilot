@@ -147,20 +147,13 @@ Does this look right? (yes / adjust)
 </step>
 
 <step name="confirm_phases">
-**Check workflow config for gate behavior:**
-
+<config-check>
 ```bash
 cat .planning/config.json 2>/dev/null
 ```
+</config-check>
 
-Parse the config:
-
-- If `mode: "yolo"` → auto-approve
-- If `mode: "interactive"` or missing → prompt user
-- If `mode: "custom"` → check `gates.confirm_phases`
-
-**If auto-approved:**
-
+<if mode="yolo">
 ```
 ⚡ Auto-approved: Milestone phases ([N] phases)
 
@@ -171,8 +164,10 @@ Parse the config:
 Proceeding to create milestone structure...
 ```
 
-**If prompting:**
+Proceed directly to update_roadmap step.
+</if>
 
+<if mode="interactive" OR="missing OR custom with gates.confirm_phases true">
 Present the phase breakdown:
 
 ```

@@ -415,17 +415,15 @@ This file contains comprehensive ecosystem research for niche/complex domains. I
 - `<code_examples>` → reference in task actions when applicable
 
 **If {phase}-CONTEXT.md exists:**
-This file contains the user's input gathered through pre-planning questions. It captures their intent, preferences, constraints, and decisions BEFORE you plan.
+This file contains the user's vision gathered through pre-planning discussion. It captures how they imagine this phase working, what's essential, and what's out of scope.
 
 **You MUST use this context to inform your planning:**
 
-- `<phase_objectives>` → defines what to build (don't guess scope)
-- `<constraints>` → technical/timeline limits to respect
-- `<risks>` → inform verification criteria and task ordering
-- `<success_indicators>` → become plan success criteria
-- `<codebase_context>` → patterns to follow, files to reference
-- `<decisions_needed>` → resolve during task breakdown or flag as checkpoints
-- `<notes>` → user clarifications that override assumptions
+- `<vision>` → how the user imagines this working (honor their intent)
+- `<essential>` → what must be nailed in this phase (prioritize these)
+- `<boundaries>` → what's explicitly out of scope (don't add these)
+- `<specifics>` → particular look/feel/behavior mentioned (incorporate these)
+- `<notes>` → additional context that informs approach
 
 **If neither RESEARCH.md nor CONTEXT.md exist:**
 For niche domains (3D, games, audio, shaders, etc.), suggest `/gsd:research-phase {phase}` first.
@@ -507,14 +505,13 @@ See ~/.claude/get-shit-done/references/scope-estimation.md for complete splittin
 </step>
 
 <step name="confirm_breakdown">
-**FIRST: Check if confirmation gate is disabled**
-
+<config-check>
 ```bash
 cat .planning/config.json 2>/dev/null
 ```
+</config-check>
 
-**If `mode: "yolo"`** → Show summary below, then SKIP directly to write_phase_prompt step. Do NOT ask questions. Do NOT wait for confirmation.
-
+<if mode="yolo">
 ```
 ⚡ Auto-approved: Phase [X] breakdown ([N] tasks, [M] plan(s))
 
@@ -523,10 +520,10 @@ cat .planning/config.json 2>/dev/null
 Proceeding to plan creation...
 ```
 
----
+Skip directly to write_phase_prompt step.
+</if>
 
-**Only if mode is "interactive" OR (mode is "custom" AND gates.confirm_breakdown is true), continue below:**
-
+<if mode="interactive" OR="custom with gates.confirm_breakdown true">
 Present the breakdown inline and wait for confirmation:
 
 **If single plan (2-3 tasks):**
@@ -571,6 +568,7 @@ Wait for confirmation before proceeding.
 
 If "adjust": Ask what to change, revise, present again.
 If "start over": Return to gather_phase_context step.
+</if>
 </step>
 
 <step name="approach_ambiguity">
@@ -589,18 +587,15 @@ Only ask if genuinely ambiguous. Don't ask obvious choices.
 </step>
 
 <step name="decision_gate">
-**FIRST: Check mode from config (already parsed in confirm_breakdown)**
-
-**If `mode: "yolo"`** → Output the message below, then SKIP directly to write_phase_prompt. Do NOT ask questions.
-
+<if mode="yolo">
 ```
 ⚡ Auto-approved: Create phase prompt for Phase [X]
 ```
 
----
+Skip directly to write_phase_prompt step.
+</if>
 
-**Only if mode is "interactive" OR (mode is "custom" AND gates.confirm_plan is true), continue below:**
-
+<if mode="interactive" OR="custom with gates.confirm_plan true">
 Use AskUserQuestion:
 
 - header: "Ready"
@@ -611,6 +606,7 @@ Use AskUserQuestion:
   - "Let me add context" - I want to provide more information
 
 Loop until "Create phase prompt" selected.
+</if>
 </step>
 
 <step name="write_phase_prompt">

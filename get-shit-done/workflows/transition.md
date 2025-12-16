@@ -42,22 +42,15 @@ ls .planning/phases/XX-current/*-SUMMARY.md 2>/dev/null | sort
 - If counts match: all plans complete
 - If counts don't match: incomplete
 
-**Check workflow config for gate behavior:**
-
+<config-check>
 ```bash
 cat .planning/config.json 2>/dev/null
 ```
-
-Parse the config:
-
-- If `mode: "yolo"` → auto-approve transition (if all complete)
-- If `mode: "interactive"` → prompt user
-- If `mode: "custom"` → check `gates.confirm_transition`
+</config-check>
 
 **If all plans complete:**
 
-**If auto-approved:**
-
+<if mode="yolo">
 ```
 ⚡ Auto-approved: Transition Phase [X] → Phase [X+1]
 Phase [X] complete - all [Y] plans finished.
@@ -65,10 +58,14 @@ Phase [X] complete - all [Y] plans finished.
 Proceeding to mark done and advance...
 ```
 
-Proceed directly to cleanup_handoff.
+Proceed directly to cleanup_handoff step.
+</if>
 
-**If prompting:**
+<if mode="interactive" OR="custom with gates.confirm_transition true">
 Ask: "Phase [X] complete - all [Y] plans finished. Ready to mark done and move to Phase [X+1]?"
+
+Wait for confirmation before proceeding.
+</if>
 
 **If plans incomplete:**
 

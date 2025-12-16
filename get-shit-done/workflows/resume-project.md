@@ -127,7 +127,7 @@ Based on project state, determine the most logical next action:
 → Check if CONTEXT.md exists for this phase:
 
 - If CONTEXT.md missing:
-  → Primary: Discuss phase context (gather objectives, constraints, success indicators)
+  → Primary: Discuss phase vision (how user imagines it working)
   → Secondary: Plan directly (skip context gathering)
 - If CONTEXT.md exists:
   → Primary: Plan the phase

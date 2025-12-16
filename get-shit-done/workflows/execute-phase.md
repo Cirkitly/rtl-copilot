@@ -78,20 +78,13 @@ SUMMARY naming follows same pattern:
 
 Confirm with user if ambiguous.
 
-**Check workflow config for gate behavior:**
-
+<config-check>
 ```bash
 cat .planning/config.json 2>/dev/null
 ```
+</config-check>
 
-Parse the config:
-
-- If `mode: "yolo"` → auto-approve execution
-- If `mode: "interactive"` → prompt user
-- If `mode: "custom"` → check `gates.execute_next_plan`
-
-**If auto-approved:**
-
+<if mode="yolo">
 ```
 ⚡ Auto-approved: Execute {phase}-{plan}-PLAN.md
 [Plan X of Y for Phase Z]
@@ -99,10 +92,10 @@ Parse the config:
 Starting execution...
 ```
 
-Proceed directly to parse_segments.
+Proceed directly to parse_segments step.
+</if>
 
-**If prompting:**
-
+<if mode="interactive" OR="custom with gates.execute_next_plan true">
 Present:
 
 ```
@@ -112,7 +105,8 @@ Found plan to execute: {phase}-{plan}-PLAN.md
 Proceed with execution?
 ```
 
-Wait for confirmation.
+Wait for confirmation before proceeding.
+</if>
 </step>
 
 <step name="record_start_time">
@@ -413,7 +407,7 @@ cat .planning/phases/XX-name/{phase}-{plan}-PLAN.md
 This IS the execution instructions. Follow it exactly.
 
 **If plan references CONTEXT.md:**
-The CONTEXT.md file provides phase-level objectives, constraints, and success indicators gathered before planning. This context informs implementation decisions throughout execution.
+The CONTEXT.md file provides the user's vision for this phase — how they imagine it working, what's essential, and what's out of scope. Honor this context throughout execution.
 </step>
 
 <step name="previous_phase_check">

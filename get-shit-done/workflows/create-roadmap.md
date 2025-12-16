@@ -264,22 +264,14 @@ Does this look right? (yes / adjust)
 </step>
 
 <step name="confirm_phases">
-**Check workflow config for gate behavior:**
-
+<config-check>
 ```bash
 cat .planning/config.json 2>/dev/null
 ```
+Note: Config may not exist yet (project initialization). If missing, default to interactive mode.
+</config-check>
 
-**Note:** Config may not exist yet (this is project initialization). If missing, default to interactive mode.
-
-Parse the config (if exists):
-
-- If `mode: "yolo"` → auto-approve
-- If `mode: "interactive"` or missing → prompt user
-- If `mode: "custom"` → check `gates.confirm_phases`
-
-**If auto-approved:**
-
+<if mode="yolo">
 ```
 ⚡ Auto-approved: Phase breakdown ([N] phases)
 
@@ -290,10 +282,10 @@ Parse the config (if exists):
 Proceeding to research detection...
 ```
 
-Proceed directly to detect_research_needs.
+Proceed directly to detect_research_needs step.
+</if>
 
-**If prompting:**
-
+<if mode="interactive" OR="missing OR custom with gates.confirm_phases true">
 Present the phase breakdown inline:
 
 "Here's how I'd break this down:
@@ -309,28 +301,17 @@ If "adjust": Ask what to change, revise, present again.
 </step>
 
 <step name="decision_gate">
-After phases confirmed (or auto-approved):
-
-**Check workflow config for gate behavior:**
-
-Read config from previous step (already parsed, or default to interactive if missing).
-
-- If `mode: "yolo"` → auto-approve
-- If `mode: "interactive"` or missing → prompt user
-- If `mode: "custom"` → check `gates.confirm_roadmap`
-
-**If auto-approved:**
-
+<if mode="yolo">
 ```
 ⚡ Auto-approved: Create roadmap with [N] phases
 
 Proceeding to create .planning/ROADMAP.md...
 ```
 
-Proceed directly to create_structure.
+Proceed directly to create_structure step.
+</if>
 
-**If prompting:**
-
+<if mode="interactive" OR="missing OR custom with gates.confirm_roadmap true">
 Use AskUserQuestion:
 
 - header: "Ready"
