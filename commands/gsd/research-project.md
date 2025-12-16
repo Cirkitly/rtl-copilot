@@ -160,13 +160,16 @@ Key implementation context:
 Open questions remaining:
 - [Any questions research couldn't answer]
 
-What's next?
-1. Create roadmap (/gsd:create-roadmap) - Incorporates research
-2. Review research files
-3. Done for now
+## To Continue
+
+Run `/clear`, then paste:
+```
+/gsd:create-roadmap
 ```
 
-If user selects "Create roadmap" → invoke `/gsd:create-roadmap`
+Other options:
+- Review research files before continuing
+```
 </step>
 
 </process>

@@ -717,18 +717,16 @@ After completion, create `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
 Phase plan created: .planning/phases/XX-name/{phase}-01-PLAN.md
 [X] tasks defined.
 
-What's next?
+## To Continue
 
-1. Execute plan (/gsd:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md)
-2. Review/adjust tasks
-3. Done for now
-
+Run `/clear`, then paste:
+```
+/gsd:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md
 ```
 
-**If user selects "Execute plan":**
-Exit skill and invoke SlashCommand("/gsd:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md")
-
-Note: Command is shown in the options above so user can see what will run.
+Other options:
+- Review/adjust tasks before executing
+```
 
 **If multiple plans:**
 ```
@@ -741,18 +739,16 @@ Phase plans created:
 
 Total: [X] tasks across [Y] focused plans.
 
-What's next?
+## To Continue
 
-1. Execute first plan (/gsd:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md)
-2. Review/adjust tasks
-3. Done for now
-
+Run `/clear`, then paste:
+```
+/gsd:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md
 ```
 
-**If user selects "Execute first plan":**
-Exit skill and invoke SlashCommand("/gsd:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md")
-
-Note: Command is shown in the options above so user can see what will run.
+Other options:
+- Review/adjust tasks before executing
+```
 </step>
 
 </process>

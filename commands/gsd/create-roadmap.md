@@ -117,15 +117,20 @@ Roadmap created:
 - State: .planning/STATE.md
 - [N] phases defined
 
-What's next?
-1. Discuss Phase 1 context (/gsd:discuss-phase 1)
-2. Plan Phase 1 in detail (/gsd:plan-phase 1)
-3. Review/adjust phases
-4. Done for now
+## To Continue
+
+Run `/clear`, then paste one of:
+
+**To discuss Phase 1 context first:**
+```
+/gsd:discuss-phase 1
 ```
 
-If user selects "Discuss Phase 1 context" → invoke `/gsd:discuss-phase 1`
-If user selects "Plan Phase 1 in detail" → invoke `/gsd:plan-phase 1`
+**To plan Phase 1 directly:**
+```
+/gsd:plan-phase 1
+```
+```
 </step>
 
 </process>

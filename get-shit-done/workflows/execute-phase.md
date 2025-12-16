@@ -1210,13 +1210,18 @@ Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 
 [X] of [Y] plans complete for Phase Z.
 
-What's next?
-1. Execute next plan (/gsd:execute-plan .planning/phases/XX-name/{phase}-{next-plan}-PLAN.md)
-2. Review what was built
-3. Done for now
+## To Continue
+
+Run `/clear`, then paste:
+```
+/gsd:execute-plan .planning/phases/XX-name/{phase}-{next-plan}-PLAN.md
 ```
 
-Wait for user selection.
+Other options:
+- Review what was built before continuing
+```
+
+Wait for user to clear and run next command.
 </if>
 
 **If phase complete (last plan done):**
@@ -1252,11 +1257,16 @@ All [N] phases complete!
 This milestone is 100% done.
 ════════════════════════════════════════
 
-What's next?
-1. Complete milestone (/gsd:complete-milestone) - Archive and start fresh
-2. Add another phase (/gsd:add-phase) - Extend this milestone
-3. Review accomplishments - See what was built
-4. Done for now
+## To Continue
+
+Run `/clear`, then paste:
+```
+/gsd:complete-milestone
+```
+
+Other options:
+- Add another phase: `/gsd:add-phase <description>`
+- Review accomplishments before archiving
 ```
 
 **If phase complete but more phases remain:**
@@ -1267,11 +1277,22 @@ Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 
 Phase [Z]: [Name] COMPLETE - all [Y] plans finished.
 
-What's next?
-1. Discuss Phase [X+1] context (/gsd:discuss-phase [X+1])
-2. Plan Phase [X+1] in detail (/gsd:plan-phase [X+1])
-3. Review phase accomplishments
-4. Done for now
+## To Continue
+
+Run `/clear`, then paste one of:
+
+**To discuss Phase [X+1] context first:**
+```
+/gsd:discuss-phase [X+1]
+```
+
+**To plan Phase [X+1] directly:**
+```
+/gsd:plan-phase [X+1]
+```
+
+Other options:
+- Review phase accomplishments before continuing
 ```
 
 </step>

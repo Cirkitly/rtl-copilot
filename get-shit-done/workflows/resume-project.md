@@ -174,14 +174,28 @@ Wait for user selection.
 <step name="route_to_workflow">
 Based on user selection, route to appropriate workflow:
 
-- **Execute plan** → EXIT and invoke SlashCommand("/gsd:execute-plan [path]")
-- **Plan phase** → EXIT and invoke SlashCommand("/gsd:plan-phase [phase-number]")
+- **Execute plan** → Show command for user to run after clearing:
+  ```
+  ## To Continue
+
+  Run `/clear`, then paste:
+  ```
+  /gsd:execute-plan [path]
+  ```
+  ```
+- **Plan phase** → Show command for user to run after clearing:
+  ```
+  ## To Continue
+
+  Run `/clear`, then paste:
+  ```
+  /gsd:plan-phase [phase-number]
+  ```
+  ```
 - **Transition** → ./transition.md
 - **Review issues** → Read ISSUES.md, present summary
 - **Review alignment** → Read PROJECT.md, compare to current state
 - **Something else** → Ask what they need
-
-Note: Commands are shown in the presented options so user can see what will run.
 </step>
 
 <step name="update_session">

@@ -163,19 +163,17 @@ Phase {N} added to current milestone:
 Roadmap updated: {roadmap-path}
 Project state updated: .planning/STATE.md
 
-What's next?
-1. Plan this phase: /gsd:plan-phase {N}
-2. Add another phase: /gsd:add-phase <description>
-3. Review roadmap: cat .planning/ROADMAP.md
+## To Continue
+
+Run `/clear`, then paste:
+```
+/gsd:plan-phase {N}
 ```
 
-**If user selects option 1:**
-Invoke SlashCommand("/gsd:plan-phase {N}")
-
-**If user selects option 2:**
-Invoke SlashCommand("/gsd:add-phase <description>")
-
-Note: Commands are shown in options above so user can see what will run.
+Other options:
+- Add another phase: `/gsd:add-phase <description>`
+- Review roadmap: `cat .planning/ROADMAP.md`
+```
 </step>
 
 </process>

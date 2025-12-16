@@ -487,20 +487,20 @@ Project initialized:
 - State: .planning/STATE.md
 - Committed as: docs: initialize [project] ([N] phases)
 
-What's next?
+## To Continue
 
-1. Discuss Phase 1 context (/gsd:discuss-phase 1)
-2. Plan Phase 1 in detail (/gsd:plan-phase 1)
-3. Review/adjust phases
-4. Done for now
+Run `/clear`, then paste one of:
 
+**To discuss Phase 1 context first:**
+```
+/gsd:discuss-phase 1
 ```
 
-**If user selects "Discuss Phase 1 context":**
-Exit and invoke SlashCommand("/gsd:discuss-phase 1")
-
-**If user selects "Plan Phase 1 in detail":**
-Exit and invoke SlashCommand("/gsd:plan-phase 1")
+**To plan Phase 1 directly:**
+```
+/gsd:plan-phase 1
+```
+```
 </step>
 
 </process>

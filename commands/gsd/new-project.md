@@ -147,17 +147,20 @@ Project initialized:
 - Project: .planning/PROJECT.md
 - Config: .planning/config.json (mode: [chosen mode])
 
-What's next?
+## To Continue
 
-1. Research domain ecosystem (/gsd:research-project) - For niche/complex domains
-2. Create roadmap (/gsd:create-roadmap) - Skip research, go straight to planning
-3. Done for now
+Run `/clear`, then paste one of:
+
+**For niche/complex domains (recommended):**
+```
+/gsd:research-project
 ```
 
-Note: Commands are shown in the options above so the user can see what to run in a fresh context.
-
-**If user selects option 1:** invoke `/gsd:research-project`
-**If user selects option 2:** invoke `/gsd:create-roadmap`
+**To skip research and go straight to planning:**
+```
+/gsd:create-roadmap
+```
+```
 </step>
 
 </process>

@@ -323,20 +323,23 @@ Milestone v[X.Y] [Name] created:
 - ROADMAP.md updated
 - STATE.md reset for new milestone
 
-What's next?
+## To Continue
 
-1. Discuss Phase [N] context (/gsd:discuss-phase [N])
-2. Plan Phase [N] directly (/gsd:plan-phase [N])
-3. Review roadmap
-4. Done for now
+Run `/clear`, then paste one of:
 
+**To discuss Phase [N] context first:**
+```
+/gsd:discuss-phase [N]
 ```
 
-**If user selects option 1:**
-Invoke SlashCommand("/gsd:discuss-phase [N]")
+**To plan Phase [N] directly:**
+```
+/gsd:plan-phase [N]
+```
 
-**If user selects option 2:**
-Invoke SlashCommand("/gsd:plan-phase [N]")
+Other options:
+- Review roadmap before continuing
+```
 </step>
 
 </process>

@@ -107,12 +107,15 @@ Check if `{phase}-{plan}-PLAN.md` exists for that number.
 
 - Read its `<objective>` section
 - Show: "Ready to execute: [path] - [objective summary]"
-- Ask: "Execute? (y/n)"
-- **CRITICAL: If user responds "y", "yes", or affirmatively, immediately invoke:**
+- Display:
   ```
-  SlashCommand("/gsd:execute-plan [full-path-to-PLAN.md]")
+  ## To Continue
+
+  Run `/clear`, then paste:
   ```
-  Do NOT describe what you would do. INVOKE THE TOOL.
+  /gsd:execute-plan [full-path-to-PLAN.md]
+  ```
+  ```
 
 **If PLAN.md does NOT exist:**
 
@@ -123,41 +126,45 @@ Check if `{phase}-{plan}-PLAN.md` exists for that number.
 **If CONTEXT.md exists:**
 
 - Display: "✓ Context gathered, ready to plan"
-- Ask: "Create this plan? (y/n)"
-- **CRITICAL: If user responds "y", "yes", or affirmatively, immediately invoke:**
+- Display:
   ```
-  SlashCommand("/gsd:plan-phase [phase-number]")
+  ## To Continue
+
+  Run `/clear`, then paste:
   ```
-  Do NOT describe what you would do. INVOKE THE TOOL.
+  /gsd:plan-phase [phase-number]
+  ```
+  ```
 
 **If CONTEXT.md does NOT exist:**
 
-- Display options:
+- Display:
   ```
-  Options for Phase [N]:
-  1. See assumptions (/gsd:list-phase-assumptions [phase]) - What Claude thinks about this phase
-  2. Discuss context (/gsd:discuss-phase [phase]) - Gather your context through questions
-  3. Plan directly (/gsd:plan-phase [phase]) - Skip to planning
+  ## To Continue
+
+  Run `/clear`, then paste one of:
+
+  **See Claude's assumptions:**
   ```
-- Ask: "Which approach? (assumptions/discuss/plan)"
-- **If user responds "assumptions":**
+  /gsd:list-phase-assumptions [phase]
   ```
-  SlashCommand("/gsd:list-phase-assumptions [phase-number]")
+
+  **Discuss context first:**
   ```
-- **If user responds "discuss":**
+  /gsd:discuss-phase [phase]
   ```
-  SlashCommand("/gsd:discuss-phase [phase-number]")
+
+  **Plan directly:**
   ```
-- **If user responds "plan":**
+  /gsd:plan-phase [phase]
   ```
-  SlashCommand("/gsd:plan-phase [phase-number]")
   ```
 
 **If all plans complete for current phase:**
 
 - Check if more phases exist in ROADMAP
-- If yes: Offer to plan next phase with `/gsd:plan-phase [next-phase]`
-- If no (milestone 100% complete): Offer to complete milestone
+- If yes: Show `/gsd:plan-phase [next-phase]` command to paste
+- If no (milestone 100% complete): Show `/gsd:complete-milestone` command to paste
   </step>
 
 <step name="edge_cases">

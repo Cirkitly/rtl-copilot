@@ -194,11 +194,22 @@ Created: .planning/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md
 ## Boundaries
 [What's out of scope]
 
-What's next?
-1. Research this phase (/gsd:research-phase ${PHASE}) - Investigate codebase, identify patterns and risks
-2. Plan this phase (/gsd:plan-phase ${PHASE}) - Skip research, go straight to planning
-3. Review/edit CONTEXT.md - Make adjustments
-4. Done for now
+## To Continue
+
+Run `/clear`, then paste one of:
+
+**To research this phase first:**
+```
+/gsd:research-phase ${PHASE}
+```
+
+**To plan this phase directly:**
+```
+/gsd:plan-phase ${PHASE}
+```
+
+Other options:
+- Review/edit CONTEXT.md before continuing
 ```
 
 </step>

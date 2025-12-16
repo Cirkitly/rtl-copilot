@@ -393,14 +393,23 @@ Phase [X] marked complete.
 
 Next: Phase [X+1] - [Name]
 
-What would you like to do?
-1. Discuss Phase [X+1] context (/gsd:discuss-phase [X+1])
-2. Plan Phase [X+1] in detail (/gsd:plan-phase [X+1])
-3. Review roadmap
-4. Take a break (done for now)
+## To Continue
+
+Run `/clear`, then paste one of:
+
+**To discuss Phase [X+1] context first:**
+```
+/gsd:discuss-phase [X+1]
 ```
 
-Wait for user selection.
+**To plan Phase [X+1] directly:**
+```
+/gsd:plan-phase [X+1]
+```
+
+Other options:
+- Review roadmap before continuing
+```
 </if>
 
 **If no next phase (milestone 100% complete):**
@@ -423,13 +432,16 @@ Phase [X] marked complete.
 
 🎉 Milestone [version] is 100% complete - all phases finished!
 
-What would you like to do?
-1. Complete milestone and archive (/gsd:complete-milestone [version])
-2. Review accomplishments
-3. Take a break (done for now)
+## To Continue
+
+Run `/clear`, then paste:
+```
+/gsd:complete-milestone [version]
 ```
 
-Wait for user selection.
+Other options:
+- Review accomplishments before archiving
+```
 </if>
 
 </step>

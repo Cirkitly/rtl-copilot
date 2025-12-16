@@ -183,7 +183,7 @@ Use AskUserQuestion with appropriate options based on findings:
 4. Update STATE.md deferred issues count
 
 **If inserting urgent phase:**
-- Invoke: `SlashCommand("/gsd:insert-phase [after-phase] Address urgent issues ISS-XXX, ISS-YYY")`
+- Display the command for user to run after clearing: `/gsd:insert-phase [after-phase] Address urgent issues ISS-XXX, ISS-YYY`
 
 **If noting for phase planning:**
 - Update issue's "Suggested phase" field with specific phase number

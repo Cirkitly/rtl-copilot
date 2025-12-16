@@ -182,16 +182,17 @@ Phase {decimal_phase} inserted after Phase {after_phase}:
 Roadmap updated: {roadmap-path}
 Project state updated: .planning/STATE.md
 
-What's next?
-1. Plan this phase: /gsd:plan-phase {decimal_phase}
-2. Review insertion impact: Check if Phase {next_integer} dependencies still make sense
-3. Review roadmap: cat .planning/ROADMAP.md
+## To Continue
+
+Run `/clear`, then paste:
+```
+/gsd:plan-phase {decimal_phase}
 ```
 
-**If user selects option 1:**
-Invoke SlashCommand("/gsd:plan-phase {decimal_phase}")
-
-Note: Command is shown in option 1 above so user can see what will run.
+Other options:
+- Review insertion impact: Check if Phase {next_integer} dependencies still make sense
+- Review roadmap: `cat .planning/ROADMAP.md`
+```
 </step>
 
 </process>

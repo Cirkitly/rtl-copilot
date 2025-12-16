@@ -137,9 +137,14 @@ Milestone scope defined:
 **Estimated phases:** [N]
 
 Ready to create the milestone structure.
-```
 
-**Invoke:** SlashCommand("/gsd:new-milestone")
+## To Continue
+
+Run `/clear`, then paste:
+```
+/gsd:new-milestone
+```
+```
 
 Pass context forward by summarizing:
 - Features to build (the substance)

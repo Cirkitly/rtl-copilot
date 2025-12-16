@@ -424,20 +424,20 @@ Shipped:
 Summary: .planning/MILESTONES.md
 Tag: v[X.Y]
 
-Next steps:
+## To Continue
 
-1. Discuss next milestone scope (/gsd:discuss-milestone)
-2. Create next milestone directly (/gsd:new-milestone)
-3. Done for now
+Run `/clear`, then paste one of:
 
+**To discuss next milestone scope:**
+```
+/gsd:discuss-milestone
 ```
 
-Wait for user decision.
-
-If "1": Invoke SlashCommand("/gsd:discuss-milestone")
-If "2": Invoke SlashCommand("/gsd:new-milestone")
-
-Note: Commands are shown in options above so user can see what will run.
+**To create next milestone directly:**
+```
+/gsd:new-milestone
+```
+```
 </step>
 
 </process>
