@@ -1,5 +1,5 @@
 ---
-description: Initialize a new project with deep context gathering, PROJECT.md, roadmap, and state tracking
+description: Initialize a new project with deep context gathering and PROJECT.md
 allowed-tools:
   - Read
   - Bash
@@ -8,14 +8,15 @@ allowed-tools:
 ---
 
 <!--
-DESIGN NOTE: Command + Workflow Pattern
+DESIGN NOTE: Initialization Only
 
-This command handles the questioning phase directly (user interaction intensive),
-then delegates roadmap/state creation to the create-roadmap workflow.
+This command handles project initialization only:
+- Deep context gathering through questioning
+- PROJECT.md creation
+- config.json with workflow mode
 
-Architecture:
-- Command: new-project.md - questioning, PROJECT.md, config.json
-- Workflow: create-roadmap.md - domain detection, research flags, ROADMAP.md, STATE.md
+Roadmap creation is now a separate step via /gsd:create-roadmap.
+This allows optional research (/gsd:research-project) between initialization and roadmap.
 -->
 
 <objective>
@@ -23,11 +24,10 @@ Initialize a new project through comprehensive context gathering.
 
 This is the most leveraged moment in any project. Deep questioning here means better plans, better execution, better outcomes.
 
-Creates `.planning/` with PROJECT.md, ROADMAP.md, STATE.md, and config.json.
+Creates `.planning/` with PROJECT.md and config.json.
 </objective>
 
 <execution_context>
-@~/.claude/get-shit-done/workflows/create-roadmap.md
 @~/.claude/get-shit-done/references/principles.md
 @~/.claude/get-shit-done/references/questioning.md
 @~/.claude/get-shit-done/templates/project.md
@@ -95,83 +95,47 @@ Use AskUserQuestion:
 Create `.planning/config.json` with chosen mode using `templates/config.json` structure.
 </step>
 
-<step name="roadmap_and_state">
-**Follow the create-roadmap workflow** from `@~/.claude/get-shit-done/workflows/create-roadmap.md`.
-
-This handles:
-
-1. Domain expertise detection (scan for applicable skills)
-2. Phase identification (3-6 phases based on PROJECT.md)
-3. Research needs detection (flag phases needing investigation)
-4. Phase confirmation (respects yolo/interactive mode)
-5. ROADMAP.md creation with research flags
-6. STATE.md initialization
-7. Phase directory creation
-
-The workflow will create:
-
-- `.planning/ROADMAP.md`
-- `.planning/STATE.md`
-- `.planning/phases/XX-name/` directories
-  </step>
 
 <step name="commit">
 ```bash
-git add .planning/
+git add .planning/PROJECT.md .planning/config.json
 git commit -m "$(cat <<'EOF'
-docs: initialize [project-name] ([N] phases)
+docs: initialize [project-name]
 
 [One-liner from PROJECT.md]
 
-Phases:
-
-1. [phase-name]: [goal]
-2. [phase-name]: [goal]
-3. [phase-name]: [goal]
-   EOF
-   )"
-
+Creates PROJECT.md with vision and requirements.
+EOF
+)"
 ```
 </step>
 
 <step name="done">
 ```
-
 Project initialized:
-
 - Project: .planning/PROJECT.md
-- Roadmap: .planning/ROADMAP.md ([N] phases)
-- State: .planning/STATE.md
 - Config: .planning/config.json (mode: [chosen mode])
 
 What's next?
-
-1. Plan Phase 1 (/gsd:plan-phase 01)
-2. Review project setup
+1. Research domain ecosystem (/gsd:research-project) - For niche/complex domains
+2. Create roadmap (/gsd:create-roadmap) - Skip research, go straight to planning
 3. Done for now
-
 ```
 
-If user selects "Plan Phase 1" → invoke `/gsd:plan-phase 01`
+If user selects "Research domain ecosystem" → invoke `/gsd:research-project`
+If user selects "Create roadmap" → invoke `/gsd:create-roadmap`
 </step>
 
 </process>
 
 <output>
 - `.planning/PROJECT.md`
-- `.planning/ROADMAP.md`
-- `.planning/STATE.md`
 - `.planning/config.json`
-- `.planning/phases/XX-name/` directories
 </output>
 
 <success_criteria>
 - [ ] Deep questioning completed (not rushed)
 - [ ] PROJECT.md captures full context
 - [ ] config.json has workflow mode
-- [ ] ROADMAP.md has 3-6 phases with research flags
-- [ ] STATE.md initialized with project summary
-- [ ] Phase directories created
 - [ ] All committed to git
 </success_criteria>
-```
