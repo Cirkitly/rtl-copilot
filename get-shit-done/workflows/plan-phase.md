@@ -507,31 +507,27 @@ See ~/.claude/get-shit-done/references/scope-estimation.md for complete splittin
 </step>
 
 <step name="confirm_breakdown">
-**Check workflow config for gate behavior:**
+**FIRST: Check if confirmation gate is disabled**
 
 ```bash
 cat .planning/config.json 2>/dev/null
 ```
 
-Parse the config:
-
-- If `mode: "yolo"` → auto-approve
-- If `mode: "interactive"` → prompt user
-- If `mode: "custom"` → check `gates.confirm_breakdown`
-
-**If auto-approved:**
+**If `mode: "yolo"`** → Show summary below, then SKIP directly to write_phase_prompt step. Do NOT ask questions. Do NOT wait for confirmation.
 
 ```
 ⚡ Auto-approved: Phase [X] breakdown ([N] tasks, [M] plan(s))
 
-[Show breakdown summary without prompting]
+[Brief breakdown summary - task names and types only]
 
 Proceeding to plan creation...
 ```
 
-**If prompting (interactive mode or custom with gate enabled):**
+---
 
-Present the breakdown inline:
+**Only if mode is "interactive" OR (mode is "custom" AND gates.confirm_breakdown is true), continue below:**
+
+Present the breakdown inline and wait for confirmation:
 
 **If single plan (2-3 tasks):**
 
@@ -553,7 +549,7 @@ Does this breakdown look right? (yes / adjust / start over)
 ```
 Here's the proposed breakdown for Phase [X]:
 
-This phase requires 3 plans to maintain quality:
+This phase requires [N] plans to maintain quality:
 
 ### Plan 1: {phase}-01-PLAN.md - [Subsystem/Component Name]
 1. [Task name] - [brief description] [type]
@@ -564,9 +560,7 @@ This phase requires 3 plans to maintain quality:
 1. [Task name] - [brief description] [type]
 2. [Task name] - [brief description] [type]
 
-### Plan 3: {phase}-03-PLAN.md - [Subsystem/Component Name]
-1. [Task name] - [brief description] [type]
-2. [Task name] - [brief description] [type]
+[Additional plans as needed...]
 
 Each plan is independently executable and scoped to ~50% context.
 
@@ -595,25 +589,17 @@ Only ask if genuinely ambiguous. Don't ask obvious choices.
 </step>
 
 <step name="decision_gate">
-After breakdown confirmed (or auto-approved):
+**FIRST: Check mode from config (already parsed in confirm_breakdown)**
 
-**Check workflow config for gate behavior:**
-
-Read config from previous step (already parsed).
-
-- If `mode: "yolo"` → auto-approve
-- If `mode: "interactive"` → prompt user
-- If `mode: "custom"` → check `gates.confirm_plan`
-
-**If auto-approved:**
+**If `mode: "yolo"`** → Output the message below, then SKIP directly to write_phase_prompt. Do NOT ask questions.
 
 ```
 ⚡ Auto-approved: Create phase prompt for Phase [X]
 ```
 
-Proceed directly to write_phase_prompt.
+---
 
-**If prompting:**
+**Only if mode is "interactive" OR (mode is "custom" AND gates.confirm_plan is true), continue below:**
 
 Use AskUserQuestion:
 
