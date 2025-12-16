@@ -24,22 +24,30 @@ Creates `.planning/` with PROJECT.md and config.json.
 
 <context>
 !`[ -d .planning ] && echo "PLANNING_EXISTS" || echo "NO_PLANNING"`
-!`[ -d .git ] && echo "GIT_EXISTS" || echo "NO_GIT"`
 </context>
 
 <process>
 
-<step name="setup" silent="true">
-Silent setup - execute before any user output:
+<step name="setup">
+**MANDATORY FIRST STEP — Execute these checks before ANY user interaction:**
 
-```bash
-# Abort if project exists
-[ -d .planning ] && echo "Project already initialized. Use /gsd:progress" && exit 1
+1. **Abort if project exists:**
+   ```bash
+   [ -d .planning ] && echo "ERROR: Project already initialized. Use /gsd:progress" && exit 1
+   ```
 
-# Initialize git
-[ -d .git ] || git init
-```
+2. **Initialize git repo in THIS directory** (required even if inside a parent repo):
+   ```bash
+   # Check if THIS directory is already a git repo root (handles .git file for worktrees too)
+   if [ -d .git ] || [ -f .git ]; then
+       echo "Git repo exists in current directory"
+   else
+       git init
+       echo "Initialized new git repo"
+   fi
+   ```
 
+   **You MUST run both bash commands above using the Bash tool before proceeding.**
 </step>
 
 <step name="question">
