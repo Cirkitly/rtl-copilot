@@ -49,6 +49,8 @@ Continue to intake_gate.
 </step>
 
 <step name="intake_gate">
+**CRITICAL: ALL questions use AskUserQuestion. Never ask inline text questions.**
+
 The primary question is: **What do you want to build/add/fix?**
 
 Everything else (scope, priority, constraints) is secondary and derived from features.
@@ -58,11 +60,16 @@ Check for inputs:
 - Known gaps or pain points from usage
 - User's ideas for what's next
 
-Start: "What do you want to add, improve, or fix in this milestone?"
+**1. Open:**
 
-Then use AskUserQuestion to explore features. After each response, dig deeper with follow-up questions about specifics.
+Use AskUserQuestion:
+- header: "Next"
+- question: "What do you want to add, improve, or fix in this milestone?"
+- options: [Deferred issues from STATE.md if any] + ["New features", "Improvements to existing", "Bug fixes", "Let me describe"]
 
-**Feature exploration questions (use as needed):**
+**2. Explore features:**
+
+Based on their response, use AskUserQuestion:
 
 If they named specific features:
 - header: "Feature Details"
@@ -79,6 +86,13 @@ If they're not sure:
 - question: "What's been frustrating or missing?"
 - options: [Deferred issues from STATE.md + pain point categories + "Let me think about it"]
 
+**3. Prioritize:**
+
+Use AskUserQuestion:
+- header: "Priority"
+- question: "Which of these matters most?"
+- options: [Features they mentioned + "All equally important" + "Let me prioritize"]
+
 After gathering features, synthesize:
 
 ```
@@ -93,8 +107,9 @@ Based on what you described:
 **Theme suggestion:** v[X.Y] [Name]
 ```
 
-Use AskUserQuestion for decision gate:
+**4. Decision gate:**
 
+Use AskUserQuestion:
 - header: "Ready?"
 - question: "Ready to create the milestone, or explore more?"
 - options (ALL THREE REQUIRED):
@@ -102,8 +117,8 @@ Use AskUserQuestion for decision gate:
   - "Ask more questions" - Help me think through this more
   - "Let me add context" - I have more to share
 
-If "Ask more questions" → dig into features they mentioned → return to gate.
-If "Let me add context" → receive input, update synthesis → return to gate.
+If "Ask more questions" → return to step 2 with new probes.
+If "Let me add context" → receive input → return to step 2.
 Loop until "Create milestone" selected.
 </step>
 

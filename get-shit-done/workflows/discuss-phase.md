@@ -88,60 +88,60 @@ Continue to questioning.
 </step>
 
 <step name="questioning">
-Present initial context from roadmap:
+**CRITICAL: ALL questions use AskUserQuestion. Never ask inline text questions.**
+
+Present initial context from roadmap, then immediately use AskUserQuestion:
 
 ```
 Phase ${PHASE}: ${PHASE_NAME}
 
 From the roadmap: ${PHASE_DESCRIPTION}
-
-How do you imagine this working?
 ```
 
-Let them talk. Don't interrupt with clarifying questions yet.
+**1. Open:**
 
-Then follow the conversation arc:
+Use AskUserQuestion:
+- header: "Vision"
+- question: "How do you imagine this working?"
+- options: 2-3 interpretations based on the phase description + "Let me describe it"
 
-**1. Follow the thread**
+**2. Follow the thread:**
 
-Whatever they said — dig into it. What excites them? What matters most?
+Based on their response, use AskUserQuestion:
+- header: "[Topic they mentioned]"
+- question: "You mentioned [X] — what would that look like?"
+- options: 2-3 interpretations + "Something else"
 
-- "You mentioned [X] — what would that actually look like?"
-- "When you imagine using this, what happens?"
-- "Tell me more about [specific thing they mentioned]"
+**3. Sharpen the core:**
 
-**2. Sharpen the core**
+Use AskUserQuestion:
+- header: "Essential"
+- question: "What's the most important part of this phase?"
+- options: Key aspects they've mentioned + "All equally important" + "Something else"
 
-Help them distinguish essential from nice-to-have FOR THIS PHASE.
+**4. Find boundaries:**
 
-- "What's the most important part of this phase?"
-- "If we could only nail one thing here, what would it be?"
-- "Is [Y] essential for this phase or could it come later?"
+Use AskUserQuestion:
+- header: "Scope"
+- question: "What's explicitly out of scope for this phase?"
+- options: Things that might be tempting + "Nothing specific" + "Let me list them"
 
-**3. Find boundaries**
+**5. Capture specifics (optional):**
 
-What is this phase NOT doing? Helps prevent scope creep during planning.
-
-- "What's explicitly out of scope for this phase?"
-- "Where does this phase end and the next begin?"
-
-**4. Capture specifics (only if they have them)**
-
-If they have specific ideas about look/feel/behavior, capture them. Don't force this.
-
-- "Any specific things you have in mind for how this should work?"
-- "Anything you've seen elsewhere that's close to what you want?"
+If they seem to have specific ideas, use AskUserQuestion:
+- header: "Specifics"
+- question: "Any particular look/feel/behavior in mind?"
+- options: Contextual options based on what they've said + "No specifics" + "Let me describe"
 
 CRITICAL — What NOT to ask:
 - Technical risks (you figure those out)
 - Codebase patterns (you read the code)
 - Success metrics (too corporate)
 - Constraints they didn't mention (don't interrogate)
-- "What could go wrong?" (your job to identify)
-- "What existing code should I follow?" (you read the code)
 
-When you feel you understand their vision, use AskUserQuestion:
+**6. Decision gate:**
 
+Use AskUserQuestion:
 - header: "Ready?"
 - question: "Ready to capture this context, or explore more?"
 - options (ALL THREE REQUIRED):
@@ -149,8 +149,8 @@ When you feel you understand their vision, use AskUserQuestion:
   - "Ask more questions" - Help me think through this more
   - "Let me add context" - I have more to share
 
-If "Ask more questions" → dig into areas that seem unclear → return to gate.
-If "Let me add context" → receive input → return to gate.
+If "Ask more questions" → return to step 2 with new probes.
+If "Let me add context" → receive input → return to step 2.
 Loop until "Create CONTEXT.md" selected.
 </step>
 

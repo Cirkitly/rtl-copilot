@@ -30,17 +30,19 @@ Phase number: $ARGUMENTS (required)
 1. Validate phase number argument (error if missing or invalid)
 2. Check if phase exists in roadmap
 3. Check if CONTEXT.md already exists (offer to update if yes)
-4. Follow discuss-phase.md workflow:
+4. Follow discuss-phase.md workflow with **ALL questions using AskUserQuestion**:
    - Present phase from roadmap
-   - Ask: "How do you imagine this working?"
-   - Follow their thread — dig into what excites them
-   - Sharpen the core — what's essential for THIS phase
-   - Find boundaries — what's explicitly out of scope
-   - Present decision gate (ready / ask more / let me add context)
+   - Use AskUserQuestion: "How do you imagine this working?" with interpretation options
+   - Use AskUserQuestion to follow their thread — probe what excites them
+   - Use AskUserQuestion to sharpen the core — what's essential for THIS phase
+   - Use AskUserQuestion to find boundaries — what's explicitly out of scope
+   - Use AskUserQuestion for decision gate (ready / ask more / let me add context)
    - Create CONTEXT.md capturing their vision
 5. Offer next steps (research or plan the phase)
 
-CRITICAL — User is the visionary, you are the builder:
+**CRITICAL: ALL questions use AskUserQuestion. Never ask inline text questions.**
+
+User is the visionary, you are the builder:
 - Ask about vision, feel, essential outcomes
 - DON'T ask about technical risks (you figure those out)
 - DON'T ask about codebase patterns (you read the code)

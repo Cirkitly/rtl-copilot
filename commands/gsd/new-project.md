@@ -43,18 +43,46 @@ Silent setup - execute before any user output:
 </step>
 
 <step name="question">
-Start: "What do you want to build?"
+**CRITICAL: ALL questions use AskUserQuestion. Never ask inline text questions.**
 
-Let them talk. Then follow the conversation arc from `questioning.md`:
-1. **Follow the thread** — dig into what they said, what excites them
-2. **Sharpen the core** — essential vs nice-to-have
-3. **Find boundaries** — what is it NOT
-4. **Ground in reality** — only constraints that actually exist
+**1. Open:**
 
-Be a thinking partner, not an interviewer. Help them discover and articulate their vision.
+Use AskUserQuestion:
+- header: "Vision"
+- question: "What do you want to build?"
+- options: Contextual options if you have any hints, otherwise ["New app/tool", "Feature for existing project", "Let me describe it"]
 
-When you feel you understand it, use AskUserQuestion:
+**2. Follow the thread:**
 
+Based on their response, use AskUserQuestion with options that probe what they mentioned:
+- header: "[Topic they mentioned]"
+- question: "You mentioned [X] — what would that look like?"
+- options: 2-3 interpretations + "Something else"
+
+**3. Sharpen the core:**
+
+Use AskUserQuestion:
+- header: "Core"
+- question: "If you could only nail one thing, what would it be?"
+- options: Key aspects they've mentioned + "All equally important" + "Something else"
+
+**4. Find boundaries:**
+
+Use AskUserQuestion:
+- header: "Scope"
+- question: "What's explicitly NOT in v1?"
+- options: Things that might be tempting + "Nothing specific" + "Let me list them"
+
+**5. Ground in reality:**
+
+Use AskUserQuestion:
+- header: "Constraints"
+- question: "Any hard constraints?"
+- options: Relevant constraint types + "None" + "Yes, let me explain"
+
+**6. Decision gate:**
+
+Use AskUserQuestion:
 - header: "Ready?"
 - question: "Ready to create PROJECT.md, or explore more?"
 - options (ALL THREE REQUIRED):
@@ -62,7 +90,8 @@ When you feel you understand it, use AskUserQuestion:
   - "Ask more questions" - I'll dig deeper
   - "Let me add context" - You have more to share
 
-If "Ask more questions" → check coverage gaps from `questioning.md` → ask naturally → return to gate.
+If "Ask more questions" → check coverage gaps from `questioning.md` → return to step 2.
+If "Let me add context" → receive input via their response → return to step 2.
 Loop until "Create PROJECT.md" selected.
 </step>
 
