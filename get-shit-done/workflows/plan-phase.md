@@ -142,7 +142,7 @@ fi
 
 When creating decimal phases, mark them as "(INSERTED)" in roadmap entries.
 
-Read any existing PLAN.md or FINDINGS.md in the phase directory.
+Read any existing PLAN.md or DISCOVERY.md in the phase directory.
 </step>
 
 <step name="mandatory_discovery">
@@ -184,11 +184,11 @@ cat package.json 2>/dev/null | grep -A5 '"dependencies"'
 → If ALL work follows established codebase patterns: SKIP discovery, proceed to planning
 → If ANY external dependency, new library, or API integration: Continue to Level 1+
 ↓
-Does fresh FINDINGS.md exist?
+Does fresh DISCOVERY.md exist?
 ─────────────────────────────────────
 
 ```bash
-ls .planning/phases/XX-name/FINDINGS.md 2>/dev/null
+ls .planning/phases/XX-name/DISCOVERY.md 2>/dev/null
 ```
 
 If exists, check freshness:
@@ -197,7 +197,7 @@ If exists, check freshness:
 - Fast-moving APIs (Stripe, OpenAI, etc.): Valid for 7 days
 - Check file date vs today
 
-→ If fresh FINDINGS.md exists covering this phase's topics: SKIP discovery, use existing
+→ If fresh DISCOVERY.md exists covering this phase's topics: SKIP discovery, use existing
 → If missing or stale: Continue to determine depth
 ↓
 Determine Discovery Depth
@@ -215,7 +215,7 @@ Action:
 
 1. Context7: mcp**context7**resolve-library-id → mcp**context7**get-library-docs
 2. Verify current version/API matches expectations
-3. No FINDINGS.md needed - proceed with confirmed knowledge
+3. No DISCOVERY.md needed - proceed with confirmed knowledge
 
 **LEVEL 2 - Standard Research (15-30 min):**
 Use when:
@@ -226,9 +226,9 @@ Use when:
 
 Action:
 
-1. Route to workflows/research-phase.md with depth=standard
-2. Produces FINDINGS.md with recommendation
-3. Return here after FINDINGS.md created
+1. Route to workflows/discovery-phase.md with depth=standard
+2. Produces DISCOVERY.md with recommendation
+3. Return here after DISCOVERY.md created
 
 **LEVEL 3 - Deep Dive (1+ hour):**
 Use when:
@@ -240,10 +240,12 @@ Use when:
 
 Action:
 
-1. Route to workflows/research-phase.md with depth=deep
-2. Full research with cross-verification
-3. FINDINGS.md with detailed rationale and validation checkpoints
-4. Return here after FINDINGS.md created
+1. Route to workflows/discovery-phase.md with depth=deep
+2. Full discovery with cross-verification
+3. DISCOVERY.md with detailed rationale and validation checkpoints
+4. Return here after DISCOVERY.md created
+
+**NOTE:** For niche/complex domains (3D, games, audio, shaders, ML), consider using `/gsd:research-phase` BEFORE plan-phase. This produces comprehensive RESEARCH.md with ecosystem knowledge that goes beyond "which library" to "how do experts build this."
 
 ```
 </discovery_decision_tree>
@@ -268,7 +270,7 @@ Action:
 **Discovery can be skipped (Level 0) ONLY when ALL true:**
 □ Pattern already exists in codebase (grep confirms)
 □ No new external dependencies
-□ Fresh FINDINGS.md exists (if external deps involved)
+□ Fresh DISCOVERY.md exists (if external deps involved)
 □ Pure internal refactoring or feature extension
 □ Using established project conventions only
 
@@ -294,7 +296,7 @@ Discovery assessment:
 - Roadmap flag: [Likely / Unlikely] ([reason from roadmap])
 - Roadmap topics: [topics if flagged, or N/A]
 - New external dependencies: [yes/no - list them]
-- Existing FINDINGS.md: [yes (date) / no]
+- Existing DISCOVERY.md: [yes (date) / no]
 - Codebase patterns exist: [yes/no]
 
 Discovery depth: [Level 0 (skip) / Level 1 (verify) / Level 2 (standard) / Level 3 (deep)]
@@ -380,17 +382,37 @@ For this specific phase, understand:
 - What's the phase goal? (from roadmap)
 - What exists already? (scan codebase if mid-project)
 - What dependencies are met? (previous phases complete?)
-- Any research findings? (FINDINGS.md)
-- Any phase context? ({phase}-CONTEXT.md)
+- Any ecosystem research? (RESEARCH.md from /gsd:research-phase)
+- Any discovery findings? (DISCOVERY.md from mandatory discovery)
+- Any phase context? ({phase}-CONTEXT.md from /gsd:discuss-phase)
 
 ```bash
 # If mid-project, understand current state
 ls -la src/ 2>/dev/null
 cat package.json 2>/dev/null | head -20
 
+# Check for comprehensive ecosystem research (created by /gsd:research-phase)
+cat .planning/phases/XX-name/${PHASE}-RESEARCH.md 2>/dev/null
+
 # Check for phase-specific context (created by /gsd:discuss-phase)
 cat .planning/phases/XX-name/${PHASE}-CONTEXT.md 2>/dev/null
 ```
+
+**If {phase}-RESEARCH.md exists:**
+This file contains comprehensive ecosystem research for niche/complex domains. It captures:
+- Standard stack (libraries, versions, why they're standard)
+- Architecture patterns (how experts structure this type of project)
+- Don't hand-roll list (problems with existing solutions - use libraries instead)
+- Common pitfalls (mistakes to avoid)
+- Code examples (verified patterns from authoritative sources)
+
+**You MUST use this research to inform your planning:**
+
+- `<standard_stack>` → use these libraries, don't pick alternatives without reason
+- `<architecture_patterns>` → follow these patterns in task structure
+- `<dont_hand_roll>` → NEVER create custom solutions for listed problems
+- `<common_pitfalls>` → inform verification criteria, add warnings to task actions
+- `<code_examples>` → reference in task actions when applicable
 
 **If {phase}-CONTEXT.md exists:**
 This file contains the user's input gathered through pre-planning questions. It captures their intent, preferences, constraints, and decisions BEFORE you plan.
@@ -405,8 +427,9 @@ This file contains the user's input gathered through pre-planning questions. It 
 - `<decisions_needed>` → resolve during task breakdown or flag as checkpoints
 - `<notes>` → user clarifications that override assumptions
 
-**If {phase}-CONTEXT.md does NOT exist:**
-Suggest running `/gsd:discuss-phase {phase}` first to gather context, OR proceed with roadmap description only (less informed planning).
+**If neither RESEARCH.md nor CONTEXT.md exist:**
+For niche domains (3D, games, audio, shaders, etc.), suggest `/gsd:research-phase {phase}` first.
+For simpler domains, suggest `/gsd:discuss-phase {phase}` or proceed with roadmap description only.
 
 </step>
 
@@ -646,8 +669,11 @@ Output: [What artifacts will be created by this plan]
 @.planning/ROADMAP.md
 @.planning/STATE.md
 
-[If research done:]
-@.planning/phases/XX-name/FINDINGS.md
+[If comprehensive ecosystem research exists (from /gsd:research-phase):]
+@.planning/phases/XX-name/{phase}-RESEARCH.md
+
+[If discovery done (from mandatory discovery):]
+@.planning/phases/XX-name/DISCOVERY.md
 
 [If phase context exists (from /gsd:discuss-phase):]
 @.planning/phases/XX-name/{phase}-CONTEXT.md
@@ -777,18 +803,20 @@ Tasks are instructions for Claude, not Jira tickets.
 Phase planning is complete when:
 - [ ] STATE.md read and project history absorbed
 - [ ] **Mandatory discovery completed** (Level 0-3 as appropriate)
-- [ ] If Level 2-3: FINDINGS.md exists with current context
+- [ ] If Level 2-3: DISCOVERY.md exists with current context
 - [ ] If Level 1: Quick verification performed via Context7
+- [ ] If RESEARCH.md exists: ecosystem knowledge incorporated into plan
 - [ ] Prior decisions, issues, and concerns synthesized
 - [ ] One or more PLAN files exist with XML structure ({phase}-{plan}-PLAN.md)
 - [ ] Each plan has: Objective, context, tasks, verification, success criteria, output
-- [ ] @context references included (including STATE.md, FINDINGS.md if exists, relevant prior summaries)
+- [ ] @context references included (including STATE.md, RESEARCH.md if exists, DISCOVERY.md if exists, relevant prior summaries)
 - [ ] Prior decisions documented in context section
 - [ ] Deferred issues being addressed are noted
 - [ ] Each plan has 2-3 tasks (scoped to ~50% context)
 - [ ] Each task has: Type, Files (if auto), Action, Verify, Done
 - [ ] Checkpoints identified and properly structured
 - [ ] Tasks are specific enough for Claude to execute
+- [ ] If RESEARCH.md exists: "don't hand-roll" items are NOT being custom-built
 - [ ] If multiple plans: logical split by subsystem/dependency/complexity
 - [ ] User knows next steps
 </success_criteria>

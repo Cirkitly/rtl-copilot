@@ -130,9 +130,9 @@ Total: 16 files, 3 plans → consistent quality
 - 02-01-PLAN.md: Setup (checkpoint: decision on auth provider)
 - 02-02-PLAN.md: Implement chosen auth solution
 
-**5. Research + implementation**
-- Research produces FINDINGS.md (separate plan)
-- Implementation consumes FINDINGS.md (separate plan)
+**5. Discovery + implementation**
+- Discovery produces DISCOVERY.md (separate plan)
+- Implementation consumes DISCOVERY.md (separate plan)
 - Clear boundary, clean handoff
 </always_split>
 

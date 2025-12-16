@@ -1,31 +1,39 @@
-# Research Prompt Template
+# Discovery Template
 
-For phases requiring research before planning:
+Template for `.planning/phases/XX-name/DISCOVERY.md` - shallow research for library/option decisions.
+
+**Purpose:** Answer "which library/option should we use" questions during mandatory discovery in plan-phase.
+
+For deep ecosystem research ("how do experts build this"), use `/gsd:research-phase` which produces RESEARCH.md.
+
+---
+
+## File Template
 
 ```markdown
 ---
 phase: XX-name
-type: research
-topic: [research-topic]
+type: discovery
+topic: [discovery-topic]
 ---
 
 <session_initialization>
-Before beginning research, verify today's date:
+Before beginning discovery, verify today's date:
 !`date +%Y-%m-%d`
 
 Use this date when searching for "current" or "latest" information.
 Example: If today is 2025-11-22, search for "2025" not "2024".
 </session_initialization>
 
-<research_objective>
-Research [topic] to inform [phase name] implementation.
+<discovery_objective>
+Discover [topic] to inform [phase name] implementation.
 
 Purpose: [What decision/implementation this enables]
 Scope: [Boundaries]
-Output: FINDINGS.md with structured recommendations
-</research_objective>
+Output: DISCOVERY.md with recommendation
+</discovery_objective>
 
-<research_scope>
+<discovery_scope>
 <include>
 - [Question to answer]
 - [Area to investigate]
@@ -33,12 +41,12 @@ Output: FINDINGS.md with structured recommendations
 </include>
 
 <exclude>
-- [Out of scope for this research]
+- [Out of scope for this discovery]
 - [Defer to implementation phase]
 </exclude>
-</research_scope>
+</discovery_scope>
 
-<research_protocol>
+<discovery_protocol>
 
 **Source Priority:**
 1. **Context7 MCP** - For library/framework documentation (current, authoritative)
@@ -46,7 +54,7 @@ Output: FINDINGS.md with structured recommendations
 3. **WebSearch** - For comparisons, trends, community patterns (verify all findings)
 
 **Quality Checklist:**
-Before completing research, verify:
+Before completing discovery, verify:
 - [ ] All claims have authoritative sources (Context7 or official docs)
 - [ ] Negative claims ("X is not possible") verified with official documentation
 - [ ] API syntax/configuration from Context7 or official docs (never WebSearch alone)
@@ -59,14 +67,14 @@ Before completing research, verify:
 - MEDIUM: WebSearch + Context7/official docs confirm
 - LOW: WebSearch only or training knowledge only (mark for validation)
 
-</research_protocol>
+</discovery_protocol>
 
 
 <output_structure>
-Create `.planning/phases/XX-name/FINDINGS.md`:
+Create `.planning/phases/XX-name/DISCOVERY.md`:
 
 ```markdown
-# [Topic] Research Findings
+# [Topic] Discovery
 
 ## Summary
 [2-3 paragraph executive summary - what was researched, what was found, what's recommended]
@@ -119,15 +127,20 @@ Create `.planning/phases/XX-name/FINDINGS.md`:
 </success_criteria>
 
 <guidelines>
-**When to use research prompts:**
-- Technology choice unclear
-- Best practices needed for unfamiliar domain
+**When to use discovery:**
+- Technology choice unclear (library A vs B)
+- Best practices needed for unfamiliar integration
 - API/library investigation required
-- Architecture decision pending
-- Multiple valid approaches exist
+- Single decision pending
 
 **When NOT to use:**
 - Established patterns (CRUD, auth with known library)
 - Implementation details (defer to execution)
 - Questions answerable from existing project context
+
+**When to use RESEARCH.md instead:**
+- Niche/complex domains (3D, games, audio, shaders)
+- Need ecosystem knowledge, not just library choice
+- "How do experts build this" questions
+- Use `/gsd:research-phase` for these
 </guidelines>

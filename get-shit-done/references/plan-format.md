@@ -250,7 +250,7 @@ Use @file references to load context for the prompt:
 <context>
 @.planning/PROJECT.md           # Project vision
 @.planning/ROADMAP.md         # Phase structure
-@.planning/phases/02-auth/FINDINGS.md  # Research results
+@.planning/phases/02-auth/DISCOVERY.md  # Discovery results
 @src/lib/db.ts                # Existing database setup
 @src/types/user.ts            # Existing type definitions
 </context>

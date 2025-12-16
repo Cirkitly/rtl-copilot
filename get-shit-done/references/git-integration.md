@@ -16,7 +16,7 @@ The git log should read like a changelog of what shipped, not a diary of plannin
 | BRIEF + ROADMAP created | YES     | Project initialization                |
 | PLAN.md created         | NO      | Intermediate - commit with completion |
 | RESEARCH.md created     | NO      | Intermediate                          |
-| FINDINGS.md created     | NO      | Intermediate                          |
+| DISCOVERY.md created    | NO      | Intermediate                          |
 | **Phase completed**     | YES     | Actual code shipped                   |
 | Handoff created         | YES     | WIP state preserved                   |
 
@@ -118,7 +118,7 @@ e]2f4a8 docs: initialize ecommerce-app (5 phases)
 
 - PLAN.md creation (wait for phase completion)
 - RESEARCH.md (intermediate)
-- FINDINGS.md (intermediate)
+- DISCOVERY.md (intermediate)
 - Minor planning tweaks
 - "Fixed typo in roadmap"
 

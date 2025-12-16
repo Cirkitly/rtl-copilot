@@ -32,8 +32,8 @@ Output: [What artifacts will be created]
 <context>
 @.planning/PROJECT.md
 @.planning/ROADMAP.md
-[If research exists:]
-@.planning/phases/XX-name/FINDINGS.md
+[If discovery exists:]
+@.planning/phases/XX-name/DISCOVERY.md
 [Relevant source files:]
 @src/path/to/relevant.ts
 </context>

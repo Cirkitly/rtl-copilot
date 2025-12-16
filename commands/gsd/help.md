@@ -55,6 +55,16 @@ Gather phase context through adaptive questioning before planning.
 
 Usage: `/gsd:discuss-phase 2`
 
+**`/gsd:research-phase <number>`**
+Comprehensive ecosystem research for niche/complex domains.
+
+- Discovers standard stack, architecture patterns, pitfalls
+- Creates RESEARCH.md with "how experts build this" knowledge
+- Use for 3D, games, audio, shaders, ML, and other specialized domains
+- Goes beyond "which library" to ecosystem knowledge
+
+Usage: `/gsd:research-phase 3`
+
 **`/gsd:list-phase-assumptions <number>`**
 Surface Claude's assumptions about a phase before planning.
 
@@ -233,6 +243,15 @@ Change anytime by editing `.planning/config.json`
 ```
 /gsd:new-project
 /gsd:plan-phase 1
+/gsd:execute-plan .planning/phases/01-foundation/01-01-PLAN.md
+```
+
+**Building something in a niche domain (3D, games, audio, shaders):**
+
+```
+/gsd:new-project
+/gsd:research-phase 1  # Learn how experts build this
+/gsd:plan-phase 1      # Plan using research findings
 /gsd:execute-plan .planning/phases/01-foundation/01-01-PLAN.md
 ```
 
