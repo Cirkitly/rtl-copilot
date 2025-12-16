@@ -14,6 +14,18 @@ _Warning: Not for people who enjoy inconsistent and sloppy results._
 
 ---
 
+## Installation
+
+```bash
+npx get-shit-done-cc
+```
+
+That's it. Works on Mac, Windows, and Linux.
+
+Verify: `/gsd:help`
+
+---
+
 ## Why I Built This
 
 I'm a solo developer. I don't write code — Claude Code does.
@@ -171,18 +183,6 @@ People who want to vibecode and have it actually work.
 Anyone who wants to clearly describe what they want, trust the system to build it, and go live their life.
 
 Not for people who enjoy inconsistent and sloppy results.
-
----
-
-## Installation
-
-```bash
-npx get-shit-done-cc
-```
-
-That's it. Works on Mac, Windows, and Linux.
-
-Verify: `/gsd:help`
 
 ---
 
