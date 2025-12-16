@@ -1,6 +1,26 @@
 <purpose>
-Gather phase context through adaptive questioning before planning, using intake & decision gate pattern to build comprehensive understanding of objectives, constraints, risks, success indicators, and codebase context.
+Gather phase context through collaborative thinking before planning. Help the user articulate their vision for how this phase should work, look, and feel.
+
+You are a thinking partner, not an interviewer. The user is the visionary — you are the builder. Your job is to understand their vision, not interrogate them about technical details you can figure out yourself.
 </purpose>
+
+<philosophy>
+**User = founder/visionary. Claude = builder.**
+
+The user doesn't know (and shouldn't need to know):
+- Codebase patterns (you read the code)
+- Technical risks (you identify during research)
+- Implementation constraints (you figure those out)
+- Success metrics (you infer from the work)
+
+The user DOES know:
+- How they imagine it working
+- What it should look/feel like
+- What's essential vs nice-to-have
+- Any specific things they have in mind
+
+Ask about vision. Figure out implementation yourself.
+</philosophy>
 
 <process>
 
@@ -22,7 +42,7 @@ fi
 ```
 Error: Phase ${PHASE} not found in roadmap.
 
-Use /gsd:plan-phase to see available phases.
+Use /gsd:progress to see available phases.
 ```
 
 Exit workflow.
@@ -43,7 +63,6 @@ Check if CONTEXT.md already exists for this phase:
 
 ```bash
 ls .planning/phases/${PHASE}-*/CONTEXT.md 2>/dev/null
-# Also check for ${PHASE}-CONTEXT.md in phase directory
 ls .planning/phases/${PHASE}-*/${PHASE}-CONTEXT.md 2>/dev/null
 ```
 
@@ -60,150 +79,83 @@ What's next?
 
 Wait for user response.
 
-If "Update context": Load existing CONTEXT.md into intake flow (pre-populate known context)
+If "Update context": Load existing CONTEXT.md, continue to questioning
 If "View existing": Read and display CONTEXT.md, then offer update/skip
 If "Skip": Exit workflow
 
 **If doesn't exist:**
-Continue to intake_gate.
+Continue to questioning.
 </step>
 
-<step name="intake_gate">
-
-<no_context_handler>
+<step name="questioning">
 Present initial context from roadmap:
 
 ```
 Phase ${PHASE}: ${PHASE_NAME}
 
-Roadmap description: ${PHASE_DESCRIPTION}
+From the roadmap: ${PHASE_DESCRIPTION}
 
-I'll gather additional context through questions to ensure comprehensive planning.
+How do you imagine this working?
 ```
 
-Continue to context_analysis.
-</no_context_handler>
+Let them talk. Don't interrupt with clarifying questions yet.
 
-<context_analysis>
-Analyze roadmap phase description and extract what's already provided:
+Then follow the conversation arc:
 
-**Objectives (what):** What this phase accomplishes
-**Constraints (how):** Technical/timeline limitations mentioned
-**Risks (concerns):** Potential issues mentioned
-**Success indicators (done when):** Completion criteria mentioned
-**Codebase context (dependencies):** Related systems mentioned
+**1. Follow the thread**
 
-Identify gaps where additional clarity would improve planning quality.
-</context_analysis>
+Whatever they said — dig into it. What excites them? What matters most?
 
-<initial_questions>
-Ask 2-4 questions based on actual gaps. Use AskUserQuestion with structured options.
+- "You mentioned [X] — what would that actually look like?"
+- "When you imagine using this, what happens?"
+- "Tell me more about [specific thing they mentioned]"
 
-CRITICAL: Questions must CLARIFY roadmap scope, not EXPAND it.
-- ASK: "How should X from the roadmap work?" (clarification)
-- ASK: "What constraints affect implementation?" (context)
-- ASK: "What existing code patterns should I follow?" (context)
-- NEVER ASK: "What else should we add?" (scope creep)
-- NEVER ASK: "Should we also include...?" (scope creep)
-- NEVER SUGGEST: Additional features beyond roadmap
+**2. Sharpen the core**
 
-**If objectives are vague:**
-header: "Phase Objectives"
-question: "The roadmap says [X]. How should this work specifically?"
-options:
+Help them distinguish essential from nice-to-have FOR THIS PHASE.
 
-- "Minimal implementation" - Core functionality only, simplest approach
-- "Standard approach" - Follow common patterns for this type of work
-- "Match existing patterns" - Do it the way similar things are done in codebase
-- "I'll clarify" - Let me explain what I have in mind
+- "What's the most important part of this phase?"
+- "If we could only nail one thing here, what would it be?"
+- "Is [Y] essential for this phase or could it come later?"
 
-**If constraints are unclear:**
-header: "Constraints"
-question: "Are there constraints I should know about?"
-options:
+**3. Find boundaries**
 
-- "Technical limitations" - Library choices, platform requirements, compatibility
-- "Timeline pressure" - Specific deadline or urgency
-- "Dependencies" - Waiting on other phases or external factors
-- "Performance requirements" - Speed, scale, resource constraints
-- "No constraints" - Flexible approach
-- "Other" - Something else
+What is this phase NOT doing? Helps prevent scope creep during planning.
 
-**If risks are not mentioned:**
-header: "Risks"
-question: "What could go wrong in this phase?"
-options:
+- "What's explicitly out of scope for this phase?"
+- "Where does this phase end and the next begin?"
 
-- "Breaking changes" - Could affect existing functionality
-- "Integration complexity" - Coordinating multiple systems
-- "Unknown unknowns" - New territory, unclear best practices
-- "Performance impact" - Could slow things down
-- "Security concerns" - Authentication, data protection, vulnerabilities
-- "No major risks" - Straightforward implementation
-- "Other" - Something else
+**4. Capture specifics (only if they have them)**
 
-**If success indicators are unclear:**
-header: "Success Indicators"
-question: "How will we know this phase is complete?"
-options:
+If they have specific ideas about look/feel/behavior, capture them. Don't force this.
 
-- "Feature works" - Functional verification (tests pass, behavior correct)
-- "Deployed and live" - Actually running in production
-- "User-verified" - Visual/manual confirmation required
-- "Metrics hit target" - Performance, coverage, or quality thresholds
-- "Documentation complete" - Properly documented for future work
-- "Other" - Something else
+- "Any specific things you have in mind for how this should work?"
+- "Anything you've seen elsewhere that's close to what you want?"
 
-Skip questions where roadmap already provides clear answers.
-</initial_questions>
+CRITICAL — What NOT to ask:
+- Technical risks (you figure those out)
+- Codebase patterns (you read the code)
+- Success metrics (too corporate)
+- Constraints they didn't mention (don't interrogate)
+- "What could go wrong?" (your job to identify)
+- "What existing code should I follow?" (you read the code)
 
-<gather_codebase_context>
-After initial questions, ask about codebase state:
+When you feel you understand their vision, use AskUserQuestion:
 
-header: "Codebase Context"
-question: "What should I know about the current codebase state?"
-options:
+- header: "Ready?"
+- question: "Ready to capture this context, or explore more?"
+- options (ALL THREE REQUIRED):
+  - "Create CONTEXT.md" - I've shared my vision
+  - "Ask more questions" - Help me think through this more
+  - "Let me add context" - I have more to share
 
-- "Fresh project" - Just starting, minimal existing code
-- "Established patterns" - Follow existing conventions and architecture
-- "Needs refactoring" - Current code has issues to address
-- "External dependencies" - Relies on specific libraries or services
-- "Legacy constraints" - Working with older code or technologies
-- "Not sure" - Help me figure this out
-- "Other" - Something else
-
-If "Established patterns" or "External dependencies" selected, ask follow-up:
-"Which files or systems should I examine for context?"
-
-If "Not sure" selected, offer to scan codebase:
-"I can scan the codebase to identify patterns and dependencies. Proceed?"
-</gather_codebase_context>
-
-<decision_gate>
-**Decision gate (MUST have all 3 options):**
-
-```
-Header: "Context Gathering"
-Options:
-  1. "Create CONTEXT.md" - I have enough context, proceed
-  2. "Ask more questions" - I want to clarify how something should work
-  3. "Let me add context" - I have information that affects implementation
-```
-
-If "Ask more questions" → generate 2-3 CLARIFYING follow-ups (never suggest additions) → return to gate.
+If "Ask more questions" → dig into areas that seem unclear → return to gate.
 If "Let me add context" → receive input → return to gate.
 Loop until "Create CONTEXT.md" selected.
-
-SCOPE CREEP PREVENTION:
-- Follow-up questions must clarify roadmap items, not expand them
-- If user adds scope during "Let me add context", note it for ROADMAP update instead
-- CONTEXT.md documents HOW to implement roadmap scope, not WHAT additional things to add
-</decision_gate>
-
 </step>
 
 <step name="write_context">
-Create CONTEXT.md using accumulated context from intake flow.
+Create CONTEXT.md capturing the user's vision.
 
 Use template from ~/.claude/get-shit-done/templates/context.md
 
@@ -214,41 +166,39 @@ Create it: `.planning/phases/${PHASE}-${SLUG}/`
 
 Use roadmap phase name for slug (lowercase, hyphens).
 
-Populate template sections:
+Populate template sections with VISION context (not technical analysis):
 
-- `<phase_objectives>`: From "what" analysis and questions
-- `<constraints>`: From "how" analysis and questions
-- `<risks>`: From "concerns" analysis and questions
-- `<success_indicators>`: From "done when" analysis and questions
-- `<codebase_context>`: From codebase questions and optional scanning
-- `<decisions_needed>`: From questions that revealed choices to make
-- `<notes>`: Any additional context gathered
+- `<vision>`: How the user imagines this working
+- `<essential>`: What must be nailed in this phase
+- `<boundaries>`: What's explicitly out of scope
+- `<specifics>`: Any particular look/feel/behavior mentioned
+- `<notes>`: Any other context gathered
+
+Do NOT populate with your own technical analysis. That comes during research/planning.
 
 Write file.
 </step>
 
 <step name="confirm_creation">
-Present CONTEXT.md to user:
+Present CONTEXT.md summary:
 
 ```
 Created: .planning/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md
 
-## Phase Objectives
-[summary of objectives]
+## Vision
+[How they imagine it working]
 
-## Key Constraints
-[summary of constraints]
+## Essential
+[What must be nailed]
 
-## Risks to Watch
-[summary of risks]
-
-## Success Indicators
-[summary of success criteria]
+## Boundaries
+[What's out of scope]
 
 What's next?
-1. Plan this phase (/gsd:plan-phase ${PHASE}) - CONTEXT.md will be loaded automatically
-2. Review/edit CONTEXT.md - Make adjustments before planning
-3. Done for now
+1. Research this phase (/gsd:research-phase ${PHASE}) - Investigate codebase, identify patterns and risks
+2. Plan this phase (/gsd:plan-phase ${PHASE}) - Skip research, go straight to planning
+3. Review/edit CONTEXT.md - Make adjustments
+4. Done for now
 ```
 
 </step>
@@ -257,9 +207,9 @@ What's next?
 
 <success_criteria>
 
-- Phase number validated against roadmap
-- Context gathered through adaptive questioning
-- All five core areas addressed: objectives, constraints, risks, success indicators, codebase context
-- CONTEXT.md created in phase directory using template
-- User knows next steps (typically: plan the phase)
-  </success_criteria>
+- Phase validated against roadmap
+- Vision gathered through collaborative thinking (not interrogation)
+- User's imagination captured: how it works, what's essential, what's out of scope
+- CONTEXT.md created in phase directory
+- User knows next steps (typically: research or plan the phase)
+</success_criteria>

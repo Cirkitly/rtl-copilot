@@ -102,8 +102,9 @@ EOF
 </step>
 
 <step name="done">
-```
+Present completion inline (not as a question):
 
+```
 Project initialized:
 
 - Project: .planning/PROJECT.md
@@ -114,11 +115,12 @@ What's next?
 1. Research domain ecosystem (/gsd:research-project) - For niche/complex domains
 2. Create roadmap (/gsd:create-roadmap) - Skip research, go straight to planning
 3. Done for now
-
 ```
 
-If user selects "Research domain ecosystem" → invoke `/gsd:research-project`
-If user selects "Create roadmap" → invoke `/gsd:create-roadmap`
+Note: Commands are shown in the options above so the user can see what to run in a fresh context.
+
+**If user selects option 1:** invoke `/gsd:research-project`
+**If user selects option 2:** invoke `/gsd:create-roadmap`
 </step>
 
 </process>

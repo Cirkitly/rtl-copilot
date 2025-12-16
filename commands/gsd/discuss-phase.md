@@ -4,10 +4,11 @@ argument-hint: "[phase]"
 ---
 
 <objective>
-Use adaptive questioning to gather comprehensive phase context before planning.
+Help the user articulate their vision for a phase through collaborative thinking.
 
-Purpose: Build deep understanding of objectives, constraints, risks, success indicators, and codebase state through structured intake flow. Creates CONTEXT.md file that informs high-quality planning.
-Output: {phase}-CONTEXT.md in phase directory with complete context documentation
+Purpose: Understand HOW the user imagines this phase working — what it looks like, what's essential, what's out of scope. You're a thinking partner helping them crystallize their vision, not an interviewer gathering technical requirements.
+
+Output: {phase}-CONTEXT.md capturing the user's vision for the phase
 </objective>
 
 <execution_context>
@@ -30,23 +31,27 @@ Phase number: $ARGUMENTS (required)
 2. Check if phase exists in roadmap
 3. Check if CONTEXT.md already exists (offer to update if yes)
 4. Follow discuss-phase.md workflow:
-   - Present initial context from roadmap
-   - Analyze gaps in: objectives, constraints, risks, success indicators, codebase context
-   - Ask 2-4 CLARIFYING questions (never suggest additions or expansions)
+   - Present phase from roadmap
+   - Ask: "How do you imagine this working?"
+   - Follow their thread — dig into what excites them
+   - Sharpen the core — what's essential for THIS phase
+   - Find boundaries — what's explicitly out of scope
    - Present decision gate (ready / ask more / let me add context)
-   - Create CONTEXT.md using template
-5. Offer next steps (typically: plan the phase)
+   - Create CONTEXT.md capturing their vision
+5. Offer next steps (research or plan the phase)
 
-CRITICAL - NO SCOPE CREEP:
-- Questions clarify HOW to implement roadmap scope, not WHAT to add
-- Never ask "should we also..." or "do you want to add..."
-- If user adds scope, suggest updating ROADMAP first instead
+CRITICAL — User is the visionary, you are the builder:
+- Ask about vision, feel, essential outcomes
+- DON'T ask about technical risks (you figure those out)
+- DON'T ask about codebase patterns (you read the code)
+- DON'T ask about success metrics (too corporate)
+- DON'T interrogate about constraints they didn't mention
 </process>
 
 <success_criteria>
 
 - Phase validated against roadmap
-- Context gathered through adaptive questioning
-- CONTEXT.md created in phase directory
-- User knows next steps (plan phase, review context, or done)
-  </success_criteria>
+- Vision gathered through collaborative thinking (not interrogation)
+- CONTEXT.md captures: how it works, what's essential, what's out of scope
+- User knows next steps (research or plan the phase)
+</success_criteria>

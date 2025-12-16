@@ -1,8 +1,8 @@
 # Phase Context Template
 
-Template for `.planning/phases/XX-name/{phase}-CONTEXT.md` - phase context documentation gathered before planning.
+Template for `.planning/phases/XX-name/{phase}-CONTEXT.md` - captures the user's vision for a phase.
 
-**Purpose:** Capture comprehensive context through adaptive questioning to inform high-quality planning.
+**Purpose:** Document how the user imagines the phase working. This is vision context, not technical analysis. Technical details come from research.
 
 ---
 
@@ -12,374 +12,150 @@ Template for `.planning/phases/XX-name/{phase}-CONTEXT.md` - phase context docum
 # Phase [X]: [Name] - Context
 
 **Gathered:** [date]
-**Status:** [For planning / Planning complete]
+**Status:** [Ready for research / Ready for planning]
 
-<phase_objectives>
-## What This Phase Accomplishes
+<vision>
+## How This Should Work
 
-[Clear, specific description of what this phase delivers]
+[User's description of how they imagine this phase working. What happens when someone uses it? What does it look/feel like? This is the "pitch" version, not the technical spec.]
 
-**Primary goal:**
-[Main objective from roadmap - what ships at the end]
+</vision>
 
-**Clarifications:**
-[Any clarified details about HOW the primary goal works - not additional features]
+<essential>
+## What Must Be Nailed
 
-**Out of scope:**
-[What this phase explicitly does NOT include - prevents scope creep]
-</phase_objectives>
+[The core of this phase. If we only get one thing right, what is it? What's the non-negotiable that makes this phase successful?]
 
-<constraints>
-## Constraints
+- [Essential thing 1]
+- [Essential thing 2]
+- [Essential thing 3 if applicable]
 
-**Technical:**
-[Library choices, platform requirements, compatibility needs, existing architecture patterns to follow]
+</essential>
 
-**Timeline:**
-[Deadlines, urgency, sequencing dependencies]
+<boundaries>
+## What's Out of Scope
 
-**Resources:**
-[Budget limits, API rate limits, storage constraints, computational limits]
+[Explicit exclusions for this phase. What are we NOT building? Where does this phase end and the next begin?]
 
-**Dependencies:**
-[What must exist before this phase can start, external factors, waiting on other teams/services]
+- [Not doing X - that's Phase Y]
+- [Not including Z - deferred]
+- [Explicitly excluding W]
 
-**Other:**
-[Any other constraints affecting approach]
+</boundaries>
 
-[If no constraints: "None - flexible approach"]
-</constraints>
+<specifics>
+## Specific Ideas
 
-<risks>
-## Risks and Mitigation
+[Any particular things the user has in mind. References to existing products/features they like. Specific behaviors or interactions. "I want it to work like X" or "When you click Y, it should Z."]
 
-**Risk 1: [Risk description]**
-- **Likelihood:** [High / Medium / Low]
-- **Impact:** [High / Medium / Low]
-- **Mitigation:** [How to prevent or handle this]
+[If none: "No specific requirements - open to standard approaches"]
 
-**Risk 2: [Risk description]**
-- **Likelihood:** [High / Medium / Low]
-- **Impact:** [High / Medium / Low]
-- **Mitigation:** [How to prevent or handle this]
-
-[Continue for identified risks]
-
-[If no major risks: "No major risks identified - straightforward implementation expected"]
-</risks>
-
-<success_indicators>
-## Success Indicators
-
-**How we'll know this phase is complete:**
-
-**Functional:**
-- [ ] [Specific feature works correctly]
-- [ ] [Tests pass for X functionality]
-- [ ] [Integration with Y system verified]
-
-**Quality:**
-- [ ] [Performance meets X threshold]
-- [ ] [No TypeScript errors]
-- [ ] [Test coverage >= X%]
-
-**Deployment:**
-- [ ] [Changes deployed to staging/production]
-- [ ] [Verification in live environment]
-
-**Documentation:**
-- [ ] [API documented]
-- [ ] [README updated]
-- [ ] [Migration guide if needed]
-
-**User-facing:**
-- [ ] [Visual verification complete]
-- [ ] [User testing passed]
-- [ ] [Acceptance criteria met]
-</success_indicators>
-
-<codebase_context>
-## Codebase State and Patterns
-
-**Current state:**
-[Fresh project / Established codebase / Legacy system / Mid-refactor]
-
-**Relevant files/systems:**
-- `path/to/relevant.ts` - [What this does and why it matters for this phase]
-- `path/to/another.ts` - [What this does and why it matters for this phase]
-
-**Patterns to follow:**
-[Existing conventions, architectural patterns, naming conventions, testing patterns]
-
-**External dependencies:**
-- [Library/service 1] - [How it's used, version constraints]
-- [Library/service 2] - [How it's used, version constraints]
-
-**Known issues to address:**
-[From ISSUES.md or prior phases - issues this phase should fix]
-
-**Prior decisions affecting this phase:**
-[From STATE.md - decisions from previous phases that constrain approach]
-</codebase_context>
-
-<decisions_needed>
-## Decisions That Will Affect Implementation
-
-**Decision 1: [What needs deciding]**
-- **Context:** [Why this matters]
-- **Options:** [Brief list of approaches]
-- **When to decide:** [During planning / During task X / Before starting]
-
-**Decision 2: [What needs deciding]**
-- **Context:** [Why this matters]
-- **Options:** [Brief list of approaches]
-- **When to decide:** [During planning / During task X / Before starting]
-
-[If no decisions needed: "No open decisions - approach is clear from roadmap and context"]
-</decisions_needed>
+</specifics>
 
 <notes>
 ## Additional Context
 
-[Any other relevant information gathered during context discussion]
+[Anything else captured during the discussion that doesn't fit above. User's priorities, concerns mentioned, relevant background.]
 
-[Questions asked during intake:]
-- Q: [Question asked]
-- A: [Answer received]
+[If none: "No additional notes"]
 
-[Clarifications:]
-- [Important points clarified during discussion]
-
-[References:]
-- [Links to relevant docs, prior art, examples]
-
-[If no additional notes: "No additional notes"]
 </notes>
 
 ---
 
 *Phase: XX-name*
 *Context gathered: [date]*
-*Ready for planning: [yes/no]*
 ```
 
 <good_examples>
 ```markdown
-# Phase 3: Authentication - Context
+# Phase 3: User Dashboard - Context
 
 **Gathered:** 2025-01-20
-**Status:** For planning
+**Status:** Ready for research
 
-<phase_objectives>
-## What This Phase Accomplishes
+<vision>
+## How This Should Work
 
-Implement JWT-based authentication with secure session management.
+When users log in, they land on a dashboard that shows them everything important at a glance. I imagine it feeling calm and organized - not overwhelming like Jira or cluttered like Notion.
 
-**Primary goal:**
-Users can register, login, logout with JWT tokens stored in httpOnly cookies. Protected routes verify authentication.
+The main thing is seeing their active projects and what needs attention. Think of it like a "what should I work on today" view. It should feel personal, not like enterprise software.
 
-**Clarifications:**
-- Tokens stored as httpOnly cookies (not localStorage) per security requirements
-- "Protected routes" means API routes + page-level middleware redirects
-- Password reset included per roadmap scope
+</vision>
 
-**Out of scope:**
-- OAuth providers (Google, GitHub) - deferred to Phase 4
-- 2FA - deferred to Phase 5
-- Role-based access control - deferred to Phase 6
-</phase_objectives>
+<essential>
+## What Must Be Nailed
 
-<constraints>
-## Constraints
+- **At-a-glance clarity** - Within 2 seconds of landing, user knows what needs their attention
+- **Personal feel** - This is YOUR dashboard, not a team dashboard. It should feel like opening your personal notebook.
 
-**Technical:**
-- Must use jose library (NOT jsonwebtoken - ESM compatibility requirement from Phase 1)
-- Must work in Edge runtime (Next.js middleware requirement)
-- Passwords must use bcrypt with minimum 10 salt rounds
-- Database already has User model from Phase 2 (extend, don't recreate)
+</essential>
 
-**Timeline:**
-- Target completion: End of week 3
-- Blocking Phase 4 (user profiles) and Phase 5 (product catalog)
+<boundaries>
+## What's Out of Scope
 
-**Resources:**
-- Email sending limited to 100/day on current SendGrid plan (affects password reset testing)
+- Team features (shared dashboards, permissions) - that's a future milestone
+- Analytics/reporting - just show what needs attention, not graphs
+- Customizable layouts - keep it simple, one good layout
+- Mobile optimization - desktop first for now
 
-**Dependencies:**
-- Phase 2 complete (database models)
-- Phase 1 complete (Next.js setup)
-- SendGrid API key obtained (checkpoint for email features)
+</boundaries>
 
-**Other:**
-None
-</constraints>
+<specifics>
+## Specific Ideas
 
-<risks>
-## Risks and Mitigation
+- I like how Linear's home screen highlights what's assigned to you without noise
+- Should show projects in a card format, not a list
+- Maybe a "Today" section at the top with urgent stuff
+- Dark mode is essential (already have this from Phase 2)
 
-**Risk 1: JWT token size causing cookie overflow**
-- **Likelihood:** Low
-- **Impact:** High (authentication breaks)
-- **Mitigation:** Keep JWT payload minimal (user ID only), store other data in database session table. Test with realistic tokens early.
-
-**Risk 2: Session timing causing UX issues**
-- **Likelihood:** Medium
-- **Impact:** Medium (user frustration)
-- **Mitigation:** Implement refresh token rotation, clear error messages on expiry, test user flows thoroughly.
-
-**Risk 3: Password reset token security**
-- **Likelihood:** Low
-- **Impact:** High (account takeover)
-- **Mitigation:** Use crypto.randomBytes(32) for tokens, short expiry (1 hour), single-use tokens, rate limiting on reset endpoint.
-</risks>
-
-<success_indicators>
-## Success Indicators
-
-**How we'll know this phase is complete:**
-
-**Functional:**
-- [ ] User can register with email/password
-- [ ] User can login and receive JWT cookie
-- [ ] Protected routes redirect unauthenticated users
-- [ ] User can logout (cookie cleared)
-- [ ] Password reset flow works end-to-end
-
-**Quality:**
-- [ ] No passwords stored in plaintext
-- [ ] JWT tokens validated correctly
-- [ ] Tests pass for all auth endpoints
-- [ ] No TypeScript errors
-- [ ] Test coverage >= 80% for auth code
-
-**Deployment:**
-- [ ] Auth endpoints deployed to staging
-- [ ] Verified in staging environment
-- [ ] Production environment variables configured
-
-**Documentation:**
-- [ ] API endpoints documented
-- [ ] Authentication flow diagram added to README
-- [ ] Environment variables documented
-
-**User-facing:**
-- [ ] Login/logout flows tested manually
-- [ ] Error messages clear and helpful
-- [ ] Password reset tested with real email
-</success_indicators>
-
-<codebase_context>
-## Codebase State and Patterns
-
-**Current state:**
-Established codebase - Phase 2 complete with database models, Phase 1 has Next.js structure.
-
-**Relevant files/systems:**
-- `prisma/schema.prisma` - User model exists, need to add Session model
-- `src/app/api/*` - API route conventions established in Phase 2
-- `src/middleware.ts` - Next.js middleware file (create for protected routes)
-- `src/lib/db.ts` - Database connection helper from Phase 2
-
-**Patterns to follow:**
-- API routes return JSON with `{ success: boolean, data?: any, error?: string }`
-- Use Zod for request validation (established in Phase 2)
-- Database queries in try/catch with error logging
-- Tests colocated: `route.test.ts` next to `route.ts`
-
-**External dependencies:**
-- jose@5.2.0 - JWT library (decision from Phase 1)
-- bcrypt@5.1.1 - Password hashing
-- @sendgrid/mail - Email sending (need to add)
-- zod@3.22.4 - Validation (already installed)
-
-**Known issues to address:**
-- ISS-002 from Phase 2: Add rate limiting to API endpoints (include auth endpoints)
-
-**Prior decisions affecting this phase:**
-- Phase 1: Use jose for JWT (ESM-native, Edge-compatible)
-- Phase 2: API response format established (all endpoints must follow)
-- Phase 2: Zod validation pattern established (use for auth requests)
-</codebase_context>
-
-<decisions_needed>
-## Decisions That Will Affect Implementation
-
-**Decision 1: Token expiry timing**
-- **Context:** Balance security (short expiry) vs UX (avoid frequent re-login)
-- **Options:** 15min access + 7day refresh / 1hr access + 30day refresh / 4hr access + 90day refresh
-- **When to decide:** During planning (affects implementation)
-
-**Decision 2: Remember me implementation**
-- **Context:** How to handle "remember me" checkbox on login
-- **Options:** Longer refresh token / Separate persistent token / Browser local storage flag
-- **When to decide:** During task breakdown (affects token strategy)
-</decisions_needed>
+</specifics>
 
 <notes>
 ## Additional Context
 
-[Questions asked during intake:]
-- Q: Are there constraints I should know about?
-- A: Technical limitations - must use jose library, work in Edge runtime
+User mentioned they've abandoned several dashboards before because they felt too "corporate." The key differentiator is making it feel personal and calm.
 
-- Q: What could go wrong in this phase?
-- A: Security concerns - authentication vulnerabilities are critical
+Priority is clarity over features. Better to show less and make it obvious than show everything.
 
-- Q: Which files or systems should I examine for context?
-- A: Check prisma/schema.prisma for User model, src/app/api/* for API patterns
-
-[Clarifications:]
-- User stressed security is paramount - better to be overly cautious
-- Password reset is "nice to have" but not blocking for Phase 4
-- OAuth can wait - just email/password for now
-
-[References:]
-- OWASP Auth Cheatsheet: https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html
-- jose docs: https://github.com/panva/jose
 </notes>
 
 ---
 
-*Phase: 03-authentication*
+*Phase: 03-user-dashboard*
 *Context gathered: 2025-01-20*
-*Ready for planning: yes*
 ```
 </good_examples>
 
 <guidelines>
-**When to create:**
-- Before planning a phase (via /gsd:discuss-phase command)
-- When roadmap description is too brief for quality planning
-- When phase involves complex decisions or risks
+**This template captures VISION, not technical specs.**
 
-**Structure:**
-- Use XML tags for section markers (matches GSD templates)
-- Five core sections: objectives, constraints, risks, success_indicators, codebase_context
-- Two supporting sections: decisions_needed, notes
-- All sections required (use "None" if truly not applicable)
+The user is the visionary. They know:
+- How they imagine it working
+- What it should feel like
+- What's essential vs nice-to-have
+- References to things they like
 
-**Content quality:**
-- Objectives: Specific and measurable (not "add auth" but "JWT auth with registration, login, logout, password reset")
-- Constraints: Technical/timeline/resource specifics (not "be fast" but "must work in Edge runtime")
-- Risks: Include likelihood, impact, mitigation (not just "might break")
-- Success indicators: Checklist format, specific criteria
-- Codebase context: Reference actual files and patterns
-- Decisions needed: Note when decision should be made (planning vs execution)
+The user does NOT know (and shouldn't be asked):
+- Codebase patterns (Claude reads the code)
+- Technical risks (Claude identifies during research)
+- Implementation constraints (Claude figures out)
+- Success metrics (Claude infers from the work)
 
-**Out of scope:**
-- Document what phase does NOT include (prevents scope creep)
-- Reference deferred items from roadmap
-- Note what's pushed to future phases
+**Content should read like:**
+- A founder describing their product vision
+- "When you use this, it should feel like..."
+- "The most important thing is..."
+- "I don't want it to be like X, I want it to feel like Y"
 
-**Integration with planning:**
-- CONTEXT.md loaded as @context reference in PLAN.md
-- Decisions inform task breakdown
-- Risks inform verification criteria
-- Success indicators become plan success criteria
-- Prior decisions become task action notes
+**Content should NOT read like:**
+- A technical specification
+- Risk assessment matrix
+- Success criteria checklist
+- Codebase analysis
 
 **After creation:**
 - File lives in phase directory: `.planning/phases/XX-name/{phase}-CONTEXT.md`
-- Referenced during planning workflow
-- Can be updated if context changes before planning
+- Research phase adds technical context (patterns, risks, constraints)
+- Planning phase creates executable tasks informed by both vision AND research
 </guidelines>

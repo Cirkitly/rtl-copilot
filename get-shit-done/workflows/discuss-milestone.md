@@ -1,5 +1,7 @@
 <purpose>
-Gather milestone context through adaptive questioning before creating a new milestone, using intake & decision gate pattern to build comprehensive understanding of goals, scope, lessons learned, and success criteria.
+Help the user figure out what they want to build in the next milestone through collaborative thinking.
+
+You're a thinking partner helping them crystallize their vision for what's next. Features first — everything else (scope, phases) derives from what they want to build.
 </purpose>
 
 <process>
@@ -91,17 +93,16 @@ Based on what you described:
 **Theme suggestion:** v[X.Y] [Name]
 ```
 
-**Decision gate (MUST have all 3 options):**
+Use AskUserQuestion for decision gate:
 
-```
-Header: "Ready?"
-Options:
-  1. "Create milestone" - Proceed to /gsd:new-milestone
-  2. "Ask more questions" - Explore features or constraints further
-  3. "Let me add context" - I have more to share
-```
+- header: "Ready?"
+- question: "Ready to create the milestone, or explore more?"
+- options (ALL THREE REQUIRED):
+  - "Create milestone" - Proceed to /gsd:new-milestone
+  - "Ask more questions" - Help me think through this more
+  - "Let me add context" - I have more to share
 
-If "Ask more questions" → generate 2-3 contextual follow-ups → return to gate.
+If "Ask more questions" → dig into features they mentioned → return to gate.
 If "Let me add context" → receive input, update synthesis → return to gate.
 Loop until "Create milestone" selected.
 </step>
