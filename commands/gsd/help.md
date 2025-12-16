@@ -67,11 +67,11 @@ Usage: `/gsd:create-roadmap`
 ### Phase Planning
 
 **`/gsd:discuss-phase <number>`**
-Gather phase context through adaptive questioning before planning.
+Help articulate your vision for a phase before planning.
 
-- Builds understanding of objectives, constraints, risks
-- Creates CONTEXT.md in phase directory
-- Use before planning unfamiliar or complex phases
+- Captures how you imagine this phase working
+- Creates CONTEXT.md with your vision, essentials, and boundaries
+- Use when you have ideas about how something should look/feel
 
 Usage: `/gsd:discuss-phase 2`
 
@@ -86,10 +86,10 @@ Comprehensive ecosystem research for niche/complex domains.
 Usage: `/gsd:research-phase 3`
 
 **`/gsd:list-phase-assumptions <number>`**
-Surface Claude's assumptions about a phase before planning.
+See what Claude is planning to do before it starts.
 
-- Shows what Claude thinks about technical approach, scope, risks
-- Enables early course correction before planning begins
+- Shows Claude's intended approach for a phase
+- Lets you course-correct if Claude misunderstood your vision
 - No files created - conversational output only
 
 Usage: `/gsd:list-phase-assumptions 3`
@@ -141,10 +141,10 @@ Result: Creates Phase 7.1
 ### Milestone Management
 
 **`/gsd:discuss-milestone`**
-Gather context for next milestone through adaptive questioning.
+Figure out what you want to build in the next milestone.
 
-- Reviews previous milestone accomplishments
-- Asks about scope, constraints, priorities for next milestone
+- Reviews what shipped in previous milestone
+- Helps you identify features to add, improve, or fix
 - Routes to /gsd:new-milestone when ready
 
 Usage: `/gsd:discuss-milestone`
