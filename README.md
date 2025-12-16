@@ -38,13 +38,17 @@ That's what this is. No enterprise roleplay bullshit. Just an incredibly effecti
 /gsd:new-project
 ```
 
-The system asks questions. Keeps asking until it has everything — your goals, constraints, tech preferences, edge cases. You go back and forth until the idea is fully captured.
+The system asks questions. Keeps asking until it has everything — your goals, constraints, tech preferences, edge cases. You go back and forth until the idea is fully captured. Creates **PROJECT.md**.
 
-### 2. Initialize the project
+### 2. Research (optional) and create roadmap
 
-Your idea becomes:
+```
+/gsd:research-project   # For niche domains (3D, audio, shaders)
+/gsd:create-roadmap     # Create phases and state tracking
+```
 
-- **PROJECT.md** - Project vision (~50 lines)
+For complex domains, research spawns subagents to discover ecosystem patterns before planning. Then roadmap creation produces:
+
 - **ROADMAP.md** - Phases from start to finish
 - **STATE.md** - Living memory that persists across sessions
 
@@ -139,7 +143,9 @@ You're never locked in. The system adapts.
 
 | Command                           | What it does                                                  |
 | --------------------------------- | ------------------------------------------------------------- |
-| `/gsd:new-project`                | Extract your idea through questions, create project structure |
+| `/gsd:new-project`                | Extract your idea through questions, create PROJECT.md        |
+| `/gsd:research-project`           | Research domain ecosystem before roadmap (optional)           |
+| `/gsd:create-roadmap`             | Create roadmap and state tracking                             |
 | `/gsd:plan-phase [N]`             | Generate task plans for phase                                 |
 | `/gsd:execute-plan`               | Run plan via subagent                                         |
 | `/gsd:progress`                   | Where am I? What's next?                                      |
@@ -149,6 +155,7 @@ You're never locked in. The system adapts.
 | `/gsd:add-phase`                  | Append phase to roadmap                                       |
 | `/gsd:insert-phase [N]`           | Insert urgent work                                            |
 | `/gsd:discuss-phase [N]`          | Gather context before planning                                |
+| `/gsd:research-phase [N]`         | Deep ecosystem research for niche domains                     |
 | `/gsd:list-phase-assumptions [N]` | See what Claude thinks before you correct it                  |
 | `/gsd:pause-work`                 | Create handoff file when stopping mid-phase                   |
 | `/gsd:resume-work`                | Restore from last session                                     |
