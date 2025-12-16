@@ -7,18 +7,6 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-<!--
-DESIGN NOTE: Initialization Only
-
-This command handles project initialization only:
-- Deep context gathering through questioning
-- PROJECT.md creation
-- config.json with workflow mode
-
-Roadmap creation is now a separate step via /gsd:create-roadmap.
-This allows optional research (/gsd:research-project) between initialization and roadmap.
--->
-
 <objective>
 Initialize a new project through comprehensive context gathering.
 
@@ -57,21 +45,25 @@ Silent setup - execute before any user output:
 <step name="question">
 Start: "What do you want to build?"
 
-Then use AskUserQuestion to cover the 9 domains (project type, problem, audience, success, constraints, scope, current state, decisions, open questions).
+Let them talk. Then follow the conversation arc from `questioning.md`:
+1. **Follow the thread** — dig into what they said, what excites them
+2. **Sharpen the core** — essential vs nice-to-have
+3. **Find boundaries** — what is it NOT
+4. **Ground in reality** — only constraints that actually exist
 
-Skip domains already clear from user input. Probe for specifics on vague answers.
+Be a thinking partner, not an interviewer. Help them discover and articulate their vision.
 
-**Decision gate (MUST have all 3 options):**
+When you feel you understand it, offer the decision gate:
 
 ```
 Header: "Ready?"
 Options:
   1. "Create PROJECT.md" - Finalize
-  2. "Ask more questions" - Dig into uncovered domains
+  2. "Ask more questions" - I'll dig deeper
   3. "Let me add context" - User shares more
 ```
 
-If "Ask more questions" → ask about 2-3 uncovered domains → return to gate.
+If "Ask more questions" → check coverage gaps from `questioning.md` → ask naturally → return to gate.
 Loop until "Create PROJECT.md" selected.
 </step>
 
@@ -95,7 +87,6 @@ Use AskUserQuestion:
 Create `.planning/config.json` with chosen mode using `templates/config.json` structure.
 </step>
 
-
 <step name="commit">
 ```bash
 git add .planning/PROJECT.md .planning/config.json
@@ -107,19 +98,24 @@ docs: initialize [project-name]
 Creates PROJECT.md with vision and requirements.
 EOF
 )"
+
 ```
 </step>
 
 <step name="done">
 ```
+
 Project initialized:
+
 - Project: .planning/PROJECT.md
 - Config: .planning/config.json (mode: [chosen mode])
 
 What's next?
+
 1. Research domain ecosystem (/gsd:research-project) - For niche/complex domains
 2. Create roadmap (/gsd:create-roadmap) - Skip research, go straight to planning
 3. Done for now
+
 ```
 
 If user selects "Research domain ecosystem" → invoke `/gsd:research-project`
@@ -139,3 +135,4 @@ If user selects "Create roadmap" → invoke `/gsd:create-roadmap`
 - [ ] config.json has workflow mode
 - [ ] All committed to git
 </success_criteria>
+```

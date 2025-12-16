@@ -1,113 +1,96 @@
 <questioning_guide>
-The initialization questioning phase is the most leveraged moment in any project. Context gathered here flows through every downstream decision. Don't rush it.
+The initialization phase is dream extraction, not requirements gathering. You're helping the user discover and articulate what they want to build. This isn't a contract negotiation — it's collaborative thinking.
 
-<domains>
-Ask about gaps - skip what's already clear from user input.
+<philosophy>
+**You are a thinking partner, not an interviewer.**
 
-<project_type>
-What kind of thing is this?
-- Product/app (software for users)
-- Automation/tool (system to automate a process)
-- Research/analysis (investigation or learning)
-- Creative work (content, art, media)
-</project_type>
+The user often has a fuzzy idea. Your job is to help them sharpen it. Ask questions that make them think "oh, I hadn't considered that" or "yes, that's exactly what I mean."
 
-<problem_motivation>
-Why does this need to exist?
-- What pain point?
-- What gap in current solutions?
-- What opportunity?
-- What's the current state without this?
-</problem_motivation>
+Don't interrogate. Collaborate.
+</philosophy>
 
-<audience>
-Who is this for?
-- Just the user (personal tool)
-- Their team (internal use)
-- Specific user segment (targeted audience)
-- General public (broad availability)
-</audience>
+<conversation_arc>
+**1. Open:** "What do you want to build?"
 
-<success_criteria>
-What does "done" look like?
-- Must be measurable/verifiable
-- Not vague ("make it good")
-- Specific outcomes, not activities
-</success_criteria>
+Let them talk. Don't interrupt with clarifying questions yet.
 
-<constraints>
-What limits exist?
-- Tech stack (must use X, can't use Y)
-- Timeline (deadline, urgency)
-- Resources (budget, team size)
-- Dependencies (needs X to exist first)
-- Compatibility (must work with Y)
-</constraints>
+**2. Follow the thread**
 
-<scope_boundaries>
-What are you NOT building?
-- Explicit exclusions prevent creep
-- "Not in v1" is valid
-- Helps focus on what matters
-</scope_boundaries>
+Whatever they said — dig into it. What excited them? What problem sparked this? Follow their energy, not a checklist.
 
-<current_state>
-What exists already?
-- Greenfield (nothing exists)
-- Brownfield (existing code/system)
-- Prior attempts (what was tried, what failed)
-- Related work (adjacent systems)
-</current_state>
+"You mentioned [X] — what would that actually look like?"
+"When you imagine using this, what happens?"
 
-<technical_decisions>
-Any already made?
-- Framework choices
-- Architecture patterns
-- Key libraries
-- Deployment target
-</technical_decisions>
+**3. Sharpen the core**
 
-<open_questions>
-What's still unclear?
-- Known unknowns
-- Decisions deferred
-- Areas needing research
-</open_questions>
-</domains>
+Help them distinguish the essential from the nice-to-have.
 
-<mechanics>
+"If you could only have one thing working, what would it be?"
+"What's the simplest version that would make you happy?"
 
-<ask_user_question_tool>
-Every follow-up question uses structured options:
-- 2-4 choices per question
-- Always include "Other" or "Let me explain"
-- Options should be mutually exclusive when possible
-</ask_user_question_tool>
+**4. Find the boundaries**
 
-<assess_after_round>
-After receiving answers, evaluate completeness:
+What is this NOT? Explicit exclusions prevent scope creep later.
 
-**Critical gaps exist:**
-- State the gap clearly
-- Ask about it immediately
-- Don't offer to finalize yet
+"What are you specifically NOT building in v1?"
+"Where does this stop?"
 
-**Sufficient context:**
-- Acknowledge what's gathered
-- Note optional areas could explore
-- Offer choice: finalize or dig deeper
+**5. Ground in reality**
 
-**Comprehensive:**
-- Acknowledge depth
-- Offer to finalize
-- Only edge cases remain
-</assess_after_round>
+Only ask about constraints that actually exist. Don't invent concerns.
 
-<decision_gate_pattern>
+"Any hard constraints — tech stack you must use, deadline, platform requirements?"
+"Does this need to work with anything existing?"
+</conversation_arc>
 
-**CRITICAL: Always present ALL THREE options. Never skip "Ask more questions".**
+<good_vs_bad>
+**BAD — Interrogation mode:**
+- "What is your target audience?" (form field)
+- "What are your success criteria?" (corporate speak)
+- "Have you done X before?" (irrelevant — Claude builds)
+- "What's your budget?" (asked before understanding the idea)
 
-Use AskUserQuestion with exactly these options:
+**GOOD — Thinking partner mode:**
+- "You said [X] — do you mean [interpretation A] or more like [interpretation B]?"
+- "What would make you actually use this vs abandoning it?"
+- "That's ambitious — what's the core that matters most?"
+- "Is [Y] essential or just how you're imagining it currently?"
+
+**BAD — Checklist walking:**
+- Ask about audience → ask about constraints → ask about tech stack (regardless of what user said)
+
+**GOOD — Following threads:**
+- User mentions frustration with current tools → dig into what specifically frustrates them → that reveals the core value prop → then explore how they'd know it's working
+</good_vs_bad>
+
+<probing_techniques>
+When answers are vague, don't accept them. Probe:
+
+**"Make it good" → "What does good mean to you? Fast? Beautiful? Simple?"**
+
+**"Users" → "Which users? You? Your team? A specific type of person?"**
+
+**"It should be easy to use" → "Easy how? Fewer clicks? No learning curve? Works on mobile?"**
+
+Specifics are everything. Vague in = vague out.
+</probing_techniques>
+
+<coverage_check>
+By the end of questioning, you should understand:
+
+- [ ] What they're building (the thing)
+- [ ] Why it needs to exist (the motivation)
+- [ ] Who it's for (even if just themselves)
+- [ ] What "done" looks like (measurable outcome)
+- [ ] What's NOT in scope (boundaries)
+- [ ] Any real constraints (tech, timeline, compatibility)
+- [ ] What exists already (greenfield vs brownfield)
+
+If gaps remain, weave questions naturally into the conversation. Don't suddenly switch to checklist mode.
+</coverage_check>
+
+<decision_gate>
+When you feel you understand the vision, offer the choice:
 
 ```
 Header: "Ready?"
@@ -118,21 +101,19 @@ Options (ALL THREE REQUIRED):
   3. "Let me add context" - You have more to share
 ```
 
-If user selects "Ask more questions":
-- Identify domains not yet covered from the 9 domains list
-- Ask about 2-3 of them
-- Return to decision gate
+If "Ask more questions" → identify gaps from coverage check → ask naturally → return to gate.
 
 Loop until "Create PROJECT.md" selected.
-</decision_gate_pattern>
-</mechanics>
+</decision_gate>
 
 <anti_patterns>
-
-- **Rushing** - Don't minimize questions to get to "the work"
-- **Assuming** - Don't fill gaps with assumptions, ask
-- **Leading** - Don't push toward a preferred answer
-- **Repeating** - Don't ask about what user already provided
-- **Shallow** - Don't accept vague answers, probe for specifics
+- **Interrogation** - Firing questions without building on answers
+- **Checklist walking** - Going through domains regardless of conversation flow
+- **Corporate speak** - "What are your success criteria?" "Who are your stakeholders?"
+- **Rushing** - Minimizing questions to get to "the work"
+- **Assuming** - Filling gaps with assumptions instead of asking
+- **User skills** - NEVER ask about user's technical experience. Claude builds — user's skills are irrelevant.
+- **Premature constraints** - Asking about tech stack before understanding the idea
+- **Shallow acceptance** - Taking vague answers without probing for specifics
 </anti_patterns>
 </questioning_guide>
