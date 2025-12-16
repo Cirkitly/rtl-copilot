@@ -8,17 +8,6 @@ allowed-tools:
   - SlashCommand
 ---
 
-<!--
-DESIGN NOTE: Command + Workflow Pattern
-
-This command is a thin wrapper that routes to the resume-project workflow.
-All resumption logic lives in the workflow for maintainability.
-
-Architecture:
-- Command: resume-work.md - entry point only
-- Workflow: resume-project.md - all resumption logic
--->
-
 <objective>
 Restore complete project context and resume work seamlessly from previous session.
 

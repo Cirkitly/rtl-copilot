@@ -10,20 +10,11 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-<!--
-DESIGN NOTE: Pre-Roadmap Research
-
-This command runs AFTER new-project and BEFORE create-roadmap.
-It spawns batched subagents to research domain ecosystems in parallel.
-Subagents write directly to .planning/research/ to preserve main context.
-
-Flow: new-project → research-project (optional) → create-roadmap
--->
-
 <objective>
 Research domain ecosystem via batched subagents before roadmap creation.
 
 Spawns 3-4 subagents in parallel to research:
+
 - Ecosystem (libraries, frameworks, tools)
 - Architecture (patterns, project structure)
 - Pitfalls (common mistakes, what NOT to do)
@@ -63,6 +54,7 @@ Check prerequisites:
 ```
 
 If RESEARCH_EXISTS:
+
 ```
 Research already exists at .planning/research/
 
@@ -79,11 +71,13 @@ Wait for user decision.
 Parse PROJECT.md to identify the domain and research scope.
 
 Look for:
+
 - Technologies mentioned (Three.js, WebGL, audio, etc.)
 - Problem domain (3D, games, real-time, etc.)
 - Technical constraints that suggest specific ecosystems
 
 If domain unclear, use AskUserQuestion:
+
 - header: "Domain"
 - question: "What domain should we research?"
 - options:
@@ -91,7 +85,7 @@ If domain unclear, use AskUserQuestion:
   - "Games/Interactive" - Physics, collision, procedural
   - "Audio/Music" - Web Audio, synthesis, DSP
   - (other relevant options based on PROJECT.md)
-</step>
+    </step>
 
 <step name="research">
 Follow research-project.md workflow:
@@ -102,7 +96,7 @@ Follow research-project.md workflow:
 4. Spawn second batch (pitfalls + standards)
 5. Wait for completion
 6. Verify all outputs exist
-</step>
+   </step>
 
 <step name="summarize">
 After all subagents complete:
@@ -138,10 +132,11 @@ If user selects "Create roadmap" → invoke `/gsd:create-roadmap`
 </output>
 
 <success_criteria>
+
 - [ ] PROJECT.md exists (prerequisite checked)
 - [ ] Domain detected or user clarified
 - [ ] Subagents spawned in batches of 3-4 max
 - [ ] All subagents wrote files directly to .planning/research/
 - [ ] All 4 research files exist
 - [ ] User knows next steps (create-roadmap)
-</success_criteria>
+      </success_criteria>
