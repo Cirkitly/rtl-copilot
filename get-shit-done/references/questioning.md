@@ -90,16 +90,14 @@ If gaps remain, weave questions naturally into the conversation. Don't suddenly 
 </coverage_check>
 
 <decision_gate>
-When you feel you understand the vision, offer the choice:
+When you feel you understand the vision, use AskUserQuestion:
 
-```
-Header: "Ready?"
-Question: "Ready to create PROJECT.md, or explore more?"
-Options (ALL THREE REQUIRED):
-  1. "Create PROJECT.md" - Finalize and continue
-  2. "Ask more questions" - I'll dig into areas we haven't covered
-  3. "Let me add context" - You have more to share
-```
+- header: "Ready?"
+- question: "Ready to create PROJECT.md, or explore more?"
+- options (ALL THREE REQUIRED):
+  - "Create PROJECT.md" - Finalize and continue
+  - "Ask more questions" - I'll dig into areas we haven't covered
+  - "Let me add context" - You have more to share
 
 If "Ask more questions" → identify gaps from coverage check → ask naturally → return to gate.
 

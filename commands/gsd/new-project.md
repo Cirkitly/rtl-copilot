@@ -53,15 +53,14 @@ Let them talk. Then follow the conversation arc from `questioning.md`:
 
 Be a thinking partner, not an interviewer. Help them discover and articulate their vision.
 
-When you feel you understand it, offer the decision gate:
+When you feel you understand it, use AskUserQuestion:
 
-```
-Header: "Ready?"
-Options:
-  1. "Create PROJECT.md" - Finalize
-  2. "Ask more questions" - I'll dig deeper
-  3. "Let me add context" - User shares more
-```
+- header: "Ready?"
+- question: "Ready to create PROJECT.md, or explore more?"
+- options (ALL THREE REQUIRED):
+  - "Create PROJECT.md" - Finalize and continue
+  - "Ask more questions" - I'll dig deeper
+  - "Let me add context" - You have more to share
 
 If "Ask more questions" → check coverage gaps from `questioning.md` → ask naturally → return to gate.
 Loop until "Create PROJECT.md" selected.
