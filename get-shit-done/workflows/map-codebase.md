@@ -68,54 +68,156 @@ Continue to spawn_agents.
 <step name="spawn_agents">
 Spawn 4 parallel Explore agents to analyze codebase.
 
-<!-- Agent orchestration implemented in plan 02-02 -->
+Use Task tool with `subagent_type="Explore"` and `run_in_background=true` for parallel execution.
 
 **Agent 1: Stack + Integrations (Technology Focus)**
-Analyze:
-- Languages and their versions
-- Frameworks and libraries (key dependencies)
-- Build tools and package managers
-- External APIs and services
-- Databases and data stores
-- Third-party integrations
 
-Output: STACK.md, INTEGRATIONS.md
+Task tool parameters:
+```
+subagent_type: "Explore"
+run_in_background: true
+task_description: "Analyze codebase technology stack and external integrations"
+```
+
+Prompt:
+```
+Analyze this codebase for technology stack and external integrations.
+
+Focus areas:
+1. Languages (check file extensions, package manifests)
+2. Runtime environment (Node.js, Python, etc. - check .nvmrc, .python-version, engines field)
+3. Package manager and lockfiles
+4. Frameworks (web, testing, build tools)
+5. Key dependencies (critical packages for functionality)
+6. External services (APIs, databases, auth providers)
+7. Third-party integrations (payment, analytics, etc.)
+8. Configuration approach (.env, config files)
+
+Search for:
+- package.json / requirements.txt / Cargo.toml / go.mod
+- .env files, .env.example
+- Config files (vite.config, webpack.config, tsconfig.json)
+- API client code, database connection code
+- Import statements for major libraries
+
+Output findings for populating these sections:
+- STACK.md: Languages, Runtime, Frameworks, Dependencies, Configuration
+- INTEGRATIONS.md: External APIs, Services, Third-party tools
+
+If something is not found, note "Not detected" for that category.
+```
 
 **Agent 2: Architecture + Structure (Organization Focus)**
-Analyze:
-- System architecture and design patterns
-- Data flow and component relationships
-- Directory layout and module organization
-- Entry points and routing
-- State management approach
-- File/folder naming conventions
 
-Output: ARCHITECTURE.md, STRUCTURE.md
+Task tool parameters:
+```
+subagent_type: "Explore"
+run_in_background: true
+task_description: "Analyze codebase architecture patterns and directory structure"
+```
+
+Prompt:
+```
+Analyze this codebase architecture and directory structure.
+
+Focus areas:
+1. Overall architectural pattern (monolith, microservices, layered, etc.)
+2. Conceptual layers (API, service, data, utility)
+3. Data flow and request lifecycle
+4. Key abstractions and patterns (services, controllers, repositories)
+5. Entry points (main files, server files, CLI entry)
+6. Directory organization and purposes
+7. Module boundaries
+8. Naming conventions for directories and files
+
+Search for:
+- Entry points: index.ts, main.ts, server.ts, app.ts, cli.ts
+- Directory structure patterns (src/, lib/, components/, services/)
+- Import patterns (what imports what)
+- Recurring code patterns (base classes, interfaces, common abstractions)
+
+Output findings for populating these sections:
+- ARCHITECTURE.md: Pattern, Layers, Data Flow, Abstractions, Entry Points
+- STRUCTURE.md: Directory layout, Organization, Key locations
+
+If something is not clear, provide best-guess interpretation based on code structure.
+```
 
 **Agent 3: Conventions + Testing (Quality Focus)**
-Analyze:
-- Code style and formatting rules
-- Naming conventions (files, functions, variables)
-- Common patterns and idioms
-- Test structure and organization
-- Coverage and test practices
-- Linting and quality tools
 
-Output: CONVENTIONS.md, TESTING.md
+Task tool parameters:
+```
+subagent_type: "Explore"
+run_in_background: true
+task_description: "Analyze coding conventions and test patterns"
+```
+
+Prompt:
+```
+Analyze this codebase for coding conventions and testing practices.
+
+Focus areas:
+1. Code style (indentation, quotes, semicolons, formatting)
+2. File naming conventions (kebab-case, PascalCase, etc.)
+3. Function/variable naming patterns
+4. Comment and documentation style
+5. Test framework and structure
+6. Test organization (unit, integration, e2e)
+7. Test coverage approach
+8. Linting and formatting tools
+
+Search for:
+- Config files: .eslintrc, .prettierrc, tsconfig.json
+- Test files: *.test.*, *.spec.*, __tests__/
+- Test setup: vitest.config, jest.config
+- Code patterns across multiple files
+- README or CONTRIBUTING docs
+
+Output findings for populating these sections:
+- CONVENTIONS.md: Code Style, Naming, Patterns, Documentation
+- TESTING.md: Framework, Structure, Coverage, Tools
+
+Look at actual code files to infer conventions if config files are missing.
+```
 
 **Agent 4: Concerns (Issues Focus)**
-Analyze:
-- Technical debt and code smells
-- Performance issues or bottlenecks
-- Security concerns
-- Outdated dependencies
-- Missing error handling
-- Documentation gaps
-- Hard-coded values or secrets
 
-Output: CONCERNS.md
+Task tool parameters:
+```
+subagent_type: "Explore"
+run_in_background: true
+task_description: "Identify technical debt and areas of concern"
+```
 
-<!-- End agent orchestration section -->
+Prompt:
+```
+Analyze this codebase for technical debt, known issues, and areas of concern.
+
+Focus areas:
+1. TODO and FIXME comments
+2. Complex or hard-to-understand code
+3. Missing error handling (try/catch, error checks)
+4. Security patterns (hardcoded secrets, unsafe operations)
+5. Outdated dependencies (check versions against current)
+6. Missing tests for critical code
+7. Duplicate code patterns
+8. Performance concerns (N+1 queries, inefficient loops)
+9. Documentation gaps (complex code without comments)
+
+Search for:
+- TODO, FIXME, HACK, XXX comments
+- Large functions or files (>200 lines)
+- Repeated code patterns
+- Missing .env.example when .env is used
+- Dependencies with known vulnerabilities (check versions)
+- Error-prone patterns (no validation, no error handling)
+
+Output findings for populating:
+- CONCERNS.md: Technical Debt, Issues, Security, Performance, Documentation
+
+Be constructive - focus on actionable concerns, not nitpicks.
+If codebase is clean, note that rather than inventing problems.
+```
 
 Continue to collect_results.
 </step>
@@ -123,15 +225,42 @@ Continue to collect_results.
 <step name="collect_results">
 Wait for all 4 agents to complete.
 
-<!-- Result collection implemented in plan 02-02 -->
+Use TaskOutput tool to collect results from each agent. Since agents were run with `run_in_background=true`, retrieve their output.
 
-Aggregate findings from each agent:
-- Agent 1 findings → STACK.md, INTEGRATIONS.md content
-- Agent 2 findings → ARCHITECTURE.md, STRUCTURE.md content
-- Agent 3 findings → CONVENTIONS.md, TESTING.md content
-- Agent 4 findings → CONCERNS.md content
+**Collection pattern:**
 
-Verify each document will be under 100 lines. If over, summarize patterns instead of listing exhaustively.
+For each agent, use TaskOutput tool to get the full exploration findings.
+
+**Aggregate findings by document:**
+
+From Agent 1 output, extract:
+- STACK.md sections: Languages, Runtime, Frameworks, Dependencies, Configuration, Platform
+- INTEGRATIONS.md sections: External APIs, Services, Authentication, Webhooks
+
+From Agent 2 output, extract:
+- ARCHITECTURE.md sections: Pattern Overview, Layers, Data Flow, Key Abstractions, Entry Points
+- STRUCTURE.md sections: Directory Layout, Key Locations, Organization
+
+From Agent 3 output, extract:
+- CONVENTIONS.md sections: Code Style, Naming Conventions, Common Patterns, Documentation Style
+- TESTING.md sections: Framework, Structure, Coverage, Tools
+
+From Agent 4 output, extract:
+- CONCERNS.md sections: Technical Debt, Known Issues, Security, Performance, Missing
+
+**Handling missing findings:**
+
+If an agent didn't find information for a section, use placeholder:
+- "Not detected" (for infrastructure/tools that may not exist)
+- "Not applicable" (for patterns that don't apply to this codebase)
+- "No significant concerns" (for CONCERNS.md if codebase is clean)
+
+**Line count check:**
+
+Before writing, estimate total lines for each document. If any will exceed 100 lines:
+- Summarize patterns instead of listing all instances
+- Prioritize most important/frequent patterns
+- Reference "see code for full details" for exhaustive lists
 
 Continue to write_documents.
 </step>
@@ -139,20 +268,53 @@ Continue to write_documents.
 <step name="write_documents">
 Write all 7 codebase documents using templates and agent findings.
 
-**For each document:**
-1. Load template from ~/.claude/get-shit-done/templates/codebase/
-2. Populate with relevant agent findings
-3. Ensure under 100 lines (summarize if needed)
-4. Write to .planning/codebase/
+**Template filling process:**
 
-**Document order:**
-1. STACK.md
-2. INTEGRATIONS.md
-3. ARCHITECTURE.md
-4. STRUCTURE.md
-5. CONVENTIONS.md
-6. TESTING.md
-7. CONCERNS.md
+For each document:
+
+1. **Read template file** from `~/.claude/get-shit-done/templates/codebase/{name}.md`
+2. **Extract the "File Template" section** - this is the markdown code block containing the actual document structure
+3. **Fill template placeholders** with agent findings:
+   - Replace `[YYYY-MM-DD]` with current date
+   - Replace `[Placeholder text]` with specific findings from agents
+   - If agent found nothing for a section, use appropriate placeholder:
+     - "Not detected" for optional infrastructure
+     - "Not applicable" for patterns that don't fit this codebase
+     - "No significant concerns" for clean codebase areas
+4. **Verify line count** - if filled template exceeds 100 lines, summarize:
+   - Keep most critical findings
+   - Summarize patterns instead of exhaustive lists
+   - Add "(see code for full details)" where appropriate
+5. **Write to .planning/codebase/{NAME}.md** (uppercase filename)
+
+**Example filling pattern:**
+
+Template placeholder:
+```
+**Primary:**
+- [Language] [Version] - [Where used: e.g., "all application code"]
+```
+
+Agent finding:
+```
+Found: TypeScript 5.3 used in all .ts files throughout src/
+```
+
+Filled result:
+```
+**Primary:**
+- TypeScript 5.3 - All application code
+```
+
+**Document writing order:**
+
+1. **STACK.md** (from stack.md template + Agent 1 findings)
+2. **INTEGRATIONS.md** (from integrations.md template + Agent 1 findings)
+3. **ARCHITECTURE.md** (from architecture.md template + Agent 2 findings)
+4. **STRUCTURE.md** (from structure.md template + Agent 2 findings)
+5. **CONVENTIONS.md** (from conventions.md template + Agent 3 findings)
+6. **TESTING.md** (from testing.md template + Agent 3 findings)
+7. **CONCERNS.md** (from concerns.md template + Agent 4 findings)
 
 After all documents written, continue to verify_output.
 </step>
@@ -177,39 +339,42 @@ Continue to offer_next.
 </step>
 
 <step name="offer_next">
-Present completion summary and next steps:
+Present completion summary and next steps.
+
+**Output format:**
 
 ```
-Codebase mapped to .planning/codebase/
+Codebase mapping complete.
 
-Documents created:
-- STACK.md - Technologies and dependencies
-- INTEGRATIONS.md - External services and APIs
-- ARCHITECTURE.md - System design and patterns
-- STRUCTURE.md - Directory layout and organization
-- CONVENTIONS.md - Code style and patterns
-- TESTING.md - Test structure and practices
-- CONCERNS.md - Technical debt and issues
+Created .planning/codebase/:
+- STACK.md ([N] lines) - Technologies and dependencies
+- ARCHITECTURE.md ([N] lines) - System design and patterns
+- STRUCTURE.md ([N] lines) - Directory layout and organization
+- CONVENTIONS.md ([N] lines) - Code style and patterns
+- TESTING.md ([N] lines) - Test structure and practices
+- INTEGRATIONS.md ([N] lines) - External services and APIs
+- CONCERNS.md ([N] lines) - Technical debt and issues
+
+[If any files >100 lines, add warning: "⚠ Some files exceed 100 lines - consider summarizing further"]
 
 ---
 
 ## ▶ Next Up
 
-**Typical workflow:**
+**Initialize project** — use codebase context for planning
 
 ```
 /gsd:new-project
 ```
-
-Use codebase map to inform project initialization (brownfield project).
 
 <sub>`/clear` first → fresh context window</sub>
 
 ---
 
 **Also available:**
-- Review/edit any codebase documents before proceeding
-- `/gsd:plan-phase N` - Plan specific phase using codebase context
+- Re-run mapping: `/gsd:map-codebase`
+- Review specific file: `cat .planning/codebase/STACK.md`
+- Edit any document before proceeding
 
 ---
 ```
@@ -221,9 +386,12 @@ End workflow.
 
 <success_criteria>
 - .planning/codebase/ directory created
-- 4 parallel agents spawned and completed
-- All 7 codebase documents written
-- Each document under 100 lines
-- Documents follow template structure
-- User offered clear next steps
+- 4 parallel Explore agents spawned with run_in_background=true
+- Agent prompts are specific and actionable
+- TaskOutput used to collect all agent results
+- All 7 codebase documents written using template filling
+- Each document under 100 lines (or warning shown)
+- Documents follow template structure with actual findings
+- Clear completion summary with line counts
+- User offered clear next steps in GSD style
 </success_criteria>
