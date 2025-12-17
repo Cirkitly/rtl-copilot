@@ -145,14 +145,8 @@ Project initialized:
 
 ## ▶ Next Up
 
-**[Project Name]** — research domain or create roadmap
+**[Project Name]** — create roadmap
 
-**Research first (recommended for niche/complex domains):**
-```
-/gsd:research-project
-```
-
-**Create roadmap directly:**
 ```
 /gsd:create-roadmap
 ```

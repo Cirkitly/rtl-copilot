@@ -52,14 +52,13 @@ That's what this is. No enterprise roleplay bullshit. Just an incredibly effecti
 
 The system asks questions. Keeps asking until it has everything — your goals, constraints, tech preferences, edge cases. You go back and forth until the idea is fully captured. Creates **PROJECT.md**.
 
-### 2. Research (optional) and create roadmap
+### 2. Create roadmap
 
 ```
-/gsd:research-project   # For niche domains (3D, audio, shaders)
 /gsd:create-roadmap     # Create phases and state tracking
 ```
 
-For complex domains, research spawns subagents to discover ecosystem patterns before planning. Then roadmap creation produces:
+Roadmap creation produces:
 
 - **ROADMAP.md** - Phases from start to finish
 - **STATE.md** - Living memory that persists across sessions
@@ -156,7 +155,6 @@ You're never locked in. The system adapts.
 | Command                           | What it does                                                  |
 | --------------------------------- | ------------------------------------------------------------- |
 | `/gsd:new-project`                | Extract your idea through questions, create PROJECT.md        |
-| `/gsd:research-project`           | Research domain ecosystem before roadmap (optional)           |
 | `/gsd:create-roadmap`             | Create roadmap and state tracking                             |
 | `/gsd:plan-phase [N]`             | Generate task plans for phase                                 |
 | `/gsd:execute-plan`               | Run plan via subagent                                         |

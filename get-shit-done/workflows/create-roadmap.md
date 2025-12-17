@@ -27,67 +27,6 @@ If proceeding without brief, gather quick context:
 - What's the rough scope?
 </step>
 
-<step name="check_research">
-Check for project research from /gsd:research-project:
-
-```bash
-ls .planning/research/*.md 2>/dev/null
-```
-
-**If research files found:**
-
-Load and extract key findings from each file:
-
-1. **ecosystem.md** → Standard stack recommendations
-   - Which libraries/frameworks to use
-   - Why they're recommended for this domain
-
-2. **architecture.md** → Architectural patterns
-   - Recommended project structure
-   - Key patterns to follow
-
-3. **pitfalls.md** → Critical pitfalls
-   - Top 2-3 things that commonly go wrong
-   - How to avoid them
-
-4. **standards.md** → Domain standards
-   - Conventions and best practices
-   - Compliance requirements (if any)
-
-Present summary to user:
-```
-Found project research:
-
-**Ecosystem:**
-[Key libraries/frameworks from ecosystem.md]
-
-**Architecture:**
-[Key patterns from architecture.md]
-
-**Pitfalls to Avoid:**
-[Top 2-3 from pitfalls.md]
-
-**Standards:**
-[Key conventions from standards.md]
-
-This research will inform phase structure and planning.
-Continue with roadmap creation? (yes / review research first)
-```
-
-If user wants to review research, show relevant files.
-
-**If no research found:**
-```
-No project research found.
-Creating roadmap based on PROJECT.md.
-
-(For niche/complex domains, consider running /gsd:research-project first)
-```
-
-Continue with roadmap creation.
-
-**Store research context** for use in identify_phases and write_roadmap steps.
-</step>
 
 <step name="detect_domain">
 Scan for available domain expertise:
@@ -143,26 +82,6 @@ Select (comma-separate for multiple):
 
 <step name="identify_phases">
 Derive phases from the actual work needed. The phase count emerges from the project—don't impose a number.
-
-**Incorporate research if available:**
-
-If research was found in check_research step, use findings to inform phase structure:
-
-- **ecosystem.md recommendations** → Inform technology choices in phases
-  - If research recommends specific libraries, plan phases that set them up properly
-  - Add foundation phases for recommended architectural patterns
-
-- **architecture.md patterns** → Inform phase ordering
-  - If research identifies layered architecture, order phases accordingly
-  - Include phases for recommended project structure setup
-
-- **pitfalls.md warnings** → Add phases to address risks
-  - If research identifies common failure modes, add phases that mitigate them
-  - Consider early validation phases for risky integrations
-
-- **standards.md conventions** → Inform phase content
-  - Ensure phases follow domain conventions
-  - Add phases for compliance requirements if applicable
 
 **Phase Numbering System:**
 
@@ -348,36 +267,12 @@ Decimal phases added later via /gsd:insert-phase command (if it exists).
 Write to `.planning/ROADMAP.md` with:
 
 - Domain Expertise section (paths from detect_domain step, or "None" if skipped)
-- **Research Context section** (if research found in check_research step)
 - Phase list with names and one-line descriptions
 - Dependencies (what must complete before what)
 - **Research flags** (from detect_research_needs step):
   - `Research: Likely ([reason])` with `Research topics:` for flagged phases
   - `Research: Unlikely ([reason])` for unflagged phases
 - Status tracking (all start as "not started")
-
-**Research Context section format (if research exists):**
-
-```markdown
-## Research Context
-
-Pre-planning research was conducted for this domain. Key findings incorporated into phase planning:
-
-**Source:** .planning/research/
-
-**Key Ecosystem Choices:**
-- [Library/framework from ecosystem.md and why]
-
-**Architectural Patterns:**
-- [Pattern from architecture.md]
-
-**Critical Pitfalls Addressed:**
-- [Pitfall from pitfalls.md and which phase addresses it]
-
-See .planning/research/*.md for full research findings.
-```
-
-**If no research:** Omit the Research Context section entirely.
 
 Create phase directories:
 

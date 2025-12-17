@@ -21,10 +21,9 @@ Output ONLY the reference content below. Do NOT add:
 ## Quick Start
 
 1. `/gsd:new-project` - Initialize project with brief
-2. `/gsd:research-project` - (Optional) Research domain ecosystem
-3. `/gsd:create-roadmap` - Create roadmap and phases
-4. `/gsd:plan-phase <number>` - Create detailed plan for first phase
-5. `/gsd:execute-plan <path>` - Execute the plan
+2. `/gsd:create-roadmap` - Create roadmap and phases
+3. `/gsd:plan-phase <number>` - Create detailed plan for first phase
+4. `/gsd:execute-plan <path>` - Execute the plan
 
 ## Core Workflow
 
@@ -44,23 +43,12 @@ Initialize new project with brief and configuration.
 
 Usage: `/gsd:new-project`
 
-**`/gsd:research-project`**
-Research domain ecosystem before creating roadmap.
-
-- Spawns batched subagents to research domain patterns
-- Creates `.planning/research/` with ecosystem findings
-- Optional step for niche/complex domains
-- Run after new-project, before create-roadmap
-
-Usage: `/gsd:research-project`
-
 **`/gsd:create-roadmap`**
 Create roadmap and state tracking for initialized project.
 
 - Creates `.planning/ROADMAP.md` (phase breakdown)
 - Creates `.planning/STATE.md` (project memory)
 - Creates `.planning/phases/` directories
-- Incorporates research findings if present
 
 Usage: `/gsd:create-roadmap`
 
@@ -263,16 +251,6 @@ Change anytime by editing `.planning/config.json`
 ```
 /gsd:new-project
 /gsd:create-roadmap
-/gsd:plan-phase 1
-/gsd:execute-plan .planning/phases/01-foundation/01-01-PLAN.md
-```
-
-**Building something in a niche domain (3D, games, audio, shaders):**
-
-```
-/gsd:new-project
-/gsd:research-project  # Research domain ecosystem before roadmap
-/gsd:create-roadmap    # Roadmap incorporates research findings
 /gsd:plan-phase 1
 /gsd:execute-plan .planning/phases/01-foundation/01-01-PLAN.md
 ```
