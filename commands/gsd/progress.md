@@ -14,15 +14,6 @@ Check project progress, summarize recent work and what's ahead, then intelligent
 Provides situational awareness before continuing work.
 </objective>
 
-<context>
-Planning structure: !`ls -la .planning/ 2>/dev/null || echo "NO_PLANNING_STRUCTURE"`
-Phases: !`ls .planning/phases/ 2>/dev/null || echo "NO_PHASES"`
-State exists: !`[ -f .planning/STATE.md ] && echo "EXISTS" || echo "MISSING"`
-Roadmap exists: !`[ -f .planning/ROADMAP.md ] && echo "EXISTS" || echo "MISSING"`
-Recent summaries: !`find .planning/phases -name "*-SUMMARY.md" -type f 2>/dev/null | sort | tail -3`
-All plans: !`find .planning/phases -name "*-PLAN.md" -type f 2>/dev/null | sort`
-All summaries: !`find .planning/phases -name "*-SUMMARY.md" -type f 2>/dev/null | sort`
-</context>
 
 <process>
 

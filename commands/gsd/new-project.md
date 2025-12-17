@@ -22,9 +22,6 @@ Creates `.planning/` with PROJECT.md and config.json.
 @~/.claude/get-shit-done/templates/config.json
 </execution_context>
 
-<context>
-!`[ -d .planning ] && echo "PLANNING_EXISTS" || echo "NO_PLANNING"`
-</context>
 
 <process>
 

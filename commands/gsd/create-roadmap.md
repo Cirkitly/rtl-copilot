@@ -24,11 +24,6 @@ Roadmaps define the phase breakdown - what work happens in what order. This comm
 
 <context>
 @.planning/PROJECT.md
-
-**Check for research:**
-!`ls .planning/research/*.md 2>/dev/null || echo "NO_RESEARCH"`
-
-**Load config:**
 @.planning/config.json
 </context>
 

@@ -31,11 +31,7 @@ Each subagent writes directly to `.planning/research/` preserving main context.
 </execution_context>
 
 <context>
-**Load project vision:**
 @.planning/PROJECT.md
-
-**Check for existing research:**
-!`ls .planning/research/ 2>/dev/null || echo "NO_RESEARCH_DIR"`
 </context>
 
 <process>
