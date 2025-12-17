@@ -48,16 +48,13 @@ Creates `.planning/` with PROJECT.md and config.json.
 </step>
 
 <step name="question">
-**CRITICAL: ALL questions use AskUserQuestion. Never ask inline text questions.**
+**1. Open (FREEFORM - do NOT use AskUserQuestion):**
 
-**1. Open:**
+Ask inline: "What do you want to build?"
 
-Use AskUserQuestion:
-- header: "Vision"
-- question: "What do you want to build?"
-- options: Contextual options if you have any hints, otherwise ["New app/tool", "Feature for existing project", "Let me describe it"]
+Wait for their freeform response. This gives you the context needed to ask intelligent follow-up questions.
 
-**2. Follow the thread:**
+**2. Follow the thread (NOW use AskUserQuestion):**
 
 Based on their response, use AskUserQuestion with options that probe what they mentioned:
 - header: "[Topic they mentioned]"
