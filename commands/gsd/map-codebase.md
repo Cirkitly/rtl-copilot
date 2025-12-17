@@ -13,7 +13,7 @@ allowed-tools:
 <objective>
 Analyze existing codebase using parallel Explore agents to produce structured codebase documents.
 
-This command spawns multiple Explore agents to analyze different aspects of the codebase in parallel, each with fresh context. Each agent produces focused documentation under 100 lines.
+This command spawns multiple Explore agents to analyze different aspects of the codebase in parallel, each with fresh context.
 
 Output: .planning/codebase/ folder with 7 structured documents about the codebase state.
 </objective>
@@ -71,14 +71,12 @@ Check for .planning/STATE.md - loads context if project already initialized
    - TESTING.md - Test structure, coverage, practices
    - INTEGRATIONS.md - APIs, databases, external services
    - CONCERNS.md - Technical debt, risks, issues
-6. Verify each document is under 100 lines (summarize if needed)
-7. Offer next steps (typically: /gsd:new-project or /gsd:plan-phase)
+6. Offer next steps (typically: /gsd:new-project or /gsd:plan-phase)
 </process>
 
 <success_criteria>
 - [ ] .planning/codebase/ directory created
 - [ ] All 7 codebase documents written
-- [ ] Each document under 100 lines
 - [ ] Documents follow template structure
 - [ ] Parallel agents completed without errors
 - [ ] User knows next steps

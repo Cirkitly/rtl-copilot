@@ -177,7 +177,6 @@ Template for `.planning/codebase/STACK.md` - captures the technology foundation.
 - Note runtime version from .nvmrc or package.json engines
 - Include only dependencies that affect understanding (not every utility)
 - Specify versions only when version matters (breaking changes, compatibility)
-- Keep under ~100 lines total
 
 **Useful for phase planning when:**
 - Adding new dependencies (check compatibility)

@@ -1,7 +1,7 @@
 <purpose>
 Orchestrate parallel Explore agents to analyze codebase and produce structured documents in .planning/codebase/
 
-Each agent has fresh context and focuses on specific aspects. Output is concise (under 100 lines per document) and actionable for planning.
+Each agent has fresh context and focuses on specific aspects. Output is concise and actionable for planning.
 </purpose>
 
 <philosophy>
@@ -11,8 +11,8 @@ Each agent has fresh context and focuses on specific aspects. Output is concise 
 - Each agent optimized for its domain (tech vs organization vs quality vs issues)
 - Faster execution (agents run simultaneously)
 
-**Why 100-line limit:**
-Codebase maps are reference material loaded frequently. Concise summaries are more useful than exhaustive inventories. If codebase is large, summarize patterns rather than listing every file.
+**Document quality over length:**
+Include enough detail to be useful as reference. Prioritize practical examples (especially code patterns) over arbitrary brevity. A 200-line TESTING.md with real patterns is more valuable than a 74-line summary.
 </philosophy>
 
 <process>
@@ -255,13 +255,6 @@ If an agent didn't find information for a section, use placeholder:
 - "Not applicable" (for patterns that don't apply to this codebase)
 - "No significant concerns" (for CONCERNS.md if codebase is clean)
 
-**Line count check:**
-
-Before writing, estimate total lines for each document. If any will exceed 100 lines:
-- Summarize patterns instead of listing all instances
-- Prioritize most important/frequent patterns
-- Reference "see code for full details" for exhaustive lists
-
 Continue to write_documents.
 </step>
 
@@ -281,11 +274,7 @@ For each document:
      - "Not detected" for optional infrastructure
      - "Not applicable" for patterns that don't fit this codebase
      - "No significant concerns" for clean codebase areas
-4. **Verify line count** - if filled template exceeds 100 lines, summarize:
-   - Keep most critical findings
-   - Summarize patterns instead of exhaustive lists
-   - Add "(see code for full details)" where appropriate
-5. **Write to .planning/codebase/{NAME}.md** (uppercase filename)
+4. **Write to .planning/codebase/{NAME}.md** (uppercase filename)
 
 **Example filling pattern:**
 
@@ -329,7 +318,6 @@ wc -l .planning/codebase/*.md
 
 **Verification checklist:**
 - All 7 documents exist
-- Each document under 100 lines
 - No empty documents
 - Templates populated with findings
 
@@ -377,7 +365,6 @@ Created .planning/codebase/:
 - INTEGRATIONS.md ([N] lines) - External services and APIs
 - CONCERNS.md ([N] lines) - Technical debt and issues
 
-[If any files >100 lines, add warning: "⚠ Some files exceed 100 lines - consider summarizing further"]
 
 ---
 
@@ -410,7 +397,6 @@ End workflow.
 - Agent prompts are specific and actionable
 - TaskOutput used to collect all agent results
 - All 7 codebase documents written using template filling
-- Each document under 100 lines (or warning shown)
 - Documents follow template structure with actual findings
 - Clear completion summary with line counts
 - User offered clear next steps in GSD style

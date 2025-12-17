@@ -1177,7 +1177,6 @@ For each document needing update:
 1. Read current document
 2. Identify what changed (new entries, removed entries, modified sections)
 3. Apply minimal edits to reflect new state
-4. Keep document under 100 lines (summarize if needed)
 
 **Commit codebase updates:**
 ```bash
