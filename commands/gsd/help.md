@@ -52,6 +52,16 @@ Create roadmap and state tracking for initialized project.
 
 Usage: `/gsd:create-roadmap`
 
+**`/gsd:map-codebase`**
+Map an existing codebase for brownfield projects.
+
+- Analyzes codebase with parallel Explore agents
+- Creates `.planning/codebase/` with 7 focused documents
+- Covers stack, architecture, structure, conventions, testing, integrations, concerns
+- Use before `/gsd:new-project` on existing codebases
+
+Usage: `/gsd:map-codebase`
+
 ### Phase Planning
 
 **`/gsd:discuss-phase <number>`**
@@ -217,6 +227,14 @@ Show this command reference.
 ├── STATE.md              # Project memory & context
 ├── ISSUES.md             # Deferred enhancements (created when needed)
 ├── config.json           # Workflow mode & gates
+├── codebase/             # Codebase map (brownfield projects)
+│   ├── STACK.md          # Languages, frameworks, dependencies
+│   ├── ARCHITECTURE.md   # Patterns, layers, data flow
+│   ├── STRUCTURE.md      # Directory layout, key files
+│   ├── CONVENTIONS.md    # Coding standards, naming
+│   ├── TESTING.md        # Test setup, patterns
+│   ├── INTEGRATIONS.md   # External services, APIs
+│   └── CONCERNS.md       # Tech debt, known issues
 └── phases/
     ├── 01-foundation/
     │   ├── 01-01-PLAN.md

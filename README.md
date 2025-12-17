@@ -156,6 +156,7 @@ You're never locked in. The system adapts.
 | --------------------------------- | ------------------------------------------------------------- |
 | `/gsd:new-project`                | Extract your idea through questions, create PROJECT.md        |
 | `/gsd:create-roadmap`             | Create roadmap and state tracking                             |
+| `/gsd:map-codebase`               | Map existing codebase for brownfield projects                 |
 | `/gsd:plan-phase [N]`             | Generate task plans for phase                                 |
 | `/gsd:execute-plan`               | Run plan via subagent                                         |
 | `/gsd:progress`                   | Where am I? What's next?                                      |
