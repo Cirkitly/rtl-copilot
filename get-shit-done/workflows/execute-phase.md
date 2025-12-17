@@ -1148,6 +1148,52 @@ EOF
 For commit message conventions and git workflow patterns, see ~/.claude/get-shit-done/references/git-integration.md
 </step>
 
+<step name="update_codebase_map">
+**If .planning/codebase/ exists AND files were modified:**
+
+Check if execution modified significant code:
+
+```bash
+# Get list of code files modified in this plan
+MODIFIED_CODE=$(git diff --name-only HEAD~1 2>/dev/null | grep -E '\.(ts|js|py|go|rs|swift|java)$' | grep -v node_modules)
+```
+
+**If significant modifications (>3 code files changed):**
+
+Determine which codebase documents may need update based on what changed:
+
+| Changed Files | Documents to Update |
+|--------------|-------------------|
+| New directories created | STRUCTURE.md |
+| Package dependencies changed | STACK.md, INTEGRATIONS.md |
+| New patterns introduced | ARCHITECTURE.md, CONVENTIONS.md |
+| Test files added/changed | TESTING.md |
+| Config files changed | STACK.md |
+| External service integration | INTEGRATIONS.md |
+
+**Update strategy (incremental, not full remap):**
+
+For each document needing update:
+1. Read current document
+2. Identify what changed (new entries, removed entries, modified sections)
+3. Apply minimal edits to reflect new state
+4. Keep document under 100 lines (summarize if needed)
+
+**Commit codebase updates:**
+```bash
+git add .planning/codebase/*.md
+git commit --amend --no-edit  # Include in plan commit
+```
+
+**If no significant changes:**
+Skip codebase update - map is still current.
+
+**If .planning/codebase/ doesn't exist:**
+Skip this step - no codebase map to update.
+
+**Note:** Full remap via `/gsd:map-codebase` is available if incremental updates become stale.
+</step>
+
 <step name="check_phase_issues">
 **Check if issues were created during this phase:**
 
@@ -1330,4 +1376,5 @@ All [Y] plans finished.
 - SUMMARY.md created with substantive content
 - STATE.md updated (position, decisions, issues, session)
 - ROADMAP.md updated
+- If codebase map exists: map updated with execution changes (or skipped if no significant changes)
   </success_criteria>

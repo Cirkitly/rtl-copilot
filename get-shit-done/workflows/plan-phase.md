@@ -96,6 +96,44 @@ Options:
 This ensures planning has full project context.
 </step>
 
+<step name="load_codebase_context">
+Check if codebase map exists:
+
+```bash
+ls .planning/codebase/*.md 2>/dev/null
+```
+
+**If .planning/codebase/ exists:**
+
+Determine which codebase documents are relevant based on phase goal:
+
+| Phase Keywords | Load These Documents |
+|----------------|---------------------|
+| UI, frontend, components, layout | CONVENTIONS.md, STRUCTURE.md |
+| API, backend, endpoints, routes | ARCHITECTURE.md, CONVENTIONS.md |
+| database, schema, models, migration | ARCHITECTURE.md, STACK.md |
+| testing, tests, coverage | TESTING.md, CONVENTIONS.md |
+| integration, external, API, service | INTEGRATIONS.md, STACK.md |
+| refactor, cleanup, debt | CONCERNS.md, ARCHITECTURE.md |
+| setup, config, infrastructure | STACK.md, STRUCTURE.md |
+| (default - load minimal set) | STACK.md, ARCHITECTURE.md |
+
+Read the relevant documents and summarize key constraints for this phase:
+- From STACK.md: Technologies that must be used
+- From ARCHITECTURE.md: Patterns that must be followed
+- From CONVENTIONS.md: Code style requirements
+- From CONCERNS.md: Issues to avoid or address
+
+**Add to planning context:**
+Track codebase constraints for inclusion in PLAN.md context section:
+- Which documents loaded
+- Key constraints extracted
+- Patterns to follow
+
+**If .planning/codebase/ doesn't exist:**
+Skip this step - no codebase map available.
+</step>
+
 <step name="identify_phase">
 Check roadmap for phases:
 ```bash
@@ -650,6 +688,16 @@ Output: [What artifacts will be created by this plan]
 @.planning/PROJECT.md
 @.planning/ROADMAP.md
 @.planning/STATE.md
+
+[If codebase map exists (from /gsd:map-codebase):]
+@.planning/codebase/STACK.md
+@.planning/codebase/ARCHITECTURE.md
+[Add other relevant docs based on phase type - see load_codebase_context step]
+
+**Codebase constraints:**
+- [Extracted constraints from codebase documents]
+- [Technologies that must be used]
+- [Patterns that must be followed]
 
 [If comprehensive ecosystem research exists (from /gsd:research-phase):]
 @.planning/phases/XX-name/{phase}-RESEARCH.md

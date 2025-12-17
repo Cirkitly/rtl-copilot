@@ -44,7 +44,40 @@ Creates `.planning/` with PROJECT.md and config.json.
    fi
    ```
 
-   **You MUST run both bash commands above using the Bash tool before proceeding.**
+3. **Detect existing code (brownfield detection):**
+   ```bash
+   # Check for existing code files
+   CODE_FILES=$(find . -name "*.ts" -o -name "*.js" -o -name "*.py" -o -name "*.go" -o -name "*.rs" -o -name "*.swift" -o -name "*.java" 2>/dev/null | grep -v node_modules | grep -v .git | head -20)
+   HAS_PACKAGE=$([ -f package.json ] || [ -f requirements.txt ] || [ -f Cargo.toml ] || [ -f go.mod ] || [ -f Package.swift ] && echo "yes")
+   HAS_CODEBASE_MAP=$([ -d .planning/codebase ] && echo "yes")
+   ```
+
+   **You MUST run all bash commands above using the Bash tool before proceeding.**
+</step>
+
+<step name="brownfield_offer">
+**If existing code detected and .planning/codebase/ doesn't exist:**
+
+Check the results from setup step:
+- If `CODE_FILES` is non-empty OR `HAS_PACKAGE` is "yes"
+- AND `HAS_CODEBASE_MAP` is NOT "yes"
+
+Use AskUserQuestion:
+- header: "Existing Code"
+- question: "I detected existing code in this directory. Would you like to map the codebase first?"
+- options:
+  - "Map codebase first" - Run /gsd:map-codebase to understand existing architecture (Recommended)
+  - "Skip mapping" - Proceed with project initialization
+
+**If "Map codebase first":**
+```
+Run `/gsd:map-codebase` first, then return to `/gsd:new-project`
+```
+Exit command.
+
+**If "Skip mapping":** Continue to question step.
+
+**If no existing code detected OR codebase already mapped:** Continue to question step.
 </step>
 
 <step name="question">
@@ -140,6 +173,7 @@ Project initialized:
 
 - Project: .planning/PROJECT.md
 - Config: .planning/config.json (mode: [chosen mode])
+[If .planning/codebase/ exists:] - Codebase: .planning/codebase/ (7 documents)
 
 ---
 
