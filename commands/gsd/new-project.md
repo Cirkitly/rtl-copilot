@@ -30,7 +30,7 @@ Creates `.planning/` with PROJECT.md and config.json.
 
 1. **Abort if project exists:**
    ```bash
-   [ -d .planning ] && echo "ERROR: Project already initialized. Use /gsd:progress" && exit 1
+   [ -f .planning/PROJECT.md ] && echo "ERROR: Project already initialized. Use /gsd:progress" && exit 1
    ```
 
 2. **Initialize git repo in THIS directory** (required even if inside a parent repo):
