@@ -138,12 +138,19 @@ Milestone scope defined:
 
 Ready to create the milestone structure.
 
-## To Continue
+---
 
-Run `/clear`, then paste:
+## ▶ Next Up
+
+**Create Milestone v[X.Y]** — [Theme Name]
+
 ```
 /gsd:new-milestone
 ```
+
+<sub>`/clear` first → fresh context window</sub>
+
+---
 ```
 
 Pass context forward by summarizing:

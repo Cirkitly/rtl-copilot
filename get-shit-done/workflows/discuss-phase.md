@@ -194,22 +194,25 @@ Created: .planning/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md
 ## Boundaries
 [What's out of scope]
 
-## To Continue
+---
 
-Run `/clear`, then paste one of:
+## ▶ Next Up
 
-**To research this phase first:**
-```
-/gsd:research-phase ${PHASE}
-```
+**Phase ${PHASE}: [Name]** — [Goal from ROADMAP.md]
 
-**To plan this phase directly:**
 ```
 /gsd:plan-phase ${PHASE}
 ```
 
-Other options:
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
+- `/gsd:research-phase ${PHASE}` — investigate unknowns
 - Review/edit CONTEXT.md before continuing
+
+---
 ```
 
 </step>

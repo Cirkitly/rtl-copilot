@@ -156,15 +156,24 @@ Key implementation context:
 Open questions remaining:
 - [Any questions research couldn't answer]
 
-## To Continue
+---
 
-Run `/clear`, then paste:
+## ▶ Next Up
+
+**Create Roadmap** — define phases based on research findings
+
 ```
 /gsd:create-roadmap
 ```
 
-Other options:
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
 - Review research files before continuing
+
+---
 ```
 </step>
 

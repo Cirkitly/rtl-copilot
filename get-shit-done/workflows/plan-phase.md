@@ -717,15 +717,24 @@ After completion, create `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
 Phase plan created: .planning/phases/XX-name/{phase}-01-PLAN.md
 [X] tasks defined.
 
-## To Continue
+---
 
-Run `/clear`, then paste:
+## ▶ Next Up
+
+**{phase}-01: [Plan Name]** — [objective summary]
+
 ```
 /gsd:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md
 ```
 
-Other options:
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
 - Review/adjust tasks before executing
+
+---
 ```
 
 **If multiple plans:**
@@ -739,15 +748,25 @@ Phase plans created:
 
 Total: [X] tasks across [Y] focused plans.
 
-## To Continue
+---
 
-Run `/clear`, then paste:
+## ▶ Next Up
+
+**{phase}-01: [Plan Name]** — [objective summary]
+
 ```
 /gsd:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md
 ```
 
-Other options:
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
 - Review/adjust tasks before executing
+- View all plans: `ls .planning/phases/XX-name/*-PLAN.md`
+
+---
 ```
 </step>
 

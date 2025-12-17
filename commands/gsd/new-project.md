@@ -133,7 +133,7 @@ EOF
 </step>
 
 <step name="done">
-Present completion inline (not as a question):
+Present completion with next steps (see ~/.claude/get-shit-done/references/continuation-format.md):
 
 ```
 Project initialized:
@@ -141,19 +141,25 @@ Project initialized:
 - Project: .planning/PROJECT.md
 - Config: .planning/config.json (mode: [chosen mode])
 
-## To Continue
+---
 
-Run `/clear`, then paste one of:
+## ▶ Next Up
 
-**For niche/complex domains (recommended):**
+**[Project Name]** — research domain or create roadmap
+
+**Research first (recommended for niche/complex domains):**
 ```
 /gsd:research-project
 ```
 
-**To skip research and go straight to planning:**
+**Create roadmap directly:**
 ```
 /gsd:create-roadmap
 ```
+
+<sub>`/clear` first → fresh context window</sub>
+
+---
 ```
 </step>
 

@@ -98,14 +98,21 @@ Check if `{phase}-{plan}-PLAN.md` exists for that number.
 
 - Read its `<objective>` section
 - Show: "Ready to execute: [path] - [objective summary]"
-- Display:
+- Display (see ~/.claude/get-shit-done/references/continuation-format.md):
   ```
-  ## To Continue
+  ---
 
-  Run `/clear`, then paste:
+  ## ▶ Next Up
+
+  **{phase}-{plan}: [Plan Name]** — [objective summary from PLAN.md]
+
   ```
   /gsd:execute-plan [full-path-to-PLAN.md]
   ```
+
+  <sub>`/clear` first → fresh context window</sub>
+
+  ---
   ```
 
 **If PLAN.md does NOT exist:**
@@ -119,36 +126,45 @@ Check if `{phase}-{plan}-PLAN.md` exists for that number.
 - Display: "✓ Context gathered, ready to plan"
 - Display:
   ```
-  ## To Continue
+  ---
 
-  Run `/clear`, then paste:
+  ## ▶ Next Up
+
+  **Phase [N]: [Name]** — [Goal from ROADMAP.md]
+
   ```
   /gsd:plan-phase [phase-number]
   ```
+
+  <sub>`/clear` first → fresh context window</sub>
+
+  ---
   ```
 
 **If CONTEXT.md does NOT exist:**
 
 - Display:
   ```
-  ## To Continue
+  ---
 
-  Run `/clear`, then paste one of:
+  ## ▶ Next Up
 
-  **See Claude's assumptions:**
-  ```
-  /gsd:list-phase-assumptions [phase]
-  ```
+  **Phase [N]: [Name]** — [Goal from ROADMAP.md]
 
-  **Discuss context first:**
-  ```
-  /gsd:discuss-phase [phase]
-  ```
-
-  **Plan directly:**
   ```
   /gsd:plan-phase [phase]
   ```
+
+  <sub>`/clear` first → fresh context window</sub>
+
+  ---
+
+  **Also available:**
+  - `/gsd:discuss-phase [phase]` — gather context first
+  - `/gsd:research-phase [phase]` — investigate unknowns
+  - `/gsd:list-phase-assumptions [phase]` — see Claude's assumptions
+
+  ---
   ```
 
 **If all plans complete for current phase:**

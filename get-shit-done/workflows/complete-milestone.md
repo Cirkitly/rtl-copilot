@@ -424,19 +424,24 @@ Shipped:
 Summary: .planning/MILESTONES.md
 Tag: v[X.Y]
 
-## To Continue
+---
 
-Run `/clear`, then paste one of:
+## ▶ Next Up
 
-**To discuss next milestone scope:**
+**Plan Next Milestone** — define v[X.Y+1] features and scope
+
 ```
 /gsd:discuss-milestone
 ```
 
-**To create next milestone directly:**
-```
-/gsd:new-milestone
-```
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
+- `/gsd:new-milestone` — create directly if scope is clear
+
+---
 ```
 </step>
 

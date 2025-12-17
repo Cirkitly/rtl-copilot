@@ -163,16 +163,25 @@ Phase {N} added to current milestone:
 Roadmap updated: {roadmap-path}
 Project state updated: .planning/STATE.md
 
-## To Continue
+---
 
-Run `/clear`, then paste:
+## ▶ Next Up
+
+**Phase {N}: {description}**
+
 ```
 /gsd:plan-phase {N}
 ```
 
-Other options:
-- Add another phase: `/gsd:add-phase <description>`
-- Review roadmap: `cat .planning/ROADMAP.md`
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
+- `/gsd:add-phase <description>` — add another phase
+- Review roadmap
+
+---
 ```
 </step>
 

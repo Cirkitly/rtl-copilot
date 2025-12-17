@@ -389,26 +389,28 @@ Exit skill and invoke SlashCommand("/gsd:plan-phase [X+1]")
 
 <if mode="interactive" OR="custom with gates.confirm_transition true">
 ```
-Phase [X] marked complete.
+## ✓ Phase [X] Complete
 
-Next: Phase [X+1] - [Name]
+---
 
-## To Continue
+## ▶ Next Up
 
-Run `/clear`, then paste one of:
+**Phase [X+1]: [Name]** — [Goal from ROADMAP.md]
 
-**To discuss Phase [X+1] context first:**
-```
-/gsd:discuss-phase [X+1]
-```
-
-**To plan Phase [X+1] directly:**
 ```
 /gsd:plan-phase [X+1]
 ```
 
-Other options:
-- Review roadmap before continuing
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
+- `/gsd:discuss-phase [X+1]` — gather context first
+- `/gsd:research-phase [X+1]` — investigate unknowns
+- Review roadmap
+
+---
 ```
 </if>
 
@@ -428,19 +430,28 @@ Exit skill and invoke SlashCommand("/gsd:complete-milestone [version]")
 
 <if mode="interactive" OR="custom with gates.confirm_transition true">
 ```
-Phase [X] marked complete.
+## ✓ Phase [X] Complete
 
 🎉 Milestone [version] is 100% complete - all phases finished!
 
-## To Continue
+---
 
-Run `/clear`, then paste:
+## ▶ Next Up
+
+**Complete Milestone [version]** — archive and prepare for next
+
 ```
 /gsd:complete-milestone [version]
 ```
 
-Other options:
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
 - Review accomplishments before archiving
+
+---
 ```
 </if>
 

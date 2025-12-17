@@ -112,19 +112,26 @@ Roadmap created:
 - State: .planning/STATE.md
 - [N] phases defined
 
-## To Continue
+---
 
-Run `/clear`, then paste one of:
+## ▶ Next Up
 
-**To discuss Phase 1 context first:**
-```
-/gsd:discuss-phase 1
-```
+**Phase 1: [Name]** — [Goal from ROADMAP.md]
 
-**To plan Phase 1 directly:**
 ```
 /gsd:plan-phase 1
 ```
+
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
+- `/gsd:discuss-phase 1` — gather context first
+- `/gsd:research-phase 1` — investigate unknowns
+- Review roadmap
+
+---
 ```
 </step>
 
