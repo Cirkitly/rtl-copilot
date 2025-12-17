@@ -182,9 +182,7 @@ Based on user selection, route to appropriate workflow:
 
   **{phase}-{plan}: [Plan Name]** — [objective from PLAN.md]
 
-  ```
-  /gsd:execute-plan [path]
-  ```
+  `/gsd:execute-plan [path]`
 
   <sub>`/clear` first → fresh context window</sub>
 
@@ -198,9 +196,7 @@ Based on user selection, route to appropriate workflow:
 
   **Phase [N]: [Name]** — [Goal from ROADMAP.md]
 
-  ```
-  /gsd:plan-phase [phase-number]
-  ```
+  `/gsd:plan-phase [phase-number]`
 
   <sub>`/clear` first → fresh context window</sub>
 

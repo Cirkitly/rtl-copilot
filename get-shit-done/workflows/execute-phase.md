@@ -1262,9 +1262,7 @@ Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 
 **{phase}-{next-plan}: [Plan Name]** — [objective from next PLAN.md]
 
-```
-/gsd:execute-plan .planning/phases/XX-name/{phase}-{next-plan}-PLAN.md
-```
+`/gsd:execute-plan .planning/phases/XX-name/{phase}-{next-plan}-PLAN.md`
 
 <sub>`/clear` first → fresh context window</sub>
 
@@ -1318,9 +1316,7 @@ This milestone is 100% done.
 
 **Complete Milestone** — archive and prepare for next
 
-```
-/gsd:complete-milestone
-```
+`/gsd:complete-milestone`
 
 <sub>`/clear` first → fresh context window</sub>
 
@@ -1349,9 +1345,7 @@ All [Y] plans finished.
 
 **Phase [X+1]: [Name]** — [Goal from ROADMAP.md]
 
-```
-/gsd:plan-phase [X+1]
-```
+`/gsd:plan-phase [X+1]`
 
 <sub>`/clear` first → fresh context window</sub>
 

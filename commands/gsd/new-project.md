@@ -181,9 +181,7 @@ Project initialized:
 
 **[Project Name]** — create roadmap
 
-```
-/gsd:create-roadmap
-```
+`/gsd:create-roadmap`
 
 <sub>`/clear` first → fresh context window</sub>
 

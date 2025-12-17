@@ -106,9 +106,7 @@ Check if `{phase}-{plan}-PLAN.md` exists for that number.
 
   **{phase}-{plan}: [Plan Name]** — [objective summary from PLAN.md]
 
-  ```
-  /gsd:execute-plan [full-path-to-PLAN.md]
-  ```
+  `/gsd:execute-plan [full-path-to-PLAN.md]`
 
   <sub>`/clear` first → fresh context window</sub>
 
@@ -132,9 +130,7 @@ Check if `{phase}-{plan}-PLAN.md` exists for that number.
 
   **Phase [N]: [Name]** — [Goal from ROADMAP.md]
 
-  ```
-  /gsd:plan-phase [phase-number]
-  ```
+  `/gsd:plan-phase [phase-number]`
 
   <sub>`/clear` first → fresh context window</sub>
 
@@ -151,9 +147,7 @@ Check if `{phase}-{plan}-PLAN.md` exists for that number.
 
   **Phase [N]: [Name]** — [Goal from ROADMAP.md]
 
-  ```
-  /gsd:plan-phase [phase]
-  ```
+  `/gsd:plan-phase [phase]`
 
   <sub>`/clear` first → fresh context window</sub>
 

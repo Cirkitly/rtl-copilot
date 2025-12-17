@@ -385,9 +385,7 @@ Created .planning/codebase/:
 
 **Initialize project** — use codebase context for planning
 
-```
-/gsd:new-project
-```
+`/gsd:new-project`
 
 <sub>`/clear` first → fresh context window</sub>
 

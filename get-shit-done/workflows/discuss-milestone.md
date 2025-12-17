@@ -144,9 +144,7 @@ Ready to create the milestone structure.
 
 **Create Milestone v[X.Y]** — [Theme Name]
 
-```
-/gsd:new-milestone
-```
+`/gsd:new-milestone`
 
 <sub>`/clear` first → fresh context window</sub>
 

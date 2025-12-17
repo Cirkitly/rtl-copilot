@@ -82,9 +82,7 @@ Roadmap created:
 
 **Phase 1: [Name]** — [Goal from ROADMAP.md]
 
-```
-/gsd:plan-phase 1
-```
+`/gsd:plan-phase 1`
 
 <sub>`/clear` first → fresh context window</sub>
 

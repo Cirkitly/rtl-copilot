@@ -188,9 +188,7 @@ Project state updated: .planning/STATE.md
 
 **Phase {decimal_phase}: {description}** — urgent insertion
 
-```
-/gsd:plan-phase {decimal_phase}
-```
+`/gsd:plan-phase {decimal_phase}`
 
 <sub>`/clear` first → fresh context window</sub>
 

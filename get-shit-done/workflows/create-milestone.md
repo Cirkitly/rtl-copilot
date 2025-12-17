@@ -329,9 +329,7 @@ Milestone v[X.Y] [Name] created:
 
 **Phase [N]: [Name]** — [Goal from ROADMAP.md]
 
-```
-/gsd:plan-phase [N]
-```
+`/gsd:plan-phase [N]`
 
 <sub>`/clear` first → fresh context window</sub>
 

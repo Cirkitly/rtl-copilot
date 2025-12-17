@@ -430,9 +430,7 @@ Tag: v[X.Y]
 
 **Plan Next Milestone** — define v[X.Y+1] features and scope
 
-```
-/gsd:discuss-milestone
-```
+`/gsd:discuss-milestone`
 
 <sub>`/clear` first → fresh context window</sub>
 

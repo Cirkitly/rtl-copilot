@@ -4,24 +4,22 @@ Standard format for presenting next steps after completing a command or workflow
 
 ## Core Structure
 
-```markdown
+```
 ---
 
 ## ▶ Next Up
 
 **{identifier}: {name}** — {one-line description}
 
-```
-{command to copy-paste}
-```
+`{command to copy-paste}`
 
 <sub>`/clear` first → fresh context window</sub>
 
 ---
 
 **Also available:**
-- {alternative option 1}
-- {alternative option 2}
+- `{alternative option 1}` — description
+- `{alternative option 2}` — description
 
 ---
 ```
@@ -30,7 +28,7 @@ Standard format for presenting next steps after completing a command or workflow
 
 1. **Always show what it is** — name + description, never just a command path
 2. **Pull context from source** — ROADMAP.md for phases, PLAN.md `<objective>` for plans
-3. **Command in clean code block** — easy to copy-paste
+3. **Command in inline code** — backticks, easy to copy-paste, renders as clickable link
 4. **`/clear` explanation** — always include, keeps it concise but explains why
 5. **"Also available" not "Other options"** — sounds more app-like
 6. **Visual separators** — `---` above and below to make it stand out
@@ -39,16 +37,14 @@ Standard format for presenting next steps after completing a command or workflow
 
 ### Execute Next Plan
 
-```markdown
+```
 ---
 
 ## ▶ Next Up
 
 **02-03: Refresh Token Rotation** — Add /api/auth/refresh with sliding expiry
 
-```
-/gsd:execute-plan .planning/phases/02-auth/02-03-PLAN.md
-```
+`/gsd:execute-plan .planning/phases/02-auth/02-03-PLAN.md`
 
 <sub>`/clear` first → fresh context window</sub>
 
@@ -65,7 +61,7 @@ Standard format for presenting next steps after completing a command or workflow
 
 Add note that this is the last plan and what comes after:
 
-```markdown
+```
 ---
 
 ## ▶ Next Up
@@ -73,9 +69,7 @@ Add note that this is the last plan and what comes after:
 **02-03: Refresh Token Rotation** — Add /api/auth/refresh with sliding expiry
 <sub>Final plan in Phase 2</sub>
 
-```
-/gsd:execute-plan .planning/phases/02-auth/02-03-PLAN.md
-```
+`/gsd:execute-plan .planning/phases/02-auth/02-03-PLAN.md`
 
 <sub>`/clear` first → fresh context window</sub>
 
@@ -90,16 +84,14 @@ Add note that this is the last plan and what comes after:
 
 ### Plan a Phase
 
-```markdown
+```
 ---
 
 ## ▶ Next Up
 
 **Phase 2: Authentication** — JWT login flow with refresh tokens
 
-```
-/gsd:plan-phase 2
-```
+`/gsd:plan-phase 2`
 
 <sub>`/clear` first → fresh context window</sub>
 
@@ -117,7 +109,7 @@ Add note that this is the last plan and what comes after:
 
 Show completion status before next action:
 
-```markdown
+```
 ---
 
 ## ✓ Phase 2 Complete
@@ -128,9 +120,7 @@ Show completion status before next action:
 
 **Phase 3: Core Features** — User dashboard, settings, and data export
 
-```
-/gsd:plan-phase 3
-```
+`/gsd:plan-phase 3`
 
 <sub>`/clear` first → fresh context window</sub>
 
@@ -148,27 +138,18 @@ Show completion status before next action:
 
 When there's no clear primary action:
 
-```markdown
+```
 ---
 
 ## ▶ Next Up
 
 **Phase 3: Core Features** — User dashboard, settings, and data export
 
-**To plan directly:**
-```
-/gsd:plan-phase 3
-```
+**To plan directly:** `/gsd:plan-phase 3`
 
-**To discuss context first:**
-```
-/gsd:discuss-phase 3
-```
+**To discuss context first:** `/gsd:discuss-phase 3`
 
-**To research unknowns:**
-```
-/gsd:research-phase 3
-```
+**To research unknowns:** `/gsd:research-phase 3`
 
 <sub>`/clear` first → fresh context window</sub>
 
@@ -177,7 +158,7 @@ When there's no clear primary action:
 
 ### Milestone Complete
 
-```markdown
+```
 ---
 
 ## 🎉 Milestone v1.0 Complete
@@ -188,9 +169,7 @@ All 4 phases shipped
 
 **Plan v1.1** — Enhanced features and optimizations
 
-```
-/gsd:discuss-milestone
-```
+`/gsd:discuss-milestone`
 
 <sub>`/clear` first → fresh context window</sub>
 
@@ -237,23 +216,19 @@ Extract: `**02-03: Refresh Token Rotation** — Add /api/auth/refresh with slidi
 
 ### Don't: Command-only (no context)
 
-```markdown
+```
 ## To Continue
 
 Run `/clear`, then paste:
-```
 /gsd:execute-plan .planning/phases/02-auth/02-03-PLAN.md
-```
 ```
 
 User has no idea what 02-03 is about.
 
 ### Don't: Missing /clear explanation
 
-```markdown
 ```
-/gsd:plan-phase 3
-```
+`/gsd:plan-phase 3`
 
 Run /clear first.
 ```
@@ -262,9 +237,19 @@ Doesn't explain why. User might skip it.
 
 ### Don't: "Other options" language
 
-```markdown
+```
 Other options:
 - Review roadmap
 ```
 
 Sounds like an afterthought. Use "Also available:" instead.
+
+### Don't: Fenced code blocks for commands
+
+```
+```
+/gsd:plan-phase 3
+```
+```
+
+Fenced blocks inside templates create nesting ambiguity. Use inline backticks instead.

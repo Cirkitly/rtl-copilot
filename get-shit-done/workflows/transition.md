@@ -397,9 +397,7 @@ Exit skill and invoke SlashCommand("/gsd:plan-phase [X+1]")
 
 **Phase [X+1]: [Name]** — [Goal from ROADMAP.md]
 
-```
-/gsd:plan-phase [X+1]
-```
+`/gsd:plan-phase [X+1]`
 
 <sub>`/clear` first → fresh context window</sub>
 
@@ -440,9 +438,7 @@ Exit skill and invoke SlashCommand("/gsd:complete-milestone [version]")
 
 **Complete Milestone [version]** — archive and prepare for next
 
-```
-/gsd:complete-milestone [version]
-```
+`/gsd:complete-milestone [version]`
 
 <sub>`/clear` first → fresh context window</sub>
 

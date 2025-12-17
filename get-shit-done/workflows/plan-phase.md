@@ -771,9 +771,7 @@ Phase plan created: .planning/phases/XX-name/{phase}-01-PLAN.md
 
 **{phase}-01: [Plan Name]** — [objective summary]
 
-```
-/gsd:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md
-```
+`/gsd:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md`
 
 <sub>`/clear` first → fresh context window</sub>
 
@@ -802,9 +800,7 @@ Total: [X] tasks across [Y] focused plans.
 
 **{phase}-01: [Plan Name]** — [objective summary]
 
-```
-/gsd:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md
-```
+`/gsd:execute-plan .planning/phases/XX-name/{phase}-01-PLAN.md`
 
 <sub>`/clear` first → fresh context window</sub>
 
