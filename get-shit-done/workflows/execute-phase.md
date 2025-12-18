@@ -1149,48 +1149,40 @@ For commit message conventions and git workflow patterns, see ~/.claude/get-shit
 </step>
 
 <step name="update_codebase_map">
-**If .planning/codebase/ exists AND files were modified:**
+**If .planning/codebase/ exists:**
 
-Check if execution modified significant code:
+Check what changed in this plan:
 
 ```bash
-# Get list of code files modified in this plan
-MODIFIED_CODE=$(git diff --name-only HEAD~1 2>/dev/null | grep -E '\.(ts|js|py|go|rs|swift|java)$' | grep -v node_modules)
+git diff --name-only HEAD~1 2>/dev/null
 ```
 
-**If significant modifications (>3 code files changed):**
+**Update only if structural changes occurred:**
 
-Determine which codebase documents may need update based on what changed:
+| Change Detected | Update Action |
+|-----------------|---------------|
+| New directory in src/ | STRUCTURE.md: Add to directory layout |
+| package.json deps changed | STACK.md: Add/remove from dependencies list |
+| New file pattern (e.g., first .test.ts) | CONVENTIONS.md: Note new pattern |
+| New external API client | INTEGRATIONS.md: Add service entry with file path |
+| Config file added/changed | STACK.md: Update configuration section |
+| File renamed/moved | Update paths in relevant docs |
 
-| Changed Files | Documents to Update |
-|--------------|-------------------|
-| New directories created | STRUCTURE.md |
-| Package dependencies changed | STACK.md, INTEGRATIONS.md |
-| New patterns introduced | ARCHITECTURE.md, CONVENTIONS.md |
-| Test files added/changed | TESTING.md |
-| Config files changed | STACK.md |
-| External service integration | INTEGRATIONS.md |
+**Skip update if only:**
+- Code changes within existing files
+- Bug fixes
+- Content changes (no structural impact)
 
-**Update strategy (incremental, not full remap):**
+**Update format:**
+Make single targeted edits - add a bullet point, update a path, or remove a stale entry. Don't rewrite sections.
 
-For each document needing update:
-1. Read current document
-2. Identify what changed (new entries, removed entries, modified sections)
-3. Apply minimal edits to reflect new state
-
-**Commit codebase updates:**
 ```bash
 git add .planning/codebase/*.md
 git commit --amend --no-edit  # Include in plan commit
 ```
 
-**If no significant changes:**
-Skip codebase update - map is still current.
-
 **If .planning/codebase/ doesn't exist:**
-Skip this step - no codebase map to update.
-
-**Note:** Full remap via `/gsd:map-codebase` is available if incremental updates become stale.
+Skip this step.
 </step>
 
 <step name="check_phase_issues">
