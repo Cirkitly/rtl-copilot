@@ -124,18 +124,21 @@ Template for `.planning/codebase/ARCHITECTURE.md` - captures conceptual code org
 **Command Layer:**
 - Purpose: Parse user input and route to appropriate handler
 - Contains: Command definitions, argument parsing, help text
+- Location: `src/commands/*.ts`
 - Depends on: Service layer for business logic
-- Used by: CLI entry point (src/index.ts)
+- Used by: CLI entry point (`src/index.ts`)
 
 **Service Layer:**
 - Purpose: Core business logic
 - Contains: FileService, TemplateService, InstallService
+- Location: `src/services/*.ts`
 - Depends on: File system utilities, external tools
 - Used by: Command handlers
 
 **Utility Layer:**
 - Purpose: Shared helpers and abstractions
 - Contains: File I/O wrappers, path resolution, string formatting
+- Location: `src/utils/*.ts`
 - Depends on: Node.js built-ins only
 - Used by: Service layer
 
@@ -145,8 +148,8 @@ Template for `.planning/codebase/ARCHITECTURE.md` - captures conceptual code org
 
 1. User runs: `gsd new-project`
 2. Commander parses args and flags
-3. Command handler invoked (commands/new-project.ts)
-4. Handler calls service methods (e.g., ProjectService.create())
+3. Command handler invoked (`src/commands/new-project.ts`)
+4. Handler calls service methods (`src/services/project.ts` → `create()`)
 5. Service reads templates, processes files, writes output
 6. Results logged to console
 7. Process exits with status code
@@ -160,12 +163,12 @@ Template for `.planning/codebase/ARCHITECTURE.md` - captures conceptual code org
 
 **Service:**
 - Purpose: Encapsulate business logic for a domain
-- Examples: FileService, TemplateService, ProjectService
+- Examples: `src/services/file.ts`, `src/services/template.ts`, `src/services/project.ts`
 - Pattern: Singleton-like (imported as modules, not instantiated)
 
 **Command:**
 - Purpose: CLI command definition
-- Examples: new-project, plan-phase, execute-plan
+- Examples: `src/commands/new-project.ts`, `src/commands/plan-phase.ts`
 - Pattern: Commander.js command registration
 
 **Template:**
@@ -176,12 +179,12 @@ Template for `.planning/codebase/ARCHITECTURE.md` - captures conceptual code org
 ## Entry Points
 
 **CLI Entry:**
-- Location: src/index.ts
+- Location: `src/index.ts`
 - Triggers: User runs `gsd <command>`
 - Responsibilities: Register commands, parse args, display help
 
 **Commands:**
-- Location: src/commands/*.ts
+- Location: `src/commands/*.ts`
 - Triggers: Matched command from CLI
 - Responsibilities: Validate input, call services, format output
 
@@ -229,10 +232,13 @@ Template for `.planning/codebase/ARCHITECTURE.md` - captures conceptual code org
 - Cross-cutting concerns (logging, auth, validation)
 
 **What does NOT belong here:**
-- Specific file paths (that's STRUCTURE.md)
+- Exhaustive file listings (that's STRUCTURE.md)
 - Technology choices (that's STACK.md)
 - Line-by-line code walkthrough (defer to code reading)
 - Implementation details of specific features
+
+**File paths ARE welcome:**
+Include file paths as concrete examples of abstractions. Use backtick formatting: `src/services/user.ts`. This makes the architecture document actionable for Claude when planning.
 
 **When filling this template:**
 - Read main entry points (index, server, main)

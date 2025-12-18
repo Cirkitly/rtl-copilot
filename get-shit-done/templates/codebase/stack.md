@@ -103,7 +103,7 @@ Template for `.planning/codebase/STACK.md` - captures the technology foundation.
 
 **Package Manager:**
 - npm 10.x
-- Lockfile: package-lock.json present
+- Lockfile: `package-lock.json` present
 
 ## Frameworks
 
@@ -135,8 +135,8 @@ Template for `.planning/codebase/STACK.md` - captures the technology foundation.
 - Configuration via CLI flags only
 
 **Build:**
-- tsconfig.json - TypeScript compiler options
-- vitest.config.ts - Test runner configuration
+- `tsconfig.json` - TypeScript compiler options
+- `vitest.config.ts` - Test runner configuration
 
 ## Platform Requirements
 

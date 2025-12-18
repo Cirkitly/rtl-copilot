@@ -129,70 +129,80 @@ Template for `.planning/codebase/CONCERNS.md` - captures known issues and areas 
 
 **Database queries in React components:**
 - Issue: Direct Supabase queries in 15+ page components instead of server actions
+- Files: `app/dashboard/page.tsx`, `app/profile/page.tsx`, `app/courses/[id]/page.tsx`, `app/settings/page.tsx` (and 11 more in `app/`)
 - Why: Rapid prototyping during MVP phase
 - Impact: Can't implement RLS properly, exposes DB structure to client
-- Fix approach: Move all queries to server actions in app/actions/, add proper RLS policies
+- Fix approach: Move all queries to server actions in `app/actions/`, add proper RLS policies
 
 **Manual webhook signature validation:**
 - Issue: Copy-pasted Stripe webhook verification code in 3 different endpoints
+- Files: `app/api/webhooks/stripe/route.ts`, `app/api/webhooks/checkout/route.ts`, `app/api/webhooks/subscription/route.ts`
 - Why: Each webhook added ad-hoc without abstraction
 - Impact: Easy to miss verification in new webhooks (security risk)
-- Fix approach: Create shared validateStripeWebhook middleware
+- Fix approach: Create shared `lib/stripe/validate-webhook.ts` middleware
 
 ## Known Bugs
 
 **Race condition in subscription updates:**
 - Symptoms: User shows as "free" tier for 5-10 seconds after successful payment
 - Trigger: Fast navigation after Stripe checkout redirect, before webhook processes
+- Files: `app/checkout/success/page.tsx` (redirect handler), `app/api/webhooks/stripe/route.ts` (webhook)
 - Workaround: Stripe webhook eventually updates status (self-heals)
 - Root cause: Webhook processing slower than user navigation, no optimistic UI update
-- Fix: Poll subscription status after checkout redirect, don't rely solely on webhook
+- Fix: Add polling in `app/checkout/success/page.tsx` after redirect
 
 **Inconsistent session state after logout:**
 - Symptoms: User redirected to /dashboard after logout instead of /login
 - Trigger: Logout via button in mobile nav (desktop works fine)
+- File: `components/MobileNav.tsx` (line ~45, logout handler)
 - Workaround: Manual URL navigation to /login works
 - Root cause: Mobile nav component not awaiting supabase.auth.signOut()
-- Fix: Add await to logout handler in MobileNav.tsx
+- Fix: Add await to logout handler in `components/MobileNav.tsx`
 
 ## Security Considerations
 
 **Admin role check client-side only:**
 - Risk: Admin dashboard pages check isAdmin from Supabase client, no server verification
+- Files: `app/admin/page.tsx`, `app/admin/users/page.tsx`, `components/AdminGuard.tsx`
 - Current mitigation: None (relying on UI hiding)
-- Recommendations: Add middleware to admin routes, verify role server-side in Server Components
+- Recommendations: Add middleware to admin routes in `middleware.ts`, verify role server-side
 
 **Unvalidated file uploads:**
 - Risk: Users can upload any file type to avatar bucket (no size/type validation)
+- File: `components/AvatarUpload.tsx` (upload handler)
 - Current mitigation: Supabase bucket limits to 2MB (configured in dashboard)
-- Recommendations: Add file type validation (image/* only), virus scanning for larger scale
+- Recommendations: Add file type validation (image/* only) in `lib/storage/validate.ts`
 
 ## Performance Bottlenecks
 
 **/api/courses endpoint:**
 - Problem: Fetching all courses with nested lessons and authors
+- File: `app/api/courses/route.ts`
 - Measurement: 1.2s p95 response time with 50+ courses
 - Cause: N+1 query pattern (separate query per course for lessons)
-- Improvement path: Use Prisma include to eager-load lessons, add Redis caching
+- Improvement path: Use Prisma include to eager-load lessons in `lib/db/courses.ts`, add Redis caching
 
 **Dashboard initial load:**
 - Problem: Waterfall of 5 serial API calls on mount
+- File: `app/dashboard/page.tsx`
 - Measurement: 3.5s until interactive on slow 3G
 - Cause: Each component fetches own data independently
-- Improvement path: Server Component with single parallel fetch, or React Server Components
+- Improvement path: Convert to Server Component with single parallel fetch
 
 ## Fragile Areas
 
 **Authentication middleware chain:**
+- File: `middleware.ts`
 - Why fragile: 4 different middleware functions run in specific order (auth -> role -> subscription -> logging)
 - Common failures: Middleware order change breaks everything, hard to debug
 - Safe modification: Add tests before changing order, document dependencies in comments
 - Test coverage: No integration tests for middleware chain (only unit tests)
 
 **Stripe webhook event handling:**
+- File: `app/api/webhooks/stripe/route.ts`
 - Why fragile: Giant switch statement with 12 event types, shared transaction logic
 - Common failures: New event type added without handling, partial DB updates on error
-- Safe modification: Extract each event handler to separate function, add comprehensive error handling
+- Safe modification: Extract each event handler to `lib/stripe/handlers/*.ts`
 - Test coverage: Only 3 of 12 event types have tests
 
 ## Scaling Limits
@@ -272,6 +282,7 @@ Template for `.planning/codebase/CONCERNS.md` - captures known issues and areas 
 - Minor code style issues
 
 **When filling this template:**
+- **Always include file paths** - Concerns without locations are not actionable. Use backticks: `src/file.ts`
 - Be specific with measurements ("500ms p95" not "slow")
 - Include reproduction steps for bugs
 - Suggest fix approaches, not just problems
