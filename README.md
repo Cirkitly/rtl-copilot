@@ -84,6 +84,42 @@ Ship your MVP in a day. Add features. Insert hotfixes. The system stays modular 
 
 ---
 
+## Existing Projects (Brownfield)
+
+Already have code? Start here instead.
+
+### 1. Map the codebase
+
+```
+/gsd:map-codebase
+```
+
+Spawns parallel agents to analyze your code. Creates `.planning/codebase/` with 7 documents:
+
+- **STACK.md** — Languages, frameworks, dependencies
+- **ARCHITECTURE.md** — Patterns, layers, data flow
+- **STRUCTURE.md** — Directory layout, where things live
+- **CONVENTIONS.md** — Code style, naming patterns
+- **TESTING.md** — Test framework, patterns
+- **INTEGRATIONS.md** — External services, APIs
+- **CONCERNS.md** — Tech debt, known issues, fragile areas
+
+### 2. Initialize project
+
+```
+/gsd:new-project
+```
+
+Same as greenfield, but the system knows your codebase. Questions focus on what you're adding/changing, not starting from scratch.
+
+### 3. Continue as normal
+
+From here, it's the same: `/gsd:create-roadmap` → `/gsd:plan-phase` → `/gsd:execute-plan`
+
+The codebase docs load automatically during planning. Claude knows your patterns, conventions, and where to put things.
+
+---
+
 ## Why It Works
 
 ### Context Engineering
