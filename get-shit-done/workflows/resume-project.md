@@ -30,23 +30,32 @@ ls .planning/PROJECT.md 2>/dev/null && echo "Project file exists"
 </step>
 
 <step name="load_state">
-Read and parse STATE.md:
+
+Read and parse STATE.md, then PROJECT.md:
 
 ```bash
 cat .planning/STATE.md
+cat .planning/PROJECT.md
 ```
 
-Extract:
+**From STATE.md extract:**
 
-- **Brief Summary**: What we're building (immutable reminder)
+- **Project Reference**: Core value and current focus
 - **Current Position**: Phase X of Y, Plan A of B, Status
 - **Progress**: Visual progress bar
-- **Decisions Made**: Key decisions that constrain future work
+- **Recent Decisions**: Key decisions affecting current work
 - **Deferred Issues**: Open items awaiting attention
 - **Blockers/Concerns**: Issues carried forward
-- **Brief Alignment**: Are we on track?
 - **Session Continuity**: Where we left off, any resume files
-  </step>
+
+**From PROJECT.md extract:**
+
+- **What This Is**: Current accurate description
+- **Requirements**: Validated, Active, Out of Scope
+- **Key Decisions**: Full decision log with outcomes
+- **Constraints**: Hard limits on implementation
+
+</step>
 
 <step name="check_incomplete_work">
 Look for incomplete work that needs attention:
@@ -81,7 +90,7 @@ Present complete project status to user:
 ╔══════════════════════════════════════════════════════════════╗
 ║  PROJECT STATUS                                               ║
 ╠══════════════════════════════════════════════════════════════╣
-║  Building: [one-liner from Brief Summary]                     ║
+║  Building: [one-liner from PROJECT.md "What This Is"]         ║
 ║                                                               ║
 ║  Phase: [X] of [Y] - [Phase name]                            ║
 ║  Plan:  [A] of [B] - [Status]                                ║
@@ -237,7 +246,7 @@ If STATE.md is missing but other artifacts exist:
 
 "STATE.md missing. Reconstructing from artifacts..."
 
-1. Read PROJECT.md → Extract Brief Summary
+1. Read PROJECT.md → Extract "What This Is" and Core Value
 2. Read ROADMAP.md → Determine phases, find current position
 3. Scan \*-SUMMARY.md files → Extract decisions, issues, concerns
 4. Read ISSUES.md → Count deferred issues

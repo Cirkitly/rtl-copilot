@@ -1,207 +1,184 @@
 # PROJECT.md Template
 
-Template for `.planning/PROJECT.md` - the full project context captured during initialization.
+Template for `.planning/PROJECT.md` — the living project context document.
 
-## Greenfield Project (v1.0)
+<template>
 
 ```markdown
 # [Project Name]
 
-## Vision
+## What This Is
 
-[What this is and why it matters. 2-4 paragraphs capturing the full picture.
-Use the user's language and framing. Include motivation, not just description.
-This should feel like the user explaining their project to a smart collaborator.]
+[Current accurate description — 2-3 sentences. What does this product do and who is it for?
+Use the user's language and framing. Update whenever reality drifts from this description.]
 
-## Problem
+## Core Value
 
-[What problem exists, who has it, why it matters, what the current state is.
-Be specific - vague problems lead to vague solutions.
-Include the pain, the gap, or the opportunity that makes this worth building.]
+[The ONE thing that matters most. If everything else fails, this must work.
+One sentence that drives prioritization when tradeoffs arise.]
 
-## Success Criteria
+## Requirements
 
-How we know this worked:
+### Validated
 
-- [ ] [Measurable outcome 1 - specific, verifiable]
-- [ ] [Measurable outcome 2 - specific, verifiable]
-- [ ] [Measurable outcome 3 - specific, verifiable]
-- [ ] [Add as many as genuinely needed]
+<!-- Shipped and confirmed valuable. -->
 
-## Scope
+(None yet — ship to validate)
 
-### Building
-- [Feature/capability 1]
-- [Feature/capability 2]
-- [Feature/capability 3]
+### Active
 
-### Not Building
-- [Explicit exclusion 1 - prevents scope creep]
-- [Explicit exclusion 2 - clarifies boundaries]
-- [Explicit exclusion 3 - manages expectations]
+<!-- Current scope. Building toward these. -->
+
+- [ ] [Requirement 1]
+- [ ] [Requirement 2]
+- [ ] [Requirement 3]
+
+### Out of Scope
+
+<!-- Explicit boundaries. Includes reasoning to prevent re-adding. -->
+
+- [Exclusion 1] — [why]
+- [Exclusion 2] — [why]
 
 ## Context
 
 [Background information that informs implementation:
-- Current state (greenfield)
+- Technical environment or ecosystem
 - Relevant prior work or experience
-- Technical environment or ecosystem context
-- Explored alternatives and why they were rejected]
+- User research or feedback themes
+- Known issues to address]
 
 ## Constraints
 
-- **[Constraint type]**: [What] - [Why]
-- **[Constraint type]**: [What] - [Why]
-- **[Constraint type]**: [What] - [Why]
+- **[Type]**: [What] — [Why]
+- **[Type]**: [What] — [Why]
 
-Common types: Tech stack, Timeline, Resources, Dependencies, Compatibility, Performance, Security
+Common types: Tech stack, Timeline, Budget, Dependencies, Compatibility, Performance, Security
 
-## Decisions Made
+## Key Decisions
 
-Key decisions from project exploration:
+<!-- Decisions that constrain future work. Add throughout project lifecycle. -->
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| [Area/Topic] | [What we decided] | [Why this choice] |
-| [Area/Topic] | [What we decided] | [Why this choice] |
-
-## Open Questions
-
-Things to figure out during execution:
-
-- [ ] [Question 1 - known unknown to resolve]
-- [ ] [Question 2 - decision to make later]
-- [ ] [Question 3 - area needing research]
+| Decision | Rationale | Outcome |
+|----------|-----------|---------|
+| [Choice] | [Why] | [✓ Good / ⚠️ Revisit / — Pending] |
 
 ---
-*Initialized: [date]*
+*Last updated: [date] after [trigger]*
 ```
 
-## Brownfield Project (v1.1+)
-
-After shipping v1.0, update PROJECT.md to include current state:
-
-```markdown
-# [Project Name]
-
-## Current State (Updated: YYYY-MM-DD)
-
-**Shipped:** v[X.Y] [Name] (YYYY-MM-DD)
-**Status:** [Production / Beta / Internal / Live with users]
-**Users:** [If known: "~500 downloads, 50 DAU" or "Internal use only" or "N/A"]
-**Feedback:** [Key themes from user feedback, or "Initial release, gathering feedback"]
-
-**Codebase:**
-- [X,XXX] lines of [primary language]
-- [Key tech stack: framework, platform, deployment target]
-- [Notable dependencies or architecture]
-
-**Known Issues:**
-- [Issue 1 from v1.x that needs addressing]
-- [Issue 2]
-- [Or "None" if clean slate]
-
-## v[Next] Goals
-
-**Vision:** [What's the goal for this next iteration?]
-
-**Motivation:**
-- [Why this work matters now]
-- [User feedback driving it]
-- [Technical debt or improvements needed]
-
-**Scope (v[X.Y]):**
-- [Feature/improvement 1]
-- [Feature/improvement 2]
-- [Feature/improvement 3]
-
-**Success Criteria:**
-- [ ] [Measurable outcome 1]
-- [ ] [Measurable outcome 2]
-- [ ] [Measurable outcome 3]
-
-**Not Building (this version):**
-- [Not doing X in this version]
-- [Not doing Y in this version]
-
-## Constraints
-
-- **[Constraint type]**: [What] - [Why]
-- **[Constraint type]**: [What] - [Why]
-
-## Open Questions
-
-- [ ] [Question for this version]
-- [ ] [Question for this version]
-
----
-
-<details>
-<summary>Original Vision (v1.0 - Archived)</summary>
-
-## Vision
-
-[Original vision content]
-
-## Problem
-
-[Original problem statement]
-
-## Success Criteria
-
-- [x] [Outcome 1] - Achieved
-- [x] [Outcome 2] - Achieved
-- [x] [Outcome 3] - Achieved
-
-## Scope
-
-### Built
-- [What was built]
-
-### Not Built
-- [What was excluded]
-
-## Context
-
-[Original context]
-
-## Constraints
-
-[Original constraints]
-
-## Decisions Made
-
-[Original decisions table]
-
-</details>
-```
+</template>
 
 <guidelines>
-**Greenfield:**
-- Don't compress - capture everything from questioning
-- Use user's words - preserve their language and framing
-- Be specific - vague inputs create vague outputs
-- Include rationale - "what" without "why" loses context
-- Mark unknowns - open questions are valuable, not failures
 
-**Brownfield:**
-- Current State shows real-world context (shipped, users, feedback)
-- v[Next] Goals focuses on the upcoming work
-- Original Vision collapsed in `<details>` for reference
-- Checkboxes marked [x] for achieved goals
-- This makes all plans brownfield-aware automatically
-</guidelines>
+**What This Is:**
+- Current accurate description of the product
+- 2-3 sentences capturing what it does and who it's for
+- Use the user's words and framing
+- Update when the product evolves beyond this description
 
-<state_summary>
-When creating STATE.md, extract a summary from PROJECT.md:
+**Core Value:**
+- The single most important thing
+- Everything else can fail; this cannot
+- Drives prioritization when tradeoffs arise
+- Rarely changes; if it does, it's a significant pivot
 
-**Building:** [One-liner from Vision]
+**Requirements — Validated:**
+- Requirements that shipped and proved valuable
+- Format: `- ✓ [Requirement] — [version/phase]`
+- These are locked — changing them requires explicit discussion
 
-**Core requirements:**
-- [Top 3 from Success Criteria]
+**Requirements — Active:**
+- Current scope being built toward
+- These are hypotheses until shipped and validated
+- Move to Validated when shipped, Out of Scope if invalidated
+
+**Requirements — Out of Scope:**
+- Explicit boundaries on what we're not building
+- Always include reasoning (prevents re-adding later)
+- Includes: considered and rejected, deferred to future, explicitly excluded
+
+**Context:**
+- Background that informs implementation decisions
+- Technical environment, prior work, user feedback
+- Known issues or technical debt to address
+- Update as new context emerges
 
 **Constraints:**
-- [Key constraints]
+- Hard limits on implementation choices
+- Tech stack, timeline, budget, compatibility, dependencies
+- Include the "why" — constraints without rationale get questioned
 
-This goes in STATE.md's immutable "Project Summary" section.
-</state_summary>
+**Key Decisions:**
+- Significant choices that affect future work
+- Add decisions as they're made throughout the project
+- Track outcome when known:
+  - ✓ Good — decision proved correct
+  - ⚠️ Revisit — decision may need reconsideration
+  - — Pending — too early to evaluate
+
+**Last Updated:**
+- Always note when and why the document was updated
+- Format: `after Phase 2` or `after v1.0 milestone`
+- Triggers review of whether content is still accurate
+
+</guidelines>
+
+<evolution>
+
+PROJECT.md evolves throughout the project lifecycle.
+
+**After each phase transition:**
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone:**
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state (users, feedback, metrics)
+
+</evolution>
+
+<brownfield>
+
+For existing codebases:
+
+1. **Map codebase first** via `/gsd:map-codebase`
+
+2. **Infer Validated requirements** from existing code:
+   - What does the codebase actually do?
+   - What patterns are established?
+   - What's clearly working and relied upon?
+
+3. **Gather Active requirements** from user:
+   - Present inferred current state
+   - Ask what they want to build next
+
+4. **Initialize:**
+   - Validated = inferred from existing code
+   - Active = user's goals for this work
+   - Out of Scope = boundaries user specifies
+   - Context = includes current codebase state
+
+</brownfield>
+
+<state_reference>
+
+STATE.md references PROJECT.md:
+
+```markdown
+## Project Reference
+
+See: .planning/PROJECT.md (updated [date])
+
+**Core value:** [One-liner from Core Value section]
+**Current focus:** [Current phase name]
+```
+
+This ensures Claude reads current PROJECT.md context.
+
+</state_reference>

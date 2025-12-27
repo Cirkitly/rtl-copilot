@@ -38,7 +38,7 @@ If missing STATE.md or ROADMAP.md: inform what's missing, suggest running `/gsd:
 
 - Read `.planning/STATE.md` for living memory (position, decisions, issues)
 - Read `.planning/ROADMAP.md` for phase structure and objectives
-- Read `.planning/PROJECT.md` for project vision (brief summary only)
+- Read `.planning/PROJECT.md` for current state (What This Is, Core Value, Requirements)
   </step>
 
 <step name="recent">

@@ -1,25 +1,31 @@
 <purpose>
-Mark a shipped version (v1.0, v1.1, v2.0) as complete. This creates a historical record in MILESTONES.md, updates PROJECT.md with current state, reorganizes ROADMAP.md with milestone groupings, and tags the release in git.
+
+Mark a shipped version (v1.0, v1.1, v2.0) as complete. This creates a historical record in MILESTONES.md, performs full PROJECT.md evolution review, reorganizes ROADMAP.md with milestone groupings, and tags the release in git.
 
 This is the ritual that separates "development" from "shipped."
+
 </purpose>
 
 <required_reading>
+
 **Read these files NOW:**
 
 1. templates/milestone.md
 2. templates/milestone-archive.md
 3. `.planning/ROADMAP.md`
 4. `.planning/PROJECT.md`
-   </required_reading>
+
+</required_reading>
 
 <archival_behavior>
+
 When a milestone completes, this workflow:
 
 1. Extracts full milestone details to `.planning/milestones/v[X.Y]-ROADMAP.md`
 2. Updates ROADMAP.md to replace milestone details with one-line summary
 3. Links to archive file for historical reference
-4. Offers to create next milestone inline
+4. Performs full PROJECT.md evolution review
+5. Offers to create next milestone inline
 
 **Context Efficiency:**
 
@@ -33,11 +39,13 @@ Uses `templates/milestone-archive.md` template with:
 - Milestone header (status, phases, date)
 - Full phase details from roadmap
 - Milestone summary (decisions, issues, technical debt)
-  </archival_behavior>
+
+</archival_behavior>
 
 <process>
 
 <step name="verify_readiness">
+
 Check if milestone is truly complete:
 
 ```bash
@@ -67,12 +75,15 @@ Total: 4 phases, 8 plans, all complete
 ```
 
 <config-check>
+
 ```bash
 cat .planning/config.json 2>/dev/null
 ```
+
 </config-check>
 
 <if mode="yolo">
+
 ```
 ⚡ Auto-approved: Milestone scope verification
 
@@ -82,9 +93,11 @@ Proceeding to stats gathering...
 ```
 
 Proceed directly to gather_stats step.
+
 </if>
 
 <if mode="interactive" OR="custom with gates.confirm_milestone_scope true">
+
 ```
 Ready to mark this milestone as shipped?
 (yes / wait / adjust scope)
@@ -94,10 +107,13 @@ Wait for confirmation.
 
 If "adjust scope": Ask which phases should be included.
 If "wait": Stop, user will return when ready.
+
 </if>
+
 </step>
 
 <step name="gather_stats">
+
 Calculate milestone statistics:
 
 ```bash
@@ -134,6 +150,7 @@ Milestone Stats:
 </step>
 
 <step name="extract_accomplishments">
+
 Read all phase SUMMARY.md files in milestone range:
 
 ```bash
@@ -158,6 +175,7 @@ Key accomplishments for this milestone:
 </step>
 
 <step name="create_milestone_entry">
+
 Create or update `.planning/MILESTONES.md`.
 
 If file doesn't exist:
@@ -199,58 +217,152 @@ Use template from `templates/milestone.md`:
 
 </step>
 
-<step name="update_project">
-Update `.planning/PROJECT.md` to reflect current state.
+<step name="evolve_project_full_review">
 
-Add/update "Current State" section at top (after YAML if present):
+Perform full PROJECT.md evolution review at milestone completion.
 
-```markdown
-# Project: [Name]
+**Read all phase summaries in this milestone:**
 
-## Current State (Updated: YYYY-MM-DD)
-
-**Shipped:** v[X.Y] [Name] (YYYY-MM-DD)
-**Status:** [Production / Beta / Internal]
-**Users:** [If known, e.g., "~500 downloads, 50 DAU" or "Internal use only"]
-**Feedback:** [Key themes from users, or "Initial release, gathering feedback"]
-**Codebase:** [LOC] [language], [key tech stack], [platform/deployment target]
-
-## [Next Milestone] Goals
-
-**Vision:** [What's the goal for next version?]
-
-**Motivation:**
-
-- [Why this next work matters]
-- [User feedback driving it]
-- [Technical debt or improvements needed]
-
-**Scope (v[X.Y]):**
-
-- [Feature/improvement 1]
-- [Feature/improvement 2]
-- [Feature/improvement 3]
-
----
-
-<details>
-<summary>Original Vision (v1.0 - Archived for reference)</summary>
-
-[Move original project content here]
-
-</details>
+```bash
+cat .planning/phases/*-*/*-SUMMARY.md
 ```
 
-**If this is v1.0 (first milestone):**
-Just add "Current State" section, no need to archive original vision yet.
+**Full review checklist:**
 
-**If this is v1.1+:**
-Collapse previous version's content into `<details>` section.
+1. **"What This Is" accuracy:**
+   - Read current description
+   - Compare to what was actually built
+   - Update if the product has meaningfully changed
 
-Show diff of changes:
+2. **Core Value check:**
+   - Is the stated core value still the right priority?
+   - Did shipping reveal a different core value?
+   - Update if the ONE thing has shifted
+
+3. **Requirements audit:**
+
+   **Validated section:**
+   - All Active requirements shipped in this milestone → Move to Validated
+   - Format: `- ✓ [Requirement] — v[X.Y]`
+
+   **Active section:**
+   - Remove requirements that moved to Validated
+   - Add any new requirements for next milestone
+   - Keep requirements that weren't addressed yet
+
+   **Out of Scope audit:**
+   - Review each item — is the reasoning still valid?
+   - Remove items that are no longer relevant
+   - Add any requirements invalidated during this milestone
+
+4. **Context update:**
+   - Current codebase state (LOC, tech stack)
+   - User feedback themes (if any)
+   - Known issues or technical debt to address
+
+5. **Key Decisions audit:**
+   - Extract all decisions from milestone phase summaries
+   - Add to Key Decisions table with outcomes where known
+   - Mark ✓ Good, ⚠️ Revisit, or — Pending for each
+
+6. **Constraints check:**
+   - Any constraints that changed during development?
+   - Update as needed
+
+**Update PROJECT.md:**
+
+Make all edits inline. Update "Last updated" footer:
+
+```markdown
+---
+*Last updated: [date] after v[X.Y] milestone*
+```
+
+**Example full evolution (v1.0 → v1.1 prep):**
+
+Before:
+
+```markdown
+## What This Is
+
+A real-time collaborative whiteboard for remote teams.
+
+## Core Value
+
+Real-time sync that feels instant.
+
+## Requirements
+
+### Validated
+
+(None yet — ship to validate)
+
+### Active
+
+- [ ] Canvas drawing tools
+- [ ] Real-time sync < 500ms
+- [ ] User authentication
+- [ ] Export to PNG
+
+### Out of Scope
+
+- Mobile app — web-first approach
+- Video chat — use external tools
+```
+
+After v1.0:
+
+```markdown
+## What This Is
+
+A real-time collaborative whiteboard for remote teams with instant sync and drawing tools.
+
+## Core Value
+
+Real-time sync that feels instant.
+
+## Requirements
+
+### Validated
+
+- ✓ Canvas drawing tools — v1.0
+- ✓ Real-time sync < 500ms — v1.0 (achieved 200ms avg)
+- ✓ User authentication — v1.0
+
+### Active
+
+- [ ] Export to PNG
+- [ ] Undo/redo history
+- [ ] Shape tools (rectangles, circles)
+
+### Out of Scope
+
+- Mobile app — web-first approach, PWA works well
+- Video chat — use external tools
+- Offline mode — real-time is core value
+
+## Context
+
+Shipped v1.0 with 2,400 LOC TypeScript.
+Tech stack: Next.js, Supabase, Canvas API.
+Initial user testing showed demand for shape tools.
+```
+
+**Step complete when:**
+
+- [ ] "What This Is" reviewed and updated if needed
+- [ ] Core Value verified as still correct
+- [ ] All shipped requirements moved to Validated
+- [ ] New requirements added to Active for next milestone
+- [ ] Out of Scope reasoning audited
+- [ ] Context updated with current state
+- [ ] All milestone decisions added to Key Decisions
+- [ ] "Last updated" footer reflects milestone completion
+
 </step>
 
 <step name="reorganize_roadmap">
+
 Update `.planning/ROADMAP.md` to group completed milestone phases.
 
 Add milestone headers and collapse completed work:
@@ -260,19 +372,19 @@ Add milestone headers and collapse completed work:
 
 ## Milestones
 
-- ✅ **v1.0 MVP** - Phases 1-4 (shipped YYYY-MM-DD)
-- 🚧 **v1.1 Security** - Phases 5-6 (in progress)
-- 📋 **v2.0 Redesign** - Phases 7-10 (planned)
+- ✅ **v1.0 MVP** — Phases 1-4 (shipped YYYY-MM-DD)
+- 🚧 **v1.1 Security** — Phases 5-6 (in progress)
+- 📋 **v2.0 Redesign** — Phases 7-10 (planned)
 
 ## Phases
 
 <details>
-<summary>✅ v1.0 MVP (Phases 1-4) - SHIPPED YYYY-MM-DD</summary>
+<summary>✅ v1.0 MVP (Phases 1-4) — SHIPPED YYYY-MM-DD</summary>
 
-- [x] Phase 1: Foundation (2/2 plans) - completed YYYY-MM-DD
-- [x] Phase 2: Authentication (2/2 plans) - completed YYYY-MM-DD
-- [x] Phase 3: Core Features (3/3 plans) - completed YYYY-MM-DD
-- [x] Phase 4: Polish (1/1 plan) - completed YYYY-MM-DD
+- [x] Phase 1: Foundation (2/2 plans) — completed YYYY-MM-DD
+- [x] Phase 2: Authentication (2/2 plans) — completed YYYY-MM-DD
+- [x] Phase 3: Core Features (3/3 plans) — completed YYYY-MM-DD
+- [x] Phase 4: Polish (1/1 plan) — completed YYYY-MM-DD
 
 </details>
 
@@ -296,6 +408,7 @@ Add milestone headers and collapse completed work:
 </step>
 
 <step name="archive_milestone">
+
 Extract completed milestone details and create archive file.
 
 **Process:**
@@ -305,42 +418,36 @@ Extract completed milestone details and create archive file.
 2. Read `~/.claude/get-shit-done/templates/milestone-archive.md` template
 
 3. Extract data from current ROADMAP.md:
-
    - All phases belonging to this milestone (by phase number range)
    - Full phase details (goals, plans, dependencies, status)
    - Phase plan lists with completion checkmarks
 
-4. Extract data from STATE.md:
-
-   - All decisions made during this milestone (filter by Phase column)
-   - Issues that were resolved
-   - Issues that were deferred
+4. Extract data from PROJECT.md:
+   - Key decisions made during this milestone
+   - Requirements that were validated
 
 5. Fill template {{PLACEHOLDERS}}:
-
-   - {{VERSION}} - Milestone version (e.g., "1.0")
-   - {{MILESTONE_NAME}} - From ROADMAP.md milestone header
-   - {{DATE}} - Today's date
-   - {{PHASE_START}} - First phase number in milestone
-   - {{PHASE_END}} - Last phase number in milestone
-   - {{TOTAL_PLANS}} - Count of all plans in milestone
-   - {{MILESTONE_DESCRIPTION}} - From ROADMAP.md overview
-   - {{PHASES_SECTION}} - Full phase details extracted
-   - {{DECISIONS_FROM_PROJECT_STATE}} - Filtered decisions
-   - {{ISSUES_RESOLVED_DURING_MILESTONE}} - From summaries
-   - {{ISSUES_DEFERRED_TO_LATER}} - From ISSUES.md
+   - {{VERSION}} — Milestone version (e.g., "1.0")
+   - {{MILESTONE_NAME}} — From ROADMAP.md milestone header
+   - {{DATE}} — Today's date
+   - {{PHASE_START}} — First phase number in milestone
+   - {{PHASE_END}} — Last phase number in milestone
+   - {{TOTAL_PLANS}} — Count of all plans in milestone
+   - {{MILESTONE_DESCRIPTION}} — From ROADMAP.md overview
+   - {{PHASES_SECTION}} — Full phase details extracted
+   - {{DECISIONS_FROM_PROJECT}} — Key decisions from PROJECT.md
+   - {{ISSUES_RESOLVED_DURING_MILESTONE}} — From summaries
+   - {{ISSUES_DEFERRED_TO_LATER}} — From ISSUES.md
 
 6. Write filled template to `.planning/milestones/v[X.Y]-ROADMAP.md`
 
 7. Update ROADMAP.md:
-
    - Create/update "## Completed Milestones" section if not exists
-   - Add one-line entry: `- ✅ [v[X.Y] [Name]](milestones/v[X.Y]-ROADMAP.md) (Phases [N]-[M]) - SHIPPED [DATE]`
+   - Add one-line entry: `- ✅ [v[X.Y] [Name]](milestones/v[X.Y]-ROADMAP.md) (Phases [N]-[M]) — SHIPPED [DATE]`
    - Remove full milestone details from "Current Milestone" section
    - Move next planned milestone to "Current Milestone" position
 
 8. Verify files:
-
    - Check archive file exists: `ls .planning/milestones/v[X.Y]-ROADMAP.md`
    - Validate ROADMAP.md still parseable
 
@@ -350,10 +457,44 @@ Extract completed milestone details and create archive file.
    ✅ v[X.Y] archived to milestones/v[X.Y]-ROADMAP.md
    ```
 
-   Continue to git_tag step. Milestone creation happens in offer_next step.
-   </step>
+</step>
+
+<step name="update_state">
+
+Update STATE.md to reflect milestone completion.
+
+**Project Reference:**
+
+```markdown
+## Project Reference
+
+See: .planning/PROJECT.md (updated [today])
+
+**Core value:** [Current core value from PROJECT.md]
+**Current focus:** [Next milestone or "Planning next milestone"]
+```
+
+**Current Position:**
+
+```markdown
+Phase: [Next phase] of [Total] ([Phase name])
+Plan: Not started
+Status: Ready to plan
+Last activity: [today] — v[X.Y] milestone complete
+
+Progress: [updated progress bar]
+```
+
+**Accumulated Context:**
+
+- Clear decisions summary (full log in PROJECT.md)
+- Clear resolved blockers
+- Keep open blockers for next milestone
+
+</step>
 
 <step name="git_tag">
+
 Create git tag for milestone:
 
 ```bash
@@ -385,6 +526,7 @@ git push origin v[X.Y]
 </step>
 
 <step name="git_commit_milestone">
+
 Commit milestone completion including archive file.
 
 ```bash
@@ -392,32 +534,33 @@ Commit milestone completion including archive file.
 git add .planning/MILESTONES.md
 git add .planning/PROJECT.md
 git add .planning/ROADMAP.md
+git add .planning/STATE.md
 git add .planning/milestones/v[X.Y]-ROADMAP.md
 
 # Commit with descriptive message
 git commit -m "$(cat <<'EOF'
-chore: archive v[X.Y] milestone
+chore: complete v[X.Y] milestone
 
 - Added MILESTONES.md entry
-- Updated PROJECT.md current state
+- Evolved PROJECT.md with validated requirements
 - Reorganized ROADMAP.md with milestone grouping
 - Created milestone archive: milestones/v[X.Y]-ROADMAP.md
+- Updated STATE.md
 - Tagged v[X.Y]
 EOF
 )"
 ```
 
-Confirm: "Committed: chore: archive v[X.Y] milestone"
+Confirm: "Committed: chore: complete v[X.Y] milestone"
 
-Then proceed to git tag step.
 </step>
 
 <step name="offer_next">
+
 ```
 ✅ Milestone v[X.Y] [Name] complete
 
 Shipped:
-
 - [N] phases ([M] plans, [P] tasks)
 - [One sentence of what shipped]
 
@@ -441,15 +584,17 @@ Tag: v[X.Y]
 
 ---
 ```
+
 </step>
 
 </process>
 
 <milestone_naming>
+
 **Version conventions:**
-- **v1.0** - Initial MVP
-- **v1.1, v1.2, v1.3** - Minor updates, new features, fixes
-- **v2.0, v3.0** - Major rewrites, breaking changes, significant new direction
+- **v1.0** — Initial MVP
+- **v1.1, v1.2, v1.3** — Minor updates, new features, fixes
+- **v2.0, v3.0** — Major rewrites, breaking changes, significant new direction
 
 **Name conventions:**
 - v1.0 MVP
@@ -459,9 +604,11 @@ Tag: v[X.Y]
 - v2.0 iOS Launch
 
 Keep names short (1-2 words describing the focus).
+
 </milestone_naming>
 
 <what_qualifies>
+
 **Create milestones for:**
 - Initial release (v1.0)
 - Public releases
@@ -475,15 +622,22 @@ Keep names short (1-2 words describing the focus).
 
 If uncertain, ask: "Is this deployed/usable/shipped in some form?"
 If yes → milestone. If no → keep working.
+
 </what_qualifies>
 
 <success_criteria>
+
 Milestone completion is successful when:
+
 - [ ] MILESTONES.md entry created with stats and accomplishments
-- [ ] PROJECT.md updated with current state
+- [ ] PROJECT.md full evolution review completed
+- [ ] All shipped requirements moved to Validated
+- [ ] Key Decisions updated with outcomes
 - [ ] ROADMAP.md reorganized with milestone grouping
+- [ ] Milestone archive created
+- [ ] STATE.md updated with fresh project reference
 - [ ] Git tag created (v[X.Y])
 - [ ] Milestone commit made
 - [ ] User knows next steps
+
 </success_criteria>
-```

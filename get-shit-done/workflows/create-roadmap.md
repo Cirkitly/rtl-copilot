@@ -285,7 +285,8 @@ mkdir -p .planning/phases/02-{phase-name}
 </step>
 
 <step name="initialize_project_state">
-Create STATE.md - the project's living memory.
+
+Create STATE.md — the project's living memory.
 
 Use template from `~/.claude/get-shit-done/templates/state.md`.
 
@@ -294,46 +295,55 @@ Write to `.planning/STATE.md`:
 ```markdown
 # Project State
 
-## Brief Summary
+## Project Reference
 
-**Building:** [Copy one-liner from PROJECT.md]
+See: .planning/PROJECT.md (updated [today's date])
 
-**Core requirements:**
-[Copy 3-5 key requirements from PROJECT.md]
-
-**Constraints:**
-[Copy key constraints from PROJECT.md]
+**Core value:** [Copy Core Value from PROJECT.md]
+**Current focus:** Phase 1 — [First phase name]
 
 ## Current Position
 
 Phase: 1 of [N] ([First phase name])
 Plan: Not started
 Status: Ready to plan
-Last activity: [today's date] - Project initialized
+Last activity: [today's date] — Project initialized
 
 Progress: ░░░░░░░░░░ 0%
 
+## Performance Metrics
+
+**Velocity:**
+- Total plans completed: 0
+- Average duration: —
+- Total execution time: 0 hours
+
+**By Phase:**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| — | — | — | — |
+
+**Recent Trend:**
+- Last 5 plans: —
+- Trend: —
+
 ## Accumulated Context
 
-### Decisions Made
+### Decisions
 
-| Phase | Decision | Rationale |
-| ----- | -------- | --------- |
+Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+(None yet)
 
 ### Deferred Issues
 
 None yet.
 
-### Blockers/Concerns Carried Forward
+### Blockers/Concerns
 
 None yet.
-
-## Brief Alignment
-
-Last checked: Project start
-Status: ✓ Aligned
-Assessment: No work done yet - baseline alignment.
-Drift notes: None
 
 ## Session Continuity
 
@@ -344,11 +354,12 @@ Resume file: None
 
 **Key points:**
 
-- Brief Summary section is IMMUTABLE after creation - never edit it
-- Copy verbatim from PROJECT.md to ensure fidelity
+- Project Reference points to PROJECT.md for full context
+- Claude reads PROJECT.md directly for requirements, constraints, decisions
 - This file will be read first in every future operation
 - This file will be updated after every execution
-  </step>
+
+</step>
 
 <step name="git_commit_initialization">
 Commit project initialization (brief + roadmap + state together):
