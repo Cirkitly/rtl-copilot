@@ -46,7 +46,13 @@ If STATE.md missing but .planning/ exists, offer to reconstruct or continue with
 </step>
 
 <step name="load_codebase_context">
-Check for `.planning/codebase/*.md` and load relevant documents based on phase type:
+Check for codebase map:
+
+```bash
+ls .planning/codebase/*.md 2>/dev/null
+```
+
+**If .planning/codebase/ exists:** Load relevant documents based on phase type:
 
 | Phase Keywords | Load These |
 |----------------|------------|
@@ -63,7 +69,14 @@ Track extracted constraints for PLAN.md context section.
 </step>
 
 <step name="identify_phase">
-Check roadmap and existing phases. If multiple phases available, ask which one to plan.
+Check roadmap and existing phases:
+
+```bash
+cat .planning/ROADMAP.md
+ls .planning/phases/
+```
+
+If multiple phases available, ask which one to plan. If obvious (first incomplete phase), proceed.
 
 **Phase number parsing:** Regex `^(\d+)(?:\.(\d+))?$` - Group 1: integer, Group 2: decimal (optional)
 
@@ -112,9 +125,21 @@ For niche domains (3D, games, audio, shaders, ML), suggest `/gsd:research-phase`
 <step name="read_project_history">
 **From STATE.md:** Decisions → constrain approach. Deferred issues → candidates. Blockers → may need to address.
 
-**From prior summaries:** Scan `.planning/phases/*/*-SUMMARY.md` for decisions constraining this phase, issues flagged for "later", warnings in "Next Phase Readiness", patterns to maintain.
+**From prior summaries:**
 
-**From ISSUES.md:** Assess each open issue - relevant to this phase? Waiting long enough? Natural to address now? Blocking something?
+```bash
+ls .planning/phases/*/*-SUMMARY.md 2>/dev/null | sort
+```
+
+Scan for decisions constraining this phase, issues flagged for "later", warnings in "Next Phase Readiness", patterns to maintain.
+
+**From ISSUES.md:**
+
+```bash
+cat .planning/ISSUES.md 2>/dev/null
+```
+
+Assess each open issue - relevant to this phase? Waiting long enough? Natural to address now? Blocking something?
 
 **Answer before proceeding:**
 - Q1: What decisions from previous phases constrain this phase?
@@ -133,6 +158,18 @@ Understand:
 - Any {phase}-RESEARCH.md (from /gsd:research-phase)
 - Any DISCOVERY.md (from mandatory discovery)
 - Any {phase}-CONTEXT.md (from /gsd:discuss-phase)
+
+```bash
+# If mid-project, understand current state
+ls -la src/ 2>/dev/null
+cat package.json 2>/dev/null | head -20
+
+# Check for ecosystem research (from /gsd:research-phase)
+cat .planning/phases/XX-name/${PHASE}-RESEARCH.md 2>/dev/null
+
+# Check for phase context (from /gsd:discuss-phase)
+cat .planning/phases/XX-name/${PHASE}-CONTEXT.md 2>/dev/null
+```
 
 **If RESEARCH.md exists:** Use standard_stack (these libraries), architecture_patterns (follow in task structure), dont_hand_roll (NEVER custom solutions for listed problems), common_pitfalls (inform verification), code_examples (reference in actions).
 
@@ -198,15 +235,6 @@ Does this look right? (yes / adjust / start over)
 For multiple plans, show each plan with its tasks.
 
 Wait for confirmation. If "adjust": revise. If "start over": return to gather_phase_context.
-</if>
-</step>
-
-<step name="decision_gate">
-<if mode="yolo">Auto-approve and proceed.</if>
-<if mode="interactive">
-Ask: "Ready to create the phase prompt, or ask more questions?"
-Options: Create phase prompt / Ask more questions / Let me add context
-Loop until "Create phase prompt" selected.
 </if>
 </step>
 
