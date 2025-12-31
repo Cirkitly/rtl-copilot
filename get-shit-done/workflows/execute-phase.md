@@ -439,6 +439,10 @@ Execute each task in the prompt. **Deviations are normal** - handle them automat
 
    **If `type="auto"`:**
 
+   **Before executing:** Check if task has `tdd="true"` attribute:
+   - If yes: Follow TDD execution flow (see `<tdd_execution>`) - RED → GREEN → REFACTOR cycle with multiple atomic commits
+   - If no: Standard implementation with single commit
+
    - Work toward task completion
    - **If CLI/API returns authentication error:** Handle as authentication gate (see below)
    - **When you discover additional work not in plan:** Apply deviation rules (see below) automatically
@@ -809,6 +813,54 @@ Logged to .planning/ISSUES.md for future consideration:
 - User can see exactly what happened beyond the plan
 
 </deviation_documentation>
+
+<tdd_execution>
+## TDD Task Execution
+
+When executing a task with `tdd="true"` attribute:
+
+**1. Check test infrastructure:**
+If no test framework configured:
+- Detect project type from package.json/requirements.txt/etc.
+- Install minimal test framework (Jest, pytest, Go testing, etc.)
+- Create test config file
+- Verify: run empty test suite
+
+**2. RED - Write failing test:**
+- Read `<test-first>` element for test specification
+- Create test file if doesn't exist (follow project conventions)
+- Write test(s) that describe expected behavior
+- Run tests - MUST fail (if passes, test is wrong or feature exists)
+- Commit: "test: add failing test for [feature]"
+
+**3. GREEN - Implement to pass:**
+- Read `<action>` element for implementation guidance
+- Write minimal code to make test pass
+- Run tests - MUST pass
+- Commit: "feat: implement [feature]"
+
+**4. REFACTOR (if needed):**
+- Clean up code if obvious improvements
+- Run tests - MUST still pass
+- Commit only if changes made: "refactor: clean up [feature]"
+
+**Commit pattern for TDD tasks:**
+Each TDD task produces 2-3 atomic commits:
+1. `test: add failing test for X`
+2. `feat: implement X`
+3. `refactor: clean up X` (optional)
+
+**Error handling:**
+- If test doesn't fail in RED phase: Test is wrong or feature already exists. Investigate before proceeding.
+- If test doesn't pass in GREEN phase: Debug implementation, don't skip to next task.
+- If tests fail in REFACTOR phase: Undo refactor, commit was premature.
+
+**Verification:**
+After TDD task completion, ensure:
+- All tests pass
+- Test coverage for the new behavior exists
+- No unrelated tests broken
+</tdd_execution>
 
 <step name="checkpoint_protocol">
 When encountering `type="checkpoint:*"`:

@@ -19,8 +19,9 @@ Decimal phases enable urgent work insertion without renumbering:
 2. ~/.claude/get-shit-done/references/plan-format.md
 3. ~/.claude/get-shit-done/references/scope-estimation.md
 4. ~/.claude/get-shit-done/references/checkpoints.md
-5. .planning/ROADMAP.md
-6. .planning/PROJECT.md
+5. ~/.claude/get-shit-done/references/tdd.md
+6. .planning/ROADMAP.md
+7. .planning/PROJECT.md
 
 **Load domain expertise from ROADMAP:**
 - Parse ROADMAP.md's `## Domain Expertise` section for paths
@@ -187,7 +188,33 @@ Decompose phase into tasks. Each task needs:
 - **Verify**: How to prove it worked
 - **Done**: Acceptance criteria
 
-**TDD fit:** Can you write `expect(fn(input)).toBe(output)` before writing `fn`? Yes (business logic, APIs, validation) → test-first. No (UI layout, config, glue code) → standard implementation.
+**TDD detection:** For each task, evaluate TDD fit:
+
+TDD candidates (add `tdd="true"` to task, include `<test-first>` element):
+- Business logic with defined inputs/outputs
+- API endpoints with request/response contracts
+- Data transformations, parsing, formatting
+- Validation rules and constraints
+- Algorithms with testable behavior
+- State machines and workflows
+
+Skip TDD (standard `type="auto"` task):
+- UI layout, styling, visual components
+- Configuration changes
+- Glue code connecting existing components
+- One-off scripts and migrations
+- Simple CRUD with no business logic
+
+**Heuristic:** Can you write `expect(fn(input)).toBe(output)` before writing `fn`?
+→ Yes: Add `tdd="true"`, include `<test-first>` describing the failing test
+→ No: Standard task, no TDD annotation
+
+**Test framework:** If project has no test setup and TDD tasks exist, add a setup task first:
+- Detect project type (package.json → Jest, requirements.txt → pytest, etc.)
+- Add minimal test configuration
+- Create example test file to verify setup
+
+See `~/.claude/get-shit-done/references/tdd.md` for complete TDD guidance.
 
 **Checkpoints:** Visual/functional verification → checkpoint:human-verify. Implementation choices → checkpoint:decision. Manual action (email, 2FA) → checkpoint:human-action (rare).
 
@@ -292,6 +319,21 @@ Phase plan created: .planning/phases/XX-name/{phase}-01-PLAN.md
 - "Set up authentication" / "Make it secure" / "Handle edge cases"
 
 If you can't specify Files + Action + Verify + Done, the task is too vague.
+
+**Good TDD task:**
+```xml
+<task type="auto" tdd="true">
+  <name>Create price calculator with discount rules</name>
+  <files>src/lib/pricing.ts, src/lib/pricing.test.ts</files>
+  <test-first>
+    Test: calculatePrice applies discounts correctly
+    Cases: base 100 + 10% off → 90, base 100 + 20% off + $5 coupon → 75
+  </test-first>
+  <action>Implement calculatePrice(base, discountPercent, couponAmount). Apply percentage first, then flat amount.</action>
+  <verify>npm test -- pricing.test.ts passes</verify>
+  <done>Price calculation handles all discount combinations correctly</done>
+</task>
+```
 </task_quality>
 
 <anti_patterns>
