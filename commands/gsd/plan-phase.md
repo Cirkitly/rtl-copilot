@@ -25,6 +25,7 @@ Output: One or more PLAN.md files in the phase directory (.planning/phases/XX-na
 @~/.claude/get-shit-done/references/plan-format.md
 @~/.claude/get-shit-done/references/scope-estimation.md
 @~/.claude/get-shit-done/references/checkpoints.md
+@~/.claude/get-shit-done/references/tdd.md
 </execution_context>
 
 <context>

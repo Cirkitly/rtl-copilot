@@ -27,6 +27,7 @@ Uses intelligent segmentation:
 @~/.claude/get-shit-done/workflows/execute-phase.md
 @~/.claude/get-shit-done/templates/summary.md
 @~/.claude/get-shit-done/references/checkpoints.md
+@~/.claude/get-shit-done/references/tdd.md
 </execution_context>
 
 <context>
