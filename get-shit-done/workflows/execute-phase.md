@@ -990,6 +990,41 @@ Use ~/.claude/get-shit-done/templates/summary.md for structure.
 
 **File location:** `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
 
+**Frontmatter population:**
+
+Before writing summary content, populate frontmatter fields from execution context:
+
+1. **Basic identification:**
+   - phase: From PLAN.md frontmatter
+   - plan: From PLAN.md frontmatter
+   - subsystem: Categorize based on phase focus (auth, payments, ui, api, database, infra, testing, etc.)
+   - tags: Extract tech keywords (libraries, frameworks, tools used)
+
+2. **Dependency graph:**
+   - requires: List prior phases this built upon (check PLAN.md context section for referenced prior summaries)
+   - provides: Extract from accomplishments - what was delivered
+   - affects: Infer from phase description/goal what future phases might need this
+
+3. **Tech tracking:**
+   - tech-stack.added: New libraries from package.json changes or requirements
+   - tech-stack.patterns: Architectural patterns established (from decisions/accomplishments)
+
+4. **File tracking:**
+   - key-files.created: From "Files Created/Modified" section
+   - key-files.modified: From "Files Created/Modified" section
+
+5. **Decisions:**
+   - key-decisions: Extract from "Decisions Made" section
+
+6. **Issues:**
+   - issues-created: Check if ISSUES.md was updated during execution
+
+7. **Metrics:**
+   - duration: From $DURATION variable
+   - completed: From $PLAN_END_TIME (date only, format YYYY-MM-DD)
+
+Note: If subsystem/affects are unclear, use best judgment based on phase name and accomplishments. Can be refined later.
+
 **Title format:** `# Phase [X] Plan [Y]: [Name] Summary`
 
 The one-liner must be SUBSTANTIVE:
