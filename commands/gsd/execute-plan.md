@@ -14,10 +14,13 @@ allowed-tools:
 ---
 
 <objective>
-Execute a PLAN.md file, create SUMMARY.md, update project state, commit.
+Execute a PLAN.md file with per-task atomic commits, create SUMMARY.md, update project state.
+
+Commit strategy:
+- Each task → 1 commit immediately after completion (feat/fix/test/refactor)
+- Plan completion → 1 metadata commit (docs: SUMMARY + STATE + ROADMAP)
 
 Uses intelligent segmentation:
-
 - Plans without checkpoints → spawn subagent for full autonomous execution
 - Plans with verify checkpoints → segment execution, pause at checkpoints
 - Plans with decision checkpoints → execute in main context
@@ -88,23 +91,38 @@ Only rule 4 requires user intervention.
 </deviation_rules>
 
 <commit_rules>
-**Critical: Stage only files this plan actually modified.**
+**Per-Task Commits:**
 
-NEVER use:
+After each task completes:
+1. Stage only files modified by that task
+2. Commit with format: `{type}({phase}-{plan}): {task-name}`
+3. Types: feat, fix, test, refactor, perf, chore
+4. Record commit hash for SUMMARY.md
 
+**Plan Metadata Commit:**
+
+After all tasks complete:
+1. Stage planning artifacts only: PLAN.md, SUMMARY.md, STATE.md, ROADMAP.md
+2. Commit with format: `docs({phase}-{plan}): complete [plan-name] plan`
+3. NO code files (already committed per-task)
+
+**NEVER use:**
 - `git add .`
 - `git add -A`
 - `git add src/` or any broad directory
 
-Stage each file individually from the modified-files list.
+**Always stage files individually.**
+
+See ~/.claude/get-shit-done/references/git-integration.md for full commit strategy.
 </commit_rules>
 
 <success_criteria>
 
 - [ ] All tasks executed
-- [ ] SUMMARY.md created with substantive content
+- [ ] Each task committed individually (feat/fix/test/refactor)
+- [ ] SUMMARY.md created with substantive content and commit hashes
 - [ ] STATE.md updated (position, decisions, issues, session)
 - [ ] ROADMAP updated (plan count, phase status)
-- [ ] Changes committed with feat({phase}-{plan}): [summary]
+- [ ] Metadata committed with docs({phase}-{plan}): complete [plan-name] plan
 - [ ] User informed of next steps
       </success_criteria>

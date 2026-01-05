@@ -80,7 +80,7 @@ Plan 1: "Auth Database Models" (2 tasks)
 Plan 2: "Auth API Core" (3 tasks)
 Plan 3: "Auth API Protection" (2 tasks)
 Plan 4: "Auth UI Components" (2 tasks)
-Each: 30-40% context, peak quality, focused commits
+Each: 30-40% context, peak quality, atomic commits (2-3 task commits + 1 metadata commit)
 ```
 </anti_patterns>
 
@@ -137,7 +137,7 @@ Each plan: fresh context, peak quality. More plans = more thoroughness, same qua
 <summary>
 **2-3 tasks, 50% context target:**
 - All tasks: Peak quality
-- Git: Atomic, surgical commits
+- Git: Atomic per-task commits (each task = 1 commit, plan = 1 metadata commit)
 - Autonomous plans: Subagent execution (fresh context)
 
 **The principle:** Aggressive atomicity. More plans, smaller scope, consistent quality.
@@ -145,5 +145,7 @@ Each plan: fresh context, peak quality. More plans = more thoroughness, same qua
 **The rule:** If in doubt, split. Quality over consolidation. Always.
 
 **Depth rule:** Depth increases plan COUNT, never plan SIZE.
+
+**Commit rule:** Each plan produces 3-4 commits total (2-3 task commits + 1 docs commit). More granular history = better observability for Claude.
 </summary>
 </scope_estimation>

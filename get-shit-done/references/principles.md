@@ -115,6 +115,29 @@ Plan → Execute → Ship → Learn → Repeat
 Milestones mark shipped versions (v1.0 → v1.1 → v2.0).
 </ship_fast>
 
+<atomic_commits>
+
+**Git commits = context engineering for Claude.**
+
+Each task gets its own commit immediately after completion:
+- Format: `{type}({phase}-{plan}): {task-description}`
+- Types: feat, fix, test, refactor, perf, chore, docs
+- One final metadata commit per plan: `docs({phase}-{plan}): complete [plan-name]`
+
+**Why per-task commits:**
+- Git history becomes primary context source for future Claude sessions
+- `git bisect` finds exact failing task, not just failing plan
+- Each task independently revertable
+- Better failure recovery (task 1 committed ✅, retry task 2)
+- Observability optimized for AI workflow, not human browsing
+
+**Plans produce 3-4 commits total:**
+- 2-3 task commits (working code)
+- 1 metadata commit (SUMMARY + STATE + ROADMAP)
+
+See `~/.claude/get-shit-done/references/git-integration.md` for complete strategy.
+</atomic_commits>
+
 <anti_enterprise>
 
 NEVER include:

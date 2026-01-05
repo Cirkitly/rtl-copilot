@@ -151,18 +151,37 @@ Follow project conventions for test location:
 <commit_pattern>
 ## Commit Pattern for TDD Tasks
 
-Each TDD task produces atomic commits:
+TDD tasks produce 2-3 atomic commits (one per TDD phase):
 
 ```
-test: add failing test for email validation
+test({phase}-{plan}): add failing test for email validation
 
-feat: implement email validation
+- Tests valid email formats accepted
+- Tests invalid formats rejected
+- Tests empty input handling
 
-refactor: extract regex to constant (optional)
+feat({phase}-{plan}): implement email validation
+
+- Regex pattern matches RFC 5322
+- Returns boolean for validity
+- Handles edge cases (empty, null)
+
+refactor({phase}-{plan}): extract regex to constant (optional)
+
+- Moved pattern to EMAIL_REGEX constant
+- No behavior changes
+- Tests still pass
 ```
 
-This pattern:
-- Creates clean git history
-- Each commit is independently revertable
-- Shows TDD discipline in commit log
+**This aligns with the standard task commit pattern:**
+- Non-TDD tasks: 1 commit per task (feat/fix)
+- TDD tasks: 2-3 commits per task (test/feat/refactor)
+
+Both follow same format: `{type}({phase}-{plan}): {description}`
+
+**Benefits:**
+- Each commit independently revertable
+- Git bisect works at commit level (not just task level)
+- Clear history showing TDD discipline
+- Consistent with overall commit strategy
 </commit_pattern>

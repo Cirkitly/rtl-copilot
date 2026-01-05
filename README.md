@@ -171,9 +171,24 @@ GSD prevents this. Each plan is maximum 3 tasks. Each plan runs in a fresh subag
 
 No degradation. Walk away, come back to completed work.
 
-### Clean Git History
+### Atomic Git Commits
 
-Every task: atomic commit, clear message, summary documenting outcomes. Maintainable history you can trace.
+Each task gets its own commit immediately after completion. Plans produce 2-4 commits total:
+
+```bash
+abc123f docs(08-02): complete user registration plan
+def456g feat(08-02): add email confirmation flow
+hij789k feat(08-02): implement password hashing
+lmn012o feat(08-02): create registration endpoint
+```
+
+**Benefits:**
+- Git bisect finds exact failing task
+- Each task independently revertable
+- Clear history for Claude in future sessions
+- Better observability in AI-automated workflow
+
+Every commit is surgical, traceable, and meaningful.
 
 ### Modular by Design
 

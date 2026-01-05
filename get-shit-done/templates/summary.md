@@ -62,6 +62,18 @@ completed: YYYY-MM-DD
 - [Second key accomplishment]
 - [Third if applicable]
 
+## Task Commits
+
+Each task was committed atomically:
+
+1. **Task 1: [task name]** - `abc123f` (feat/fix/test/refactor)
+2. **Task 2: [task name]** - `def456g` (feat/fix/test/refactor)
+3. **Task 3: [task name]** - `hij789k` (feat/fix/test/refactor)
+
+**Plan metadata:** `lmn012o` (docs: complete plan)
+
+_Note: TDD tasks may have multiple commits (test → feat → refactor)_
+
 ## Files Created/Modified
 - `path/to/file.ts` - What it does
 - `path/to/another.ts` - What it does
@@ -83,7 +95,7 @@ completed: YYYY-MM-DD
 - **Fix:** [What was done]
 - **Files modified:** [file paths]
 - **Verification:** [How it was verified]
-- **Commit:** [hash]
+- **Committed in:** [hash] (part of task commit)
 
 [... repeat for each auto-fix ...]
 
@@ -189,7 +201,7 @@ The one-liner should tell someone what actually shipped.
 - **Fix:** Added bcrypt hashing on registration, comparison on login with salt rounds 10
 - **Files modified:** src/app/api/auth/login/route.ts, src/lib/auth.ts
 - **Verification:** Password hash test passes, plaintext never stored
-- **Commit:** abc123f
+- **Committed in:** abc123f (Task 2 commit)
 
 **2. [Rule 3 - Blocking] Installed missing jose dependency**
 - **Found during:** Task 4 (JWT token generation)
@@ -197,7 +209,7 @@ The one-liner should tell someone what actually shipped.
 - **Fix:** Ran `npm install jose`
 - **Files modified:** package.json, package-lock.json
 - **Verification:** Import succeeds, build passes
-- **Commit:** def456g
+- **Committed in:** def456g (Task 4 commit)
 
 ### Deferred Enhancements
 

@@ -440,8 +440,8 @@ Execute each task in the prompt. **Deviations are normal** - handle them automat
    **If `type="auto"`:**
 
    **Before executing:** Check if task has `tdd="true"` attribute:
-   - If yes: Follow TDD execution flow (see `<tdd_execution>`) - RED → GREEN → REFACTOR cycle with multiple atomic commits
-   - If no: Standard implementation with single commit
+   - If yes: Follow TDD execution flow (see `<tdd_execution>`) - RED → GREEN → REFACTOR cycle with atomic commits per stage
+   - If no: Standard implementation
 
    - Work toward task completion
    - **If CLI/API returns authentication error:** Handle as authentication gate (see below)
@@ -449,7 +449,8 @@ Execute each task in the prompt. **Deviations are normal** - handle them automat
    - Continue implementing, applying rules as needed
    - Run the verification
    - Confirm done criteria met
-   - Track any deviations for Summary documentation
+   - **Commit the task** (see `<task_commit>` below)
+   - Track task completion and commit hash for Summary documentation
    - Continue to next task
 
    **If `type="checkpoint:*"`:**
@@ -860,7 +861,117 @@ After TDD task completion, ensure:
 - All tests pass
 - Test coverage for the new behavior exists
 - No unrelated tests broken
+
+**Note:** TDD tasks produce 2-3 commits (test/feat/refactor). Non-TDD tasks produce 1 commit after task completion.
 </tdd_execution>
+
+<task_commit>
+## Task Commit Protocol
+
+After each task completes (verification passed, done criteria met), commit immediately:
+
+**1. Identify modified files:**
+
+Track files changed during this specific task (not the entire plan):
+
+```bash
+git status --short
+```
+
+**2. Stage only task-related files:**
+
+Stage each file individually (NEVER use `git add .` or `git add -A`):
+
+```bash
+# Example - adjust to actual files modified by this task
+git add src/api/auth.ts
+git add src/types/user.ts
+```
+
+**3. Determine commit type:**
+
+| Type | When to Use | Example |
+|------|-------------|---------|
+| `feat` | New feature, endpoint, component, functionality | feat(08-02): create user registration endpoint |
+| `fix` | Bug fix, error correction | fix(08-02): correct email validation regex |
+| `test` | Test-only changes (TDD RED phase) | test(08-02): add failing test for password hashing |
+| `refactor` | Code cleanup, no behavior change (TDD REFACTOR phase) | refactor(08-02): extract validation to helper |
+| `perf` | Performance improvement | perf(08-02): add database index for user lookups |
+| `docs` | Documentation changes | docs(08-02): add API endpoint documentation |
+| `style` | Formatting, linting fixes | style(08-02): format auth module |
+| `chore` | Config, tooling, dependencies | chore(08-02): add bcrypt dependency |
+
+**4. Craft commit message:**
+
+Format: `{type}({phase}-{plan}): {task-name-or-description}`
+
+```bash
+git commit -m "{type}({phase}-{plan}): {concise task description}
+
+- {key change 1}
+- {key change 2}
+- {key change 3}
+"
+```
+
+**Examples:**
+
+```bash
+# Non-TDD task
+git commit -m "feat(08-02): create user registration endpoint
+
+- POST /auth/register validates email and password
+- Checks for duplicate users
+- Returns JWT token on success
+"
+
+# TDD task - RED phase
+git commit -m "test(07-02): add failing test for JWT generation
+
+- Tests token contains user ID claim
+- Tests token expires in 1 hour
+- Tests signature verification
+"
+
+# TDD task - GREEN phase
+git commit -m "feat(07-02): implement JWT generation
+
+- Uses jose library for signing
+- Includes user ID and expiry claims
+- Signs with HS256 algorithm
+"
+
+# TDD task - REFACTOR phase
+git commit -m "refactor(07-02): extract JWT config to constants
+
+- Moved expiry time to constant
+- Centralized algorithm selection
+- No behavior changes
+"
+```
+
+**5. Record commit hash:**
+
+After committing, capture hash for SUMMARY.md:
+
+```bash
+TASK_COMMIT=$(git rev-parse --short HEAD)
+echo "Task ${TASK_NUM} committed: ${TASK_COMMIT}"
+```
+
+Store in array or list for SUMMARY generation:
+```bash
+TASK_COMMITS+=("Task ${TASK_NUM}: ${TASK_COMMIT}")
+```
+
+**Atomic commit benefits:**
+- Each task independently revertable
+- Git bisect finds exact failing task
+- Git blame traces line to specific task context
+- Clear history for Claude in future sessions
+- Better observability for AI-automated workflow
+
+</task_commit>
 
 <step name="checkpoint_protocol">
 When encountering `type="checkpoint:*"`:
@@ -1181,16 +1292,11 @@ ROADMAP_FILE=".planning/ROADMAP.md"
 - Add completion date
   </step>
 
-<step name="git_commit_plan">
-Commit plan completion (SUMMARY + PROJECT-STATE + ROADMAP + modified code files):
+<step name="git_commit_metadata">
+Commit plan metadata (SUMMARY + STATE + ROADMAP):
 
-**Critical: Stage only files this plan actually modified.**
-
-NEVER use:
-
-- `git add .`
-- `git add -A`
-- `git add src/` or any broad directory add
+**Note:** All task code has already been committed during execution (one commit per task).
+This final commit captures plan completion metadata only.
 
 **1. Stage planning artifacts:**
 
@@ -1203,45 +1309,73 @@ git add .planning/STATE.md
 **2. Stage roadmap file:**
 
 ```bash
-if [ -f .planning/ROADMAP.md ]; then
-  git add .planning/ROADMAP.md
-else
-  git add .planning/ROADMAP.md
-fi
+git add .planning/ROADMAP.md
 ```
 
-**3. Stage only code files from the modified-files list**
-
-**4. Verify staging before commit:**
+**3. Verify staging:**
 
 ```bash
 git status
-# Confirm only expected files are staged
+# Should show only planning artifacts, no code files
 ```
 
-**5. Commit:**
+**4. Commit metadata:**
 
 ```bash
 git commit -m "$(cat <<'EOF'
-feat({phase}-{plan}): [one-liner from SUMMARY.md]
+docs({phase}-{plan}): complete [plan-name] plan
 
-- [Key accomplishment 1]
-- [Key accomplishment 2]
-- [Key accomplishment 3]
+Tasks completed: [N]/[N]
+- [Task 1 name]
+- [Task 2 name]
+- [Task 3 name]
+
+SUMMARY: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 EOF
 )"
 ```
 
-For commit message conventions and git workflow patterns, see ~/.claude/get-shit-done/references/git-integration.md
+**Example:**
+
+```bash
+git commit -m "$(cat <<'EOF'
+docs(08-02): complete user registration plan
+
+Tasks completed: 3/3
+- User registration endpoint
+- Password hashing with bcrypt
+- Email confirmation flow
+
+SUMMARY: .planning/phases/08-user-auth/08-02-registration-SUMMARY.md
+EOF
+)"
+```
+
+**Git log after plan execution:**
+
+```
+abc123f docs(08-02): complete user registration plan
+def456g feat(08-02): add email confirmation flow
+hij789k feat(08-02): implement password hashing with bcrypt
+lmn012o feat(08-02): create user registration endpoint
+```
+
+Each task has its own commit, followed by one metadata commit documenting plan completion.
+
+For commit message conventions, see ~/.claude/get-shit-done/references/git-integration.md
 </step>
 
 <step name="update_codebase_map">
 **If .planning/codebase/ exists:**
 
-Check what changed in this plan:
+Check what changed across all task commits in this plan:
 
 ```bash
-git diff --name-only HEAD~1 2>/dev/null
+# Find first task commit (right after previous plan's docs commit)
+FIRST_TASK=$(git log --oneline --grep="feat({phase}-{plan}):" --grep="fix({phase}-{plan}):" --grep="test({phase}-{plan}):" --reverse | head -1 | cut -d' ' -f1)
+
+# Get all changes from first task through now
+git diff --name-only ${FIRST_TASK}^..HEAD 2>/dev/null
 ```
 
 **Update only if structural changes occurred:**
@@ -1265,7 +1399,7 @@ Make single targeted edits - add a bullet point, update a path, or remove a stal
 
 ```bash
 git add .planning/codebase/*.md
-git commit --amend --no-edit  # Include in plan commit
+git commit --amend --no-edit  # Include in metadata commit
 ```
 
 **If .planning/codebase/ doesn't exist:**
