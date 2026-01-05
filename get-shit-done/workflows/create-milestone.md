@@ -195,18 +195,28 @@ If "adjust": Ask what to change, revise, present again.
 </step>
 
 <step name="update_roadmap">
-Update `.planning/ROADMAP.md` with new milestone:
+Write new milestone details to `.planning/ROADMAP.md`.
 
-**Add to Milestones section (if exists):**
+**File to update:** `.planning/ROADMAP.md`
+
+The main ROADMAP.md file holds full phase details for the active milestone. Archive files in `milestones/` are created only when a milestone ships (via `/gsd:complete-milestone`).
+
+**Process:**
+
+**1. Update Milestones section:**
+
+Add the new milestone to the milestones list. Completed milestones show as links to their archive files, new milestone shows as in-progress.
 
 ```markdown
 ## Milestones
 
-- ✅ **v1.0 [Previous]** - Phases 1-9 (shipped YYYY-MM-DD)
+- ✅ **v1.0 [Previous]** - [link to milestones/v1.0-ROADMAP.md] (Phases 1-9, shipped YYYY-MM-DD)
 - 🚧 **v[X.Y] [Name]** - Phases [N]-[M] (in progress)
 ```
 
-**Add to Phases section:**
+**2. Add full phase details:**
+
+Write complete phase sections for all phases in this milestone. Each phase gets full details including goal, dependencies, research assessment, and plan placeholders.
 
 ```markdown
 ### 🚧 v[X.Y] [Name] (In Progress)
@@ -222,7 +232,6 @@ Update `.planning/ROADMAP.md` with new milestone:
 **Plans**: TBD
 
 Plans:
-
 - [ ] [N]-01: TBD (run /gsd:plan-phase [N] to break down)
 
 #### Phase [N+1]: [Name]
@@ -233,15 +242,14 @@ Plans:
 **Plans**: TBD
 
 Plans:
-
 - [ ] [N+1]-01: TBD
 
-[... continue for all phases ...]
+[... continue for all phases in this milestone ...]
 ```
 
-**Update Progress table:**
+**3. Update Progress table:**
 
-Add new phases with milestone column:
+Add rows for all new phases with milestone attribution.
 
 ```markdown
 | Phase         | Milestone | Plans | Status      | Completed |
