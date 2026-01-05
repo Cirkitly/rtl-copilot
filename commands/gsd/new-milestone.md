@@ -32,7 +32,7 @@ Milestone name: $ARGUMENTS (optional - will prompt if not provided)
 1. Load project context (STATE.md, ROADMAP.md, MILESTONES.md)
 2. Calculate next milestone version and starting phase number
 3. If milestone name provided in arguments, use it; otherwise prompt
-4. Gather phases (3-6 recommended):
+4. Gather phases (per depth setting: quick 3-5, standard 5-8, comprehensive 8-12):
    - If called from /gsd:discuss-milestone, use provided context
    - Otherwise, prompt for phase breakdown
 5. Detect research needs for each phase
@@ -48,7 +48,7 @@ Milestone name: $ARGUMENTS (optional - will prompt if not provided)
 <success_criteria>
 
 - Next phase number calculated correctly (continues from previous milestone)
-- 3-6 phases defined with clear names
+- Phases defined per depth setting (quick: 3-5, standard: 5-8, comprehensive: 8-12)
 - Research flags assigned for each phase
 - ROADMAP.md updated with new milestone section
 - Phase directories created

@@ -81,7 +81,35 @@ Select (comma-separate for multiple):
 </step>
 
 <step name="identify_phases">
-Derive phases from the actual work needed. The phase count emerges from the project—don't impose a number.
+Derive phases from the actual work needed.
+
+**Check depth setting:**
+```bash
+cat .planning/config.json 2>/dev/null | grep depth
+```
+
+<depth_guidance>
+**Phase count targets by depth:**
+
+| Depth | Target Phases | Plans/Phase | Tasks/Plan |
+|-------|---------------|-------------|------------|
+| Quick | 3-5 | 1-3 | 2-3 |
+| Standard | 5-8 | 3-5 | 2-3 |
+| Comprehensive | 8-12 | 5-10 | 2-3 |
+
+**Tasks/plan is constant (2-3). Depth scales phases and plans, not task density.**
+
+For comprehensive depth:
+- Don't compress multiple features into single phases
+- Each major capability gets its own phase
+- "Too many phases" is NOT a concern—thoroughness is the goal
+- If you're tempted to combine two things, make them separate phases instead
+
+For quick depth:
+- Combine related work aggressively
+- Focus on critical path only
+- Defer nice-to-haves to future milestones
+</depth_guidance>
 
 **Phase Numbering System:**
 

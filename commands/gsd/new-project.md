@@ -230,7 +230,24 @@ Use AskUserQuestion:
   - "Interactive" — Confirm at each step
   - "YOLO" — Auto-approve, just execute
 
-Create `.planning/config.json` with chosen mode using `templates/config.json` structure.
+</step>
+
+<step name="depth">
+
+Ask planning depth preference:
+
+Use AskUserQuestion:
+
+- header: "Depth"
+- question: "How thorough should planning be?"
+- options:
+  - "Quick" — Ship fast, minimal phases/plans (3-5 phases, 1-3 plans each)
+  - "Standard" — Balanced scope and speed (5-8 phases, 3-5 plans each)
+  - "Comprehensive" — Thorough coverage, more phases/plans (8-12 phases, 5-10 plans each)
+
+**Depth controls quantity, not quality.** All depths use 2-3 tasks per plan. Depth determines how many plans get created—more depth means more plans, not bigger plans.
+
+Create `.planning/config.json` with chosen mode and depth using `templates/config.json` structure.
 
 </step>
 

@@ -71,7 +71,17 @@ grep -E "^### Phase [0-9]+" .planning/ROADMAP.md | tail -1
 
 Next phase starts at: [last_phase + 1]
 
-**Gather phases (3-6 recommended):**
+**Check depth setting and gather phases accordingly:**
+
+```bash
+cat .planning/config.json 2>/dev/null | grep depth
+```
+
+| Depth | Phases/Milestone |
+|-------|------------------|
+| Quick | 3-5 |
+| Standard | 5-8 |
+| Comprehensive | 8-12 |
 
 If context from discuss-milestone provided, use that scope.
 
@@ -359,7 +369,7 @@ Numbers continue from previous milestone. Names describe content.
 - Don't restart phase numbering at 01 (continue sequence)
 - Don't add time estimates
 - Don't create Gantt charts
-- Don't plan more than 6 phases per milestone (scope creep)
+- Respect depth setting for phase count (quick: 3-5, standard: 5-8, comprehensive: 8-12)
 - Don't modify completed milestone sections
 
 Milestones are coherent chunks of work, not project management artifacts.
@@ -368,7 +378,7 @@ Milestones are coherent chunks of work, not project management artifacts.
 <success_criteria>
 Milestone creation is complete when:
 - [ ] Next phase number calculated correctly (continues from previous)
-- [ ] 3-6 phases defined with clear names
+- [ ] Phases defined per depth setting (quick: 3-5, standard: 5-8, comprehensive: 8-12)
 - [ ] Research flags assigned for each phase
 - [ ] ROADMAP.md updated with new milestone section
 - [ ] Phase directories created

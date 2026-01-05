@@ -226,6 +226,34 @@ See ~/.claude/get-shit-done/references/checkpoints.md for checkpoint structure.
 <step name="estimate_scope">
 After tasks, assess against quality degradation curve.
 
+**Check depth setting:**
+```bash
+cat .planning/config.json 2>/dev/null | grep depth
+```
+
+<depth_aware_splitting>
+**Plan count targets by depth:**
+
+| Depth | Plans/Phase | Tasks/Plan |
+|-------|-------------|------------|
+| Quick | 1-3 | 2-3 |
+| Standard | 3-5 | 2-3 |
+| Comprehensive | 5-10 | 2-3 |
+
+**Tasks/plan is ALWAYS 2-3. Depth determines how many plans you create, not how big each plan is.**
+
+For comprehensive depth:
+- Create MORE plans, not bigger ones
+- If a phase has 15 tasks, that's 5-8 plans (not 3 plans with 5 tasks each)
+- Don't compress to look efficient—thoroughness is the goal
+- Each plan stays focused: 2-3 tasks, single concern
+
+For quick depth:
+- Combine aggressively into fewer plans
+- 1-3 plans per phase is fine
+- Focus on critical path
+</depth_aware_splitting>
+
 **ALWAYS split if:** >3 tasks, multiple subsystems, >5 files in any task, complex domains (auth, payments).
 
 **If scope appropriate (2-3 tasks, single subsystem, <5 files/task):** Proceed to confirm_breakdown.
