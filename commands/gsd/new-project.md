@@ -245,7 +245,7 @@ Use AskUserQuestion:
   - "Standard" — Balanced scope and speed (5-8 phases, 3-5 plans each)
   - "Comprehensive" — Thorough coverage, more phases/plans (8-12 phases, 5-10 plans each)
 
-**Depth controls quantity, not quality.** All depths use 2-3 tasks per plan. Depth determines how many plans get created—more depth means more plans, not bigger plans.
+**Depth controls compression tolerance, not artificial inflation.** All depths use 2-3 tasks per plan. Comprehensive means "don't compress complex work"—it doesn't mean "pad simple work to hit a number."
 
 Create `.planning/config.json` with chosen mode and depth using `templates/config.json` structure.
 

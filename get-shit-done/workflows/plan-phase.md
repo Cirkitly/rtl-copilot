@@ -232,20 +232,24 @@ cat .planning/config.json 2>/dev/null | grep depth
 ```
 
 <depth_aware_splitting>
-**Plan count targets by depth:**
+**Depth controls compression tolerance, not artificial inflation.**
 
-| Depth | Plans/Phase | Tasks/Plan |
-|-------|-------------|------------|
+| Depth | Typical Plans/Phase | Tasks/Plan |
+|-------|---------------------|------------|
 | Quick | 1-3 | 2-3 |
 | Standard | 3-5 | 2-3 |
 | Comprehensive | 5-10 | 2-3 |
 
-**Tasks/plan is ALWAYS 2-3. Depth determines how many plans you create, not how big each plan is.**
+**Key principle:** Derive plans from actual work. Depth determines how aggressively you combine things, not a target to hit.
+
+- Comprehensive auth phase = 8 plans (because auth genuinely has 8 concerns)
+- Comprehensive "add config file" phase = 1 plan (because that's all it is)
 
 For comprehensive depth:
-- Create MORE plans, not bigger ones
+- Create MORE plans when the work warrants it, not bigger ones
 - If a phase has 15 tasks, that's 5-8 plans (not 3 plans with 5 tasks each)
 - Don't compress to look efficient—thoroughness is the goal
+- Let small phases stay small—don't pad to hit a number
 - Each plan stays focused: 2-3 tasks, single concern
 
 For quick depth:

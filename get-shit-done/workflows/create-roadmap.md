@@ -89,20 +89,23 @@ cat .planning/config.json 2>/dev/null | grep depth
 ```
 
 <depth_guidance>
-**Phase count targets by depth:**
+**Depth controls compression tolerance, not artificial inflation.**
 
-| Depth | Target Phases | Plans/Phase | Tasks/Plan |
-|-------|---------------|-------------|------------|
+| Depth | Typical Phases | Typical Plans/Phase | Tasks/Plan |
+|-------|----------------|---------------------|------------|
 | Quick | 3-5 | 1-3 | 2-3 |
 | Standard | 5-8 | 3-5 | 2-3 |
 | Comprehensive | 8-12 | 5-10 | 2-3 |
 
-**Tasks/plan is constant (2-3). Depth scales phases and plans, not task density.**
+**Key principle:** Derive phases from actual work. Depth determines how aggressively you combine things, not a target to hit.
+
+- Comprehensive auth system = 8 phases (because auth genuinely has 8 concerns)
+- Comprehensive "add favicon" = 1 phase (because that's all it is)
 
 For comprehensive depth:
 - Don't compress multiple features into single phases
 - Each major capability gets its own phase
-- "Too many phases" is NOT a concern—thoroughness is the goal
+- Let small things stay small—don't pad to hit a number
 - If you're tempted to combine two things, make them separate phases instead
 
 For quick depth:

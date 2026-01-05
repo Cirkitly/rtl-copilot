@@ -103,17 +103,22 @@ Each: 30-40% context, peak quality, focused commits
 </estimating_context>
 
 <depth_calibration>
-**Depth controls plan count, not plan size.**
+**Depth controls compression tolerance, not artificial inflation.**
 
-| Depth | Phases | Plans/Phase | Tasks/Plan |
-|-------|--------|-------------|------------|
+| Depth | Typical Phases | Typical Plans/Phase | Tasks/Plan |
+|-------|----------------|---------------------|------------|
 | Quick | 3-5 | 1-3 | 2-3 |
 | Standard | 5-8 | 3-5 | 2-3 |
 | Comprehensive | 8-12 | 5-10 | 2-3 |
 
 Tasks/plan is CONSTANT at 2-3. The 50% context rule applies universally.
 
-Depth determines thoroughness by creating more phases and more plans—never by cramming more into each plan.
+**Key principle:** Derive from actual work. Depth determines how aggressively you combine things, not a target to hit.
+
+- Comprehensive auth = 8 plans (because auth genuinely has 8 concerns)
+- Comprehensive "add favicon" = 1 plan (because that's all it is)
+
+Don't pad small work to hit a number. Don't compress complex work to look efficient.
 
 **Comprehensive depth example:**
 Auth system at comprehensive depth = 8 plans (not 3 big ones):
