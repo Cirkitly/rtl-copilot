@@ -124,15 +124,53 @@ For niche domains (3D, games, audio, shaders, ML), suggest `/gsd:research-phase`
 </step>
 
 <step name="read_project_history">
-**From STATE.md:** Decisions → constrain approach. Deferred issues → candidates. Blockers → may need to address.
+**Intelligent context assembly from frontmatter dependency graph:**
 
-**From prior summaries:**
+**1. Scan all summary frontmatter (cheap - first ~25 lines):**
 
 ```bash
-ls .planning/phases/*/*-SUMMARY.md 2>/dev/null | sort
+for f in .planning/phases/*/*-SUMMARY.md; do
+  # Extract frontmatter only (between first two --- markers)
+  sed -n '1,/^---$/p; /^---$/q' "$f" | head -30
+done
 ```
 
-Scan for decisions constraining this phase, issues flagged for "later", warnings in "Next Phase Readiness", patterns to maintain.
+Parse YAML to extract: phase, subsystem, requires, provides, affects, tags, key-decisions, key-files
+
+**2. Build dependency graph for current phase:**
+
+- **Check affects field:** Which prior phases have current phase in their `affects` list? → Direct dependencies
+- **Check subsystem:** Which prior phases share same subsystem? → Related work
+- **Check requires chains:** If phase X requires phase Y, and we need X, we also need Y → Transitive dependencies
+- **Check roadmap:** Any phases marked as dependencies in ROADMAP.md phase description?
+
+**3. Select relevant summaries:**
+
+Auto-select phases that match ANY of:
+- Current phase name/number appears in prior phase's `affects` field
+- Same `subsystem` value
+- In `requires` chain (transitive closure)
+- Explicitly mentioned in STATE.md decisions as affecting current phase
+
+Typical selection: 2-4 prior phases (immediately prior + related subsystem work)
+
+**4. Extract context from frontmatter (WITHOUT opening full summaries yet):**
+
+From selected phases' frontmatter, extract:
+- **Tech available:** Union of all tech-stack.added lists
+- **Patterns established:** Union of all tech-stack.patterns and patterns-established
+- **Key files:** Union of all key-files (for @context references)
+- **Decisions:** Extract key-decisions from frontmatter
+
+**5. Now read FULL summaries for selected phases:**
+
+Only now open and read complete SUMMARY.md files for the selected relevant phases. Extract:
+- Detailed "Accomplishments" section
+- "Next Phase Readiness" warnings/blockers
+- "Issues Encountered" that might affect current phase
+- "Deviations from Plan" for patterns
+
+**From STATE.md:** Decisions → constrain approach. Deferred issues → candidates. Blockers → may need to address.
 
 **From ISSUES.md:**
 
@@ -148,7 +186,14 @@ Assess each open issue - relevant to this phase? Waiting long enough? Natural to
 - Q3: Are there concerns from "Next Phase Readiness" that apply?
 - Q4: Given all context, does the roadmap's description still make sense?
 
-Track for PLAN.md context section: relevant summaries, applicable decisions, issues being addressed, concerns being verified.
+**Track for PLAN.md context section:**
+- Which summaries were selected (for @context references)
+- Tech stack available (from frontmatter)
+- Established patterns (from frontmatter)
+- Key files to reference (from frontmatter)
+- Applicable decisions (from frontmatter + full summary)
+- Issues being addressed (from ISSUES.md)
+- Concerns being verified (from "Next Phase Readiness")
 </step>
 
 <step name="gather_phase_context">
@@ -312,7 +357,37 @@ Each plan follows template structure with:
 - Tasks (XML format with types)
 - Verification, Success criteria, Output specification
 
-For multi-plan phases: each plan has focused scope, references previous plan summaries, last plan's success criteria includes "Phase X complete".
+**Context section population from frontmatter analysis:**
+
+Inject automatically-assembled context package from read_project_history step:
+
+```markdown
+<context>
+@.planning/PROJECT.md
+@.planning/ROADMAP.md
+@.planning/STATE.md
+
+# Auto-selected based on dependency graph (from frontmatter):
+@.planning/phases/XX-name/YY-ZZ-SUMMARY.md
+@.planning/phases/AA-name/BB-CC-SUMMARY.md
+
+# Key files from frontmatter (relevant to this phase):
+@path/to/important/file.ts
+@path/to/another/file.ts
+
+**Tech stack available:** [extracted from frontmatter tech-stack.added]
+**Established patterns:** [extracted from frontmatter patterns-established]
+**Constraining decisions:**
+- [Phase X]: [decision from frontmatter]
+- [Phase Y]: [decision from frontmatter]
+
+**Issues being addressed:** [If any from ISSUES.md]
+</context>
+```
+
+This ensures every PLAN.md gets optimal context automatically assembled via dependency graph, making execution as informed as possible.
+
+For multi-plan phases: each plan has focused scope, references previous plan summaries (via frontmatter selection), last plan's success criteria includes "Phase X complete".
 </step>
 
 <step name="offer_next">
