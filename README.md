@@ -15,7 +15,7 @@
 
 <br>
 
-*Trusted by engineers at Amazon, Google, Shopify, and Webflow.*
+**Trusted by engineers at Amazon, Google, Shopify, and Webflow.**
 
 </div>
 
