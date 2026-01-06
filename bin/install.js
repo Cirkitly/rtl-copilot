@@ -36,6 +36,16 @@ const hasLocal = args.includes('--local') || args.includes('-l');
 console.log(banner);
 
 /**
+ * Expand ~ to home directory (shell doesn't expand in env vars passed to node)
+ */
+function expandTilde(filePath) {
+  if (filePath && filePath.startsWith('~/')) {
+    return path.join(os.homedir(), filePath.slice(2));
+  }
+  return filePath;
+}
+
+/**
  * Recursively copy directory, replacing paths in .md files
  */
 function copyWithPathReplacement(srcDir, destDir, pathPrefix) {
@@ -65,8 +75,10 @@ function copyWithPathReplacement(srcDir, destDir, pathPrefix) {
  */
 function install(isGlobal) {
   const src = path.join(__dirname, '..');
+  const configDir = expandTilde(process.env.CLAUDE_CONFIG_DIR);
+  const defaultGlobalDir = configDir || path.join(os.homedir(), '.claude');
   const claudeDir = isGlobal
-    ? path.join(os.homedir(), '.claude')
+    ? defaultGlobalDir
     : path.join(process.cwd(), '.claude');
 
   const locationLabel = isGlobal
@@ -74,7 +86,10 @@ function install(isGlobal) {
     : claudeDir.replace(process.cwd(), '.');
 
   // Path prefix for file references
-  const pathPrefix = isGlobal ? '~/.claude/' : './.claude/';
+  // Use actual path when CLAUDE_CONFIG_DIR is set, otherwise use ~ shorthand
+  const pathPrefix = isGlobal
+    ? (configDir ? `${claudeDir}/` : '~/.claude/')
+    : './.claude/';
 
   console.log(`  Installing to ${cyan}${locationLabel}${reset}\n`);
 
@@ -108,9 +123,12 @@ function promptLocation() {
     output: process.stdout
   });
 
+  const globalPath = expandTilde(process.env.CLAUDE_CONFIG_DIR) || path.join(os.homedir(), '.claude');
+  const globalLabel = globalPath.replace(os.homedir(), '~');
+
   console.log(`  ${yellow}Where would you like to install?${reset}
 
-  ${cyan}1${reset}) Global ${dim}(~/.claude)${reset} - available in all projects
+  ${cyan}1${reset}) Global ${dim}(${globalLabel})${reset} - available in all projects
   ${cyan}2${reset}) Local  ${dim}(./.claude)${reset} - this project only
 `);
 
