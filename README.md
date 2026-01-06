@@ -4,6 +4,20 @@
 
 ![GSD Install](assets/terminal.svg)
 
+<div align="center">
+<br>
+
+*"If you know clearly what you want, this WILL build it for you. No bs."*
+
+*"I've done SpecKit, OpenSpec and Taskmaster — this has produced the best results for me."*
+
+*"By far the most powerful addition to my Claude Code. Nothing over-engineered. Literally just gets shit done."*
+
+<br>
+</div>
+
+---
+
 Vibecoding has a bad reputation. You describe what you want, AI generates code, and you get inconsistent garbage that falls apart at scale.
 
 GSD fixes that. It's the context engineering layer that makes Claude Code reliable. Describe your idea, let the system extract everything it needs to know, and then let Claude Code get to work.
