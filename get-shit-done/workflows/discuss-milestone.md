@@ -122,6 +122,76 @@ If "Let me add context" → receive input → return to step 2.
 Loop until "Create milestone" selected.
 </step>
 
+<step name="write_context">
+Write milestone context to file for handoff.
+
+**File:** `.planning/MILESTONE-CONTEXT.md`
+
+Use template from ~/.claude/get-shit-done/templates/milestone-context.md
+
+Populate with:
+- Features identified during discussion
+- Suggested milestone name and theme
+- Estimated phase count
+- How features map to phases
+- Any constraints or scope boundaries mentioned
+
+```bash
+# Write the context file
+cat > .planning/MILESTONE-CONTEXT.md << 'EOF'
+# Milestone Context
+
+**Generated:** [today's date]
+**Status:** Ready for /gsd:new-milestone
+
+<features>
+## Features to Build
+
+- **[Feature 1]**: [description]
+- **[Feature 2]**: [description]
+- **[Feature 3]**: [description]
+
+</features>
+
+<scope>
+## Scope
+
+**Suggested name:** v[X.Y] [Theme Name]
+**Estimated phases:** [N]
+**Focus:** [One sentence theme/focus]
+
+</scope>
+
+<phase_mapping>
+## Phase Mapping
+
+- Phase [N]: [Feature/goal]
+- Phase [N+1]: [Feature/goal]
+- Phase [N+2]: [Feature/goal]
+
+</phase_mapping>
+
+<constraints>
+## Constraints
+
+- [Any constraints mentioned]
+
+</constraints>
+
+<notes>
+## Additional Context
+
+[Anything else from discussion]
+
+</notes>
+
+---
+
+*This file is temporary. It will be deleted after /gsd:new-milestone creates the milestone.*
+EOF
+```
+</step>
+
 <step name="handoff">
 Present summary and hand off to create-milestone:
 
@@ -136,7 +206,7 @@ Milestone scope defined:
 **Suggested milestone:** v[X.Y] [Theme Name]
 **Estimated phases:** [N]
 
-Ready to create the milestone structure.
+Context saved to `.planning/MILESTONE-CONTEXT.md`
 
 ---
 
@@ -150,11 +220,6 @@ Ready to create the milestone structure.
 
 ---
 ```
-
-Pass context forward by summarizing:
-- Features to build (the substance)
-- Suggested milestone name
-- How features map to phases
 </step>
 
 </process>
@@ -166,5 +231,6 @@ Pass context forward by summarizing:
 - **Features identified** - What to build/add/fix (the substance)
 - Features explored with clarifying questions
 - Scope synthesized from features (not asked abstractly)
-- Context handed off to /gsd:new-milestone with feature list
+- **MILESTONE-CONTEXT.md created** with features, scope, and phase mapping
+- Context handed off to /gsd:new-milestone
 </success_criteria>

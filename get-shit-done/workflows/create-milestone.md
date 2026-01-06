@@ -22,6 +22,7 @@ Load project context:
 cat .planning/ROADMAP.md
 cat .planning/STATE.md
 cat .planning/MILESTONES.md 2>/dev/null || echo "No milestones file yet"
+cat .planning/MILESTONE-CONTEXT.md 2>/dev/null || echo "No milestone context file"
 ```
 
 Extract:
@@ -31,6 +32,13 @@ Extract:
 - Deferred issues from STATE.md
 - Project context from PROJECT.md (What This Is, Core Value)
 
+**Check for milestone context from discuss-milestone:**
+
+If `.planning/MILESTONE-CONTEXT.md` exists:
+- This contains context from `/gsd:discuss-milestone`
+- Extract: features, suggested name, phase mapping, constraints
+- Use this to pre-populate milestone details (skip prompting for info already gathered)
+
 **Calculate next milestone version:**
 
 - If previous was v1.0 → suggest v1.1 (minor) or v2.0 (major)
@@ -39,11 +47,12 @@ Extract:
   </step>
 
 <step name="get_milestone_info">
-**If called from /gsd:discuss-milestone (context provided):**
-Use the theme, scope, and constraints from discussion.
-Suggest milestone name based on theme.
+**If MILESTONE-CONTEXT.md exists (from /gsd:discuss-milestone):**
+Use the features, scope, and constraints from the context file.
+Use the suggested milestone name from `<scope>` section.
+Use the phase mapping from `<phase_mapping>` section.
 
-**If called directly (no prior context):**
+**If called directly (no MILESTONE-CONTEXT.md):**
 Ask for milestone details:
 
 header: "Milestone Name"
@@ -331,6 +340,16 @@ EOF
 ```
 
 Confirm: "Committed: docs: create milestone v[X.Y] [Name]"
+</step>
+
+<step name="cleanup_context">
+Delete the temporary milestone context file if it exists:
+
+```bash
+rm -f .planning/MILESTONE-CONTEXT.md
+```
+
+This file was a handoff artifact from `/gsd:discuss-milestone`. Now that the milestone is created, the context is persisted in ROADMAP.md and the temporary file is no longer needed.
 </step>
 
 <step name="offer_next">
