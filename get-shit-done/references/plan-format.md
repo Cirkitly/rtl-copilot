@@ -243,42 +243,30 @@ Use for: Technology selection, architecture decisions, design choices, feature p
 See `./checkpoints.md` for comprehensive checkpoint guidance.
 </task_types>
 
-<tdd_annotation>
-Tasks can include `tdd="true"` attribute when TDD improves quality:
+<tdd_plans>
+**TDD work uses dedicated plans.**
 
-**Structure:**
-```xml
-<task type="auto" tdd="true">
-  <name>Task N: [Name]</name>
-  <files>[paths]</files>
-  <test-first>[What test to write first - the failing assertion]</test-first>
-  <action>[Implementation to make test pass]</action>
-  <verify>[Tests pass, behavior works]</verify>
-  <done>[Criteria]</done>
-</task>
-```
+TDD features require 2-3 execution cycles (RED → GREEN → REFACTOR), each with file reads, test runs, and potential debugging. This is fundamentally heavier than standard tasks and would consume 50-60% of context if embedded in a multi-task plan.
 
-**When to add tdd="true":**
+**When to create a TDD plan:**
 - Business logic with defined inputs/outputs
 - API endpoints with request/response contracts
 - Data transformations and parsing
 - Validation rules
 - Algorithms with testable behavior
 
-**When NOT to add tdd="true":**
+**When to use standard plans (skip TDD):**
 - UI layout and styling
 - Configuration changes
 - Glue code connecting existing components
 - One-off scripts
 
-**Execution flow (when tdd="true"):**
-1. Claude writes failing test from `<test-first>`
-2. Claude implements from `<action>` until test passes
-3. Claude refactors if needed (tests still pass)
-4. Claude commits atomic change
+**Heuristic:** Can you write `expect(fn(input)).toBe(output)` before writing `fn`?
+→ Yes: Create a TDD plan (one feature per plan)
+→ No: Use standard plan, add tests after if needed
 
-See `./tdd.md` for comprehensive TDD guidance.
-</tdd_annotation>
+See `./tdd.md` for TDD plan structure and execution guidance.
+</tdd_plans>
 
 <context_references>
 Use @file references to load context for the prompt:
@@ -384,25 +372,11 @@ Claude: "How? What type? What library? Where?"
 Claude can implement this immediately.
 </just_right>
 
-<tdd_example>
-TDD task example:
+<note_on_tdd>
+**TDD candidates get dedicated plans.**
 
-```xml
-<task type="auto" tdd="true">
-  <name>Task 2: Create email validation utility</name>
-  <files>src/lib/validation.ts, src/lib/validation.test.ts</files>
-  <test-first>
-    Test: isValidEmail returns true for valid emails, false for invalid
-    Cases: "user@example.com" → true, "invalid" → false, "" → false, "user@" → false
-  </test-first>
-  <action>Implement isValidEmail using regex pattern. Handle edge cases: empty string, missing @, missing domain.</action>
-  <verify>npm test -- validation.test.ts passes all cases</verify>
-  <done>Email validation works for all edge cases, tests document behavior</done>
-</task>
-```
-
-Claude executes this with RED → GREEN → REFACTOR cycle, producing atomic commits.
-</tdd_example>
+If email validation warrants TDD, create a TDD plan for it. See `./tdd.md` for TDD plan structure.
+</note_on_tdd>
 
 <too_detailed>
 Writing the actual code in the plan. Trust Claude to implement from clear instructions.

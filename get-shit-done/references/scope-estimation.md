@@ -38,6 +38,27 @@ Why 50% not 80%?
 **When in doubt: Default to 2 tasks.** Better to have an extra plan than degraded quality.
 </task_rule>
 
+<tdd_plans>
+**TDD features get their own plans. Target ~40% context.**
+
+TDD requires 2-3 execution cycles (RED → GREEN → REFACTOR), each with file reads, test runs, and potential debugging. This is fundamentally heavier than linear task execution.
+
+| TDD Feature Complexity | Context Usage |
+|------------------------|---------------|
+| Simple utility function | ~25-30% |
+| Business logic with edge cases | ~35-40% |
+| Complex algorithm | ~40-50% |
+
+**One feature per TDD plan.** If features are trivial enough to batch, they're trivial enough to skip TDD.
+
+**Why TDD plans are separate:**
+- TDD consumes 40-50% context for a single feature
+- Dedicated plans ensure full quality throughout RED-GREEN-REFACTOR
+- Each TDD feature gets fresh context, peak quality
+
+See `~/.claude/get-shit-done/references/tdd.md` for TDD plan structure.
+</tdd_plans>
+
 <split_signals>
 
 <always_split>

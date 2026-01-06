@@ -225,7 +225,9 @@ cat .planning/phases/XX-name/${PHASE}-CONTEXT.md 2>/dev/null
 </step>
 
 <step name="break_into_tasks">
-Decompose phase into tasks. Each task needs:
+Decompose phase into tasks and identify TDD candidates.
+
+**Standard tasks need:**
 - **Type**: auto, checkpoint:human-verify, checkpoint:decision (human-action rarely needed)
 - **Task name**: Clear, action-oriented
 - **Files**: Which files created/modified (for auto tasks)
@@ -233,9 +235,9 @@ Decompose phase into tasks. Each task needs:
 - **Verify**: How to prove it worked
 - **Done**: Acceptance criteria
 
-**TDD detection:** For each task, evaluate TDD fit:
+**TDD detection:** For each potential task, evaluate TDD fit:
 
-TDD candidates (add `tdd="true"` to task, include `<test-first>` element):
+TDD candidates (create dedicated TDD plans):
 - Business logic with defined inputs/outputs
 - API endpoints with request/response contracts
 - Data transformations, parsing, formatting
@@ -243,7 +245,7 @@ TDD candidates (add `tdd="true"` to task, include `<test-first>` element):
 - Algorithms with testable behavior
 - State machines and workflows
 
-Skip TDD (standard `type="auto"` task):
+Standard tasks (remain in standard plans):
 - UI layout, styling, visual components
 - Configuration changes
 - Glue code connecting existing components
@@ -251,15 +253,14 @@ Skip TDD (standard `type="auto"` task):
 - Simple CRUD with no business logic
 
 **Heuristic:** Can you write `expect(fn(input)).toBe(output)` before writing `fn`?
-→ Yes: Add `tdd="true"`, include `<test-first>` describing the failing test
-→ No: Standard task, no TDD annotation
+→ Yes: Create a dedicated TDD plan for this feature (one feature per TDD plan)
+→ No: Standard task in standard plan
 
-**Test framework:** If project has no test setup and TDD tasks exist, add a setup task first:
-- Detect project type (package.json → Jest, requirements.txt → pytest, etc.)
-- Add minimal test configuration
-- Create example test file to verify setup
+**Why TDD gets its own plan:** TDD requires 2-3 execution cycles (RED → GREEN → REFACTOR), each with file reads, test runs, and potential debugging. Embedded in a multi-task plan, TDD work consumes 50-60% of context alone, degrading quality for remaining tasks.
 
-See `~/.claude/get-shit-done/references/tdd.md` for complete TDD guidance.
+**Test framework:** If project has no test setup and TDD plans are needed, the first TDD plan's RED phase handles framework setup as part of writing the first test.
+
+See `~/.claude/get-shit-done/references/tdd.md` for TDD plan structure.
 
 **Checkpoints:** Visual/functional verification → checkpoint:human-verify. Implementation choices → checkpoint:decision. Manual action (email, 2FA) → checkpoint:human-action (rare).
 
@@ -427,20 +428,7 @@ Phase plan created: .planning/phases/XX-name/{phase}-01-PLAN.md
 
 If you can't specify Files + Action + Verify + Done, the task is too vague.
 
-**Good TDD task:**
-```xml
-<task type="auto" tdd="true">
-  <name>Create price calculator with discount rules</name>
-  <files>src/lib/pricing.ts, src/lib/pricing.test.ts</files>
-  <test-first>
-    Test: calculatePrice applies discounts correctly
-    Cases: base 100 + 10% off → 90, base 100 + 20% off + $5 coupon → 75
-  </test-first>
-  <action>Implement calculatePrice(base, discountPercent, couponAmount). Apply percentage first, then flat amount.</action>
-  <verify>npm test -- pricing.test.ts passes</verify>
-  <done>Price calculation handles all discount combinations correctly</done>
-</task>
-```
+**TDD candidates get dedicated plans.** If "Create price calculator with discount rules" warrants TDD, create a TDD plan for it. See `~/.claude/get-shit-done/references/tdd.md` for TDD plan structure.
 </task_quality>
 
 <anti_patterns>

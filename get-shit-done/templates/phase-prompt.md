@@ -169,7 +169,20 @@ From create-meta-prompts patterns:
 - Different subsystems (auth vs API vs UI)
 - Clear dependency boundaries (setup → implement → test)
 - Risk of context overflow (>50% estimated usage)
-  </scope_guidance>
+- **TDD candidates** - Features that warrant TDD become their own TDD plans
+</scope_guidance>
+
+<tdd_plan_note>
+**TDD features get dedicated plans.**
+
+TDD requires 2-3 execution cycles (RED → GREEN → REFACTOR) that consume 40-50% context for a single feature. Features warranting TDD (business logic, validation, algorithms, API contracts) each get their own TDD plan.
+
+**Heuristic:** Can you write `expect(fn(input)).toBe(output)` before writing `fn`?
+→ Yes: Create a TDD plan (one feature per plan)
+→ No: Standard task in standard plan
+
+See `~/.claude/get-shit-done/references/tdd.md` for TDD plan structure.
+</tdd_plan_note>
 
 <good_examples>
 

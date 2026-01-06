@@ -77,7 +77,7 @@ Plans are guides, not straitjackets. During execution:
 
 Use TDD when the work WOULD benefit from it. Not dogma—pragmatism.
 
-**TDD candidates (write test first):**
+**TDD candidates (create dedicated TDD plan):**
 - Business logic with defined inputs/outputs
 - API endpoints and handlers
 - Data transformations and parsing
@@ -85,7 +85,7 @@ Use TDD when the work WOULD benefit from it. Not dogma—pragmatism.
 - State machines and workflows
 - Anything where you can describe expected behavior before implementing
 
-**Skip TDD for:**
+**Skip TDD (use standard plan):**
 - UI layout and styling
 - Exploratory prototyping
 - One-off scripts and migrations
@@ -94,16 +94,20 @@ Use TDD when the work WOULD benefit from it. Not dogma—pragmatism.
 
 **Decision heuristic:**
 Can you write `expect(fn(input)).toBe(output)` before writing `fn`?
-→ Yes: TDD will help
-→ No: Write implementation first, add tests after if needed
+→ Yes: Create a TDD plan (one feature per plan)
+→ No: Standard plan, add tests after if needed
 
-**TDD task structure:**
-When TDD applies, structure tasks as test-first:
-1. Write failing test (red)
-2. Implement to pass (green)
-3. Refactor if needed
+**Why TDD gets its own plan:**
+TDD requires 2-3 execution cycles (RED → GREEN → REFACTOR), each with file reads, test runs, and potential debugging. This consumes 40-50% of context for a single feature. Dedicated TDD plans ensure full quality throughout the cycle.
+
+**TDD plan structure:**
+1. Write failing test (RED) → commit
+2. Implement to pass (GREEN) → commit
+3. Refactor if needed → commit
 
 This is about design quality, not test coverage metrics.
+
+See `~/.claude/get-shit-done/references/tdd.md` for TDD plan structure.
 </test_driven_when_beneficial>
 
 <ship_fast>
