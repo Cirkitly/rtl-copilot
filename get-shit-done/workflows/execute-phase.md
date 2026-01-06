@@ -1285,15 +1285,14 @@ ROADMAP_FILE=".planning/ROADMAP.md"
   </step>
 
 <step name="git_commit_metadata">
-Commit plan metadata (SUMMARY + STATE + ROADMAP):
+Commit execution metadata (SUMMARY + STATE + ROADMAP):
 
 **Note:** All task code has already been committed during execution (one commit per task).
-This final commit captures plan completion metadata only.
+PLAN.md was already committed during plan-phase. This final commit captures execution results only.
 
-**1. Stage planning artifacts:**
+**1. Stage execution artifacts:**
 
 ```bash
-git add .planning/phases/XX-name/{phase}-{plan}-PLAN.md
 git add .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 git add .planning/STATE.md
 ```
@@ -1308,7 +1307,7 @@ git add .planning/ROADMAP.md
 
 ```bash
 git status
-# Should show only planning artifacts, no code files
+# Should show only execution artifacts (SUMMARY, STATE, ROADMAP), no code files
 ```
 
 **4. Commit metadata:**

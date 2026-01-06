@@ -378,6 +378,25 @@ What's next?
 ```
 </step>
 
+<step name="git_commit">
+Commit phase research:
+
+```bash
+git add .planning/phases/${PHASE}-${SLUG}/${PHASE}-RESEARCH.md
+git commit -m "$(cat <<'EOF'
+docs(${PHASE}): complete phase research
+
+Phase ${PHASE}: ${PHASE_NAME}
+- Standard stack identified
+- Architecture patterns documented
+- Common pitfalls catalogued
+EOF
+)"
+```
+
+Confirm: "Committed: docs(${PHASE}): complete phase research"
+</step>
+
 </process>
 
 <success_criteria>
@@ -394,6 +413,7 @@ What's next?
 - [ ] "Don't hand-roll" list is clear and actionable
 - [ ] Common pitfalls catalogued
 - [ ] Confidence levels assigned honestly
+- [ ] RESEARCH.md committed to git
 - [ ] User knows next steps (plan phase)
 </success_criteria>
 

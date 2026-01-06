@@ -215,6 +215,25 @@ Created: .planning/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md
 
 </step>
 
+<step name="git_commit">
+Commit phase context:
+
+```bash
+git add .planning/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md
+git commit -m "$(cat <<'EOF'
+docs(${PHASE}): capture phase context
+
+Phase ${PHASE}: ${PHASE_NAME}
+- Vision and goals documented
+- Essential requirements identified
+- Scope boundaries defined
+EOF
+)"
+```
+
+Confirm: "Committed: docs(${PHASE}): capture phase context"
+</step>
+
 </process>
 
 <success_criteria>
@@ -223,5 +242,6 @@ Created: .planning/phases/${PHASE}-${SLUG}/${PHASE}-CONTEXT.md
 - Vision gathered through collaborative thinking (not interrogation)
 - User's imagination captured: how it works, what's essential, what's out of scope
 - CONTEXT.md created in phase directory
+- CONTEXT.md committed to git
 - User knows next steps (typically: research or plan the phase)
 </success_criteria>

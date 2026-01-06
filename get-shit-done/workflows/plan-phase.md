@@ -391,6 +391,30 @@ This ensures every PLAN.md gets optimal context automatically assembled via depe
 For multi-plan phases: each plan has focused scope, references previous plan summaries (via frontmatter selection), last plan's success criteria includes "Phase X complete".
 </step>
 
+<step name="git_commit">
+Commit phase plan(s):
+
+```bash
+# Stage all PLAN.md files for this phase
+git add .planning/phases/${PHASE}-*/${PHASE}-*-PLAN.md
+
+# Also stage DISCOVERY.md if it was created during mandatory_discovery
+git add .planning/phases/${PHASE}-*/DISCOVERY.md 2>/dev/null
+
+git commit -m "$(cat <<'EOF'
+docs(${PHASE}): create phase plan
+
+Phase ${PHASE}: ${PHASE_NAME}
+- [N] plan(s) created
+- [X] total tasks defined
+- Ready for execution
+EOF
+)"
+```
+
+Confirm: "Committed: docs(${PHASE}): create phase plan"
+</step>
+
 <step name="offer_next">
 ```
 Phase plan created: .planning/phases/XX-name/{phase}-01-PLAN.md
@@ -451,5 +475,6 @@ Phase planning complete when:
 - [ ] Each task: Type, Files (if auto), Action, Verify, Done
 - [ ] Checkpoints properly structured
 - [ ] If RESEARCH.md exists: "don't hand-roll" items NOT being custom-built
+- [ ] PLAN file(s) committed to git
 - [ ] User knows next steps
 </success_criteria>
