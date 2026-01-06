@@ -22,6 +22,15 @@ npx get-shit-done-cc
 
 That's it. Works on Mac, Windows, and Linux.
 
+### Non-interactive Install (Docker, CI, Scripts)
+
+```bash
+npx get-shit-done-cc --global   # Install to ~/.claude/
+npx get-shit-done-cc --local    # Install to ./.claude/
+```
+
+Use `--global` (`-g`) or `--local` (`-l`) to skip the interactive prompt.
+
 Verify: `/gsd:help`
 
 ---
