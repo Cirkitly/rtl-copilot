@@ -23,11 +23,7 @@
 
 Vibecoding has a bad reputation. You describe what you want, AI generates code, and you get inconsistent garbage that falls apart at scale.
 
-GSD fixes that. It's the context engineering layer that makes Claude Code reliable. Describe your idea, let the system extract everything it needs to know, and then let Claude Code get to work.
-
-THIS is how you vibecode and actually get shit done.
-
-_Warning: Not for people who enjoy inconsistent and sloppy results._
+GSD fixes that. It's the context engineering layer that makes Claude Code reliable. Describe your idea, let the system extract everything it needs to know, and let Claude Code get to work.
 
 ---
 
@@ -60,7 +56,7 @@ Other spec-driven development tools exist; BMAD, Speckit... But they all seem to
 
 So I built GSD. The complexity is in the system, not in your workflow. Behind the scenes: context engineering, XML prompt formatting, subagent orchestration, state management. What you see: a few commands that just work.
 
-I wanted to spend my time having ideas and seeing them through to implementation — not babysitting Claude. Now I can say "go," put it in YOLO mode, and go to the beach. The system gives Claude everything it needs to do the work _and_ verify it. I trust the workflow. It just does a good job.
+The system gives Claude everything it needs to do the work _and_ verify it. I trust the workflow. It just does a good job.
 
 That's what this is. No enterprise roleplay bullshit. Just an incredibly effective system for building cool stuff consistently using Claude Code.
 
@@ -254,11 +250,7 @@ You're never locked in. The system adapts.
 
 ## Who This Is For
 
-People who want to vibecode and have it actually work.
-
-Anyone who wants to clearly describe what they want, trust the system to build it, and go live their life.
-
-Not for people who enjoy inconsistent and sloppy results.
+People who want to describe what they want and have it built correctly — without pretending they're running a 50-person engineering org.
 
 ---
 
@@ -268,4 +260,4 @@ MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-**Claude Code is powerful. GSD gives it the context and the systematic consistency to prove it.**
+**Claude Code is powerful. GSD makes it reliable.**
