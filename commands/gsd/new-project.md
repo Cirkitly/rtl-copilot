@@ -1,4 +1,5 @@
 ---
+name: gsd:new-project
 description: Initialize a new project with deep context gathering and PROJECT.md
 allowed-tools:
   - Read

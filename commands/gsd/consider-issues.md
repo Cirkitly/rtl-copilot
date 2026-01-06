@@ -1,4 +1,5 @@
 ---
+name: gsd:consider-issues
 description: Review deferred issues with codebase context, close resolved ones, identify urgent ones
 allowed-tools:
   - Read

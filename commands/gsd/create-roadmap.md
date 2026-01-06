@@ -1,4 +1,5 @@
 ---
+name: gsd:create-roadmap
 description: Create roadmap with phases for the project
 allowed-tools:
   - Read

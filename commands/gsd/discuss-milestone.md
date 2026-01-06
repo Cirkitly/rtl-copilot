@@ -1,4 +1,5 @@
 ---
+name: gsd:discuss-milestone
 description: Gather context for next milestone through adaptive questioning
 ---
 

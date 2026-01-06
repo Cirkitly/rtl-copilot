@@ -31,6 +31,26 @@ GSD fixes that. It's the context engineering layer that makes Claude Code reliab
 
 People who want to describe what they want and have it built correctly — without pretending they're running a 50-person engineering org.
 
+### Marketplace Installation
+
+Install from the Claude Code marketplace:
+
+```bash
+/plugin marketplace add glittercowboy/get-shit-done
+/plugin install get-shit-done@get-shit-done
+```
+
+### Manual Installation
+
+Clone the repository and tell Claude Code where to find it:
+
+```bash
+git clone https://github.com/glittercowboy/get-shit-done.git
+claude --plugin-dir ./get-shit-done
+```
+
+Useful for development or testing modifications.
+
 ---
 
 ## Why I Built This
@@ -251,6 +271,18 @@ You're never locked in. The system adapts.
 | `/gsd:resume-work`                | Restore from last session                                     |
 | `/gsd:consider-issues`            | Review deferred issues, close resolved, identify urgent       |
 | `/gsd:help`                       | Show all commands and usage guide                             |
+
+---
+
+## Troubleshooting
+
+**Plugin not found after install?**
+- Restart Claude Code to reload plugins
+- Check `/plugins` to see installed plugins
+
+**Commands showing as unavailable?**
+- Verify plugin directory structure: should have `.claude-plugin/plugin.json`
+- Try `/gsd:help` - if it works, plugin is loaded correctly
 
 ---
 

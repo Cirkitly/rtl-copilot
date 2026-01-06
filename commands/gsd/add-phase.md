@@ -1,4 +1,5 @@
 ---
+name: gsd:add-phase
 description: Add phase to end of current milestone in roadmap
 argument-hint: <description>
 allowed-tools:
