@@ -14,6 +14,9 @@
 *"By far the most powerful addition to my Claude Code. Nothing over-engineered. Literally just gets shit done."*
 
 <br>
+
+*Trusted by engineers at Amazon, Google, Shopify, and Webflow.*
+
 </div>
 
 ---
