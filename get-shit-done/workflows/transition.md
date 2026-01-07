@@ -408,14 +408,34 @@ Resume file: None
 
 <step name="offer_next_phase">
 
-**Check if there's a next phase in the current milestone:**
+**MANDATORY: Verify milestone status before presenting next steps.**
 
-Re-read the ROADMAP file:
+**Step 1: Read ROADMAP.md and identify phases in current milestone**
 
-- Parse current milestone version (e.g., "v1.0" from "## Current Milestone: v1.0 Foundation")
-- Look for phases after the current one in the current milestone section
-- If next phase exists: offer to plan it
-- If no next phase (milestone 100% complete): offer to complete milestone with parsed version
+Read the ROADMAP.md file and extract:
+1. Current phase number (the phase just transitioned from)
+2. All phase numbers in the current milestone section
+
+To find phases, look for:
+- Phase headers: lines starting with `### Phase` or `#### Phase`
+- Phase list items: lines like `- [ ] **Phase X:` or `- [x] **Phase X:`
+
+Count total phases and identify the highest phase number in the milestone.
+
+State: "Current phase is {X}. Milestone has {N} phases (highest: {Y})."
+
+**Step 2: Route based on milestone status**
+
+| Condition | Meaning | Action |
+|-----------|---------|--------|
+| current phase < highest phase | More phases remain | Go to **Route A** |
+| current phase = highest phase | Milestone complete | Go to **Route B** |
+
+---
+
+**Route A: More phases remain in milestone**
+
+Read ROADMAP.md to get the next phase's name and goal.
 
 **If next phase exists:**
 
@@ -460,36 +480,38 @@ Exit skill and invoke SlashCommand("/gsd:plan-phase [X+1]")
 
 </if>
 
-**If no next phase (milestone 100% complete):**
+---
+
+**Route B: Milestone complete (all phases done)**
 
 <if mode="yolo">
 
 ```
-Phase [X] marked complete.
+Phase {X} marked complete.
 
-🎉 Milestone [version] is 100% complete — all phases finished!
+🎉 Milestone {version} is 100% complete — all {N} phases finished!
 
 ⚡ Auto-continuing: Complete milestone and archive
 ```
 
-Exit skill and invoke SlashCommand("/gsd:complete-milestone [version]")
+Exit skill and invoke SlashCommand("/gsd:complete-milestone {version}")
 
 </if>
 
 <if mode="interactive" OR="custom with gates.confirm_transition true">
 
 ```
-## ✓ Phase [X] Complete
+## ✓ Phase {X}: {Phase Name} Complete
 
-🎉 Milestone [version] is 100% complete — all phases finished!
+🎉 Milestone {version} is 100% complete — all {N} phases finished!
 
 ---
 
 ## ▶ Next Up
 
-**Complete Milestone [version]** — archive and prepare for next
+**Complete Milestone {version}** — archive and prepare for next
 
-`/gsd:complete-milestone [version]`
+`/gsd:complete-milestone {version}`
 
 <sub>`/clear` first → fresh context window</sub>
 

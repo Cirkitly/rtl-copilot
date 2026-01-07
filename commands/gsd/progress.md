@@ -90,84 +90,164 @@ CONTEXT: [✓ if CONTEXT.md exists | - if not]
 </step>
 
 <step name="route">
-**Determine next action:**
+**Determine next action based on verified counts.**
 
-Find the next plan number that needs work.
-Check if `{phase}-{plan}-PLAN.md` exists for that number.
+**Step 1: Count plans and summaries in current phase**
 
-**If PLAN.md exists (unexecuted):**
+List files in the current phase directory:
 
-- Read its `<objective>` section
-- Show: "Ready to execute: [path] - [objective summary]"
-- Display (see ~/.claude/get-shit-done/references/continuation-format.md):
-  ```
-  ---
+```bash
+ls -1 .planning/phases/[current-phase-dir]/*-PLAN.md 2>/dev/null | wc -l
+ls -1 .planning/phases/[current-phase-dir]/*-SUMMARY.md 2>/dev/null | wc -l
+```
 
-  ## ▶ Next Up
+State: "This phase has {X} plans and {Y} summaries."
 
-  **{phase}-{plan}: [Plan Name]** — [objective summary from PLAN.md]
+**Step 2: Route based on counts**
 
-  `/gsd:execute-plan [full-path-to-PLAN.md]`
+| Condition | Meaning | Action |
+|-----------|---------|--------|
+| summaries < plans | Unexecuted plans exist | Go to **Route A** |
+| summaries = plans AND plans > 0 | Phase complete | Go to Step 3 |
+| plans = 0 | Phase not yet planned | Go to **Route B** |
 
-  <sub>`/clear` first → fresh context window</sub>
+---
 
-  ---
-  ```
+**Route A: Unexecuted plan exists**
 
-**If PLAN.md does NOT exist:**
+Find the first PLAN.md without matching SUMMARY.md.
+Read its `<objective>` section.
 
-- Check if `{phase}-CONTEXT.md` exists in phase directory
-- Show: "Next plan not yet created: [expected path]"
-- Show phase objective from ROADMAP
+```
+---
+
+## ▶ Next Up
+
+**{phase}-{plan}: [Plan Name]** — [objective summary from PLAN.md]
+
+`/gsd:execute-plan [full-path-to-PLAN.md]`
+
+<sub>`/clear` first → fresh context window</sub>
+
+---
+```
+
+---
+
+**Route B: Phase needs planning**
+
+Check if `{phase}-CONTEXT.md` exists in phase directory.
 
 **If CONTEXT.md exists:**
 
-- Display: "✓ Context gathered, ready to plan"
-- Display:
-  ```
-  ---
+```
+---
 
-  ## ▶ Next Up
+## ▶ Next Up
 
-  **Phase [N]: [Name]** — [Goal from ROADMAP.md]
+**Phase {N}: {Name}** — {Goal from ROADMAP.md}
+<sub>✓ Context gathered, ready to plan</sub>
 
-  `/gsd:plan-phase [phase-number]`
+`/gsd:plan-phase {phase-number}`
 
-  <sub>`/clear` first → fresh context window</sub>
+<sub>`/clear` first → fresh context window</sub>
 
-  ---
-  ```
+---
+```
 
 **If CONTEXT.md does NOT exist:**
 
-- Display:
-  ```
-  ---
+```
+---
 
-  ## ▶ Next Up
+## ▶ Next Up
 
-  **Phase [N]: [Name]** — [Goal from ROADMAP.md]
+**Phase {N}: {Name}** — {Goal from ROADMAP.md}
 
-  `/gsd:plan-phase [phase]`
+`/gsd:plan-phase {phase}`
 
-  <sub>`/clear` first → fresh context window</sub>
+<sub>`/clear` first → fresh context window</sub>
 
-  ---
+---
 
-  **Also available:**
-  - `/gsd:discuss-phase [phase]` — gather context first
-  - `/gsd:research-phase [phase]` — investigate unknowns
-  - `/gsd:list-phase-assumptions [phase]` — see Claude's assumptions
+**Also available:**
+- `/gsd:discuss-phase {phase}` — gather context first
+- `/gsd:research-phase {phase}` — investigate unknowns
+- `/gsd:list-phase-assumptions {phase}` — see Claude's assumptions
 
-  ---
-  ```
+---
+```
 
-**If all plans complete for current phase:**
+---
 
-- Check if more phases exist in ROADMAP
-- If yes: Show `/gsd:plan-phase [next-phase]` command to paste
-- If no (milestone 100% complete): Show `/gsd:complete-milestone` command to paste
-  </step>
+**Step 3: Check milestone status (only when phase complete)**
+
+Read ROADMAP.md and identify:
+1. Current phase number
+2. All phase numbers in the current milestone section
+
+Count total phases and identify the highest phase number.
+
+State: "Current phase is {X}. Milestone has {N} phases (highest: {Y})."
+
+**Route based on milestone status:**
+
+| Condition | Meaning | Action |
+|-----------|---------|--------|
+| current phase < highest phase | More phases remain | Go to **Route C** |
+| current phase = highest phase | Milestone complete | Go to **Route D** |
+
+---
+
+**Route C: Phase complete, more phases remain**
+
+Read ROADMAP.md to get the next phase's name and goal.
+
+```
+---
+
+## ✓ Phase {Z} Complete
+
+## ▶ Next Up
+
+**Phase {Z+1}: {Name}** — {Goal from ROADMAP.md}
+
+`/gsd:plan-phase {Z+1}`
+
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
+- `/gsd:discuss-phase {Z+1}` — gather context first
+- `/gsd:research-phase {Z+1}` — investigate unknowns
+
+---
+```
+
+---
+
+**Route D: Milestone complete**
+
+```
+---
+
+## 🎉 Milestone Complete
+
+All {N} phases finished!
+
+## ▶ Next Up
+
+**Complete Milestone** — archive and prepare for next
+
+`/gsd:complete-milestone`
+
+<sub>`/clear` first → fresh context window</sub>
+
+---
+```
+
+</step>
 
 <step name="edge_cases">
 **Handle edge cases:**

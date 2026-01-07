@@ -1437,33 +1437,44 @@ Use AskUserQuestion:
 </step>
 
 <step name="offer_next">
-**First, determine if more plans exist in this phase:**
+**MANDATORY: Verify remaining work before presenting next steps.**
+
+Do NOT skip this verification. Do NOT assume phase or milestone completion without checking.
+
+**Step 1: Count plans and summaries in current phase**
+
+List files in the phase directory:
 
 ```bash
-# Get current phase directory from the plan we just executed
-PHASE_DIR=$(dirname "$PLAN_PATH")
-
-# Count PLAN files vs SUMMARY files
-PLAN_COUNT=$(ls "$PHASE_DIR"/*-PLAN.md 2>/dev/null | wc -l | tr -d ' ')
-SUMMARY_COUNT=$(ls "$PHASE_DIR"/*-SUMMARY.md 2>/dev/null | wc -l | tr -d ' ')
-
-echo "Plans: $PLAN_COUNT, Summaries: $SUMMARY_COUNT"
-
-if [[ $SUMMARY_COUNT -lt $PLAN_COUNT ]]; then
-  echo "MORE_PLANS_EXIST"
-else
-  echo "PHASE_COMPLETE"
-fi
+ls -1 .planning/phases/[current-phase-dir]/*-PLAN.md 2>/dev/null | wc -l
+ls -1 .planning/phases/[current-phase-dir]/*-SUMMARY.md 2>/dev/null | wc -l
 ```
 
-**If MORE_PLANS_EXIST (more plans in this phase):**
+State the counts: "This phase has [X] plans and [Y] summaries."
+
+**Step 2: Route based on plan completion**
+
+Compare the counts from Step 1:
+
+| Condition | Meaning | Action |
+|-----------|---------|--------|
+| summaries < plans | More plans remain | Go to **Route A** |
+| summaries = plans | Phase complete | Go to Step 3 |
+
+---
+
+**Route A: More plans remain in this phase**
+
+Identify the next unexecuted plan:
+- Find the first PLAN.md file that has no matching SUMMARY.md
+- Read its `<objective>` section
 
 <if mode="yolo">
 ```
 Plan {phase}-{plan} complete.
-Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
+Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
 
-[X] of [Y] plans complete for Phase Z.
+{Y} of {X} plans complete for Phase {Z}.
 
 ⚡ Auto-continuing: Execute next plan ({phase}-{next-plan})
 ```
@@ -1474,9 +1485,9 @@ Loop back to identify_plan step automatically.
 <if mode="interactive" OR="custom with gates.execute_next_plan true">
 ```
 Plan {phase}-{plan} complete.
-Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
+Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
 
-[X] of [Y] plans complete for Phase Z.
+{Y} of {X} plans complete for Phase {Z}.
 
 ---
 
@@ -1484,7 +1495,7 @@ Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 
 **{phase}-{next-plan}: [Plan Name]** — [objective from next PLAN.md]
 
-`/gsd:execute-plan .planning/phases/XX-name/{phase}-{next-plan}-PLAN.md`
+`/gsd:execute-plan .planning/phases/{phase-dir}/{phase}-{next-plan}-PLAN.md`
 
 <sub>`/clear` first → fresh context window</sub>
 
@@ -1499,37 +1510,82 @@ Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
 Wait for user to clear and run next command.
 </if>
 
-**If phase complete (last plan done):**
+**STOP here if Route A applies. Do not continue to Step 3.**
 
-First, check if this is also the last phase in the milestone (milestone complete):
+---
 
-```bash
-# Count total phases in ROADMAP.md
-TOTAL_PHASES=$(grep -c "^### Phase [0-9]" .planning/ROADMAP.md)
+**Step 3: Check milestone status (only when all plans in phase are complete)**
 
-# Get current phase number from the just-completed plan
-CURRENT_PHASE=$(echo "{phase}" | grep -oE '^[0-9]+')
+Read ROADMAP.md and extract:
+1. Current phase number (from the plan just completed)
+2. All phase numbers listed in the current milestone section
 
-# Check if current phase == total phases
-if [[ "$CURRENT_PHASE" -eq "$TOTAL_PHASES" ]]; then
-  # Milestone complete
-  MILESTONE_COMPLETE=true
-fi
+To find phases in the current milestone, look for:
+- Phase headers: lines starting with `### Phase` or `#### Phase`
+- Phase list items: lines like `- [ ] **Phase X:` or `- [x] **Phase X:`
+
+Count total phases in the current milestone and identify the highest phase number.
+
+State: "Current phase is {X}. Milestone has {N} phases (highest: {Y})."
+
+**Step 4: Route based on milestone status**
+
+| Condition | Meaning | Action |
+|-----------|---------|--------|
+| current phase < highest phase | More phases remain | Go to **Route B** |
+| current phase = highest phase | Milestone complete | Go to **Route C** |
+
+---
+
+**Route B: Phase complete, more phases remain in milestone**
+
+Read ROADMAP.md to get the next phase's name and goal.
+
+```
+Plan {phase}-{plan} complete.
+Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
+
+## ✓ Phase {Z}: {Phase Name} Complete
+
+All {Y} plans finished.
+
+---
+
+## ▶ Next Up
+
+**Phase {Z+1}: {Next Phase Name}** — {Goal from ROADMAP.md}
+
+`/gsd:plan-phase {Z+1}`
+
+<sub>`/clear` first → fresh context window</sub>
+
+---
+
+**Also available:**
+- `/gsd:discuss-phase {Z+1}` — gather context first
+- `/gsd:research-phase {Z+1}` — investigate unknowns
+- Review phase accomplishments before continuing
+
+---
 ```
 
-**If milestone complete (final phase of roadmap done):**
+---
+
+**Route C: Milestone complete (all phases done)**
 
 ```
 🎉 MILESTONE COMPLETE!
 
 Plan {phase}-{plan} complete.
-Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
+Summary: .planning/phases/{phase-dir}/{phase}-{plan}-SUMMARY.md
 
-Phase [Z]: [Name] COMPLETE - all [Y] plans finished.
+## ✓ Phase {Z}: {Phase Name} Complete
+
+All {Y} plans finished.
 
 ════════════════════════════════════════
-All [N] phases complete!
-This milestone is 100% done.
+All {N} phases complete!
+Milestone is 100% done.
 ════════════════════════════════════════
 
 ---
@@ -1545,38 +1601,8 @@ This milestone is 100% done.
 ---
 
 **Also available:**
-- `/gsd:add-phase <description>` — add another phase
+- `/gsd:add-phase <description>` — add another phase before completing
 - Review accomplishments before archiving
-
----
-```
-
-**If phase complete but more phases remain:**
-
-```
-Plan {phase}-{plan} complete.
-Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
-
-## ✓ Phase [Z] Complete
-
-All [Y] plans finished.
-
----
-
-## ▶ Next Up
-
-**Phase [X+1]: [Name]** — [Goal from ROADMAP.md]
-
-`/gsd:plan-phase [X+1]`
-
-<sub>`/clear` first → fresh context window</sub>
-
----
-
-**Also available:**
-- `/gsd:discuss-phase [X+1]` — gather context first
-- `/gsd:research-phase [X+1]` — investigate unknowns
-- Review phase accomplishments before continuing
 
 ---
 ```
