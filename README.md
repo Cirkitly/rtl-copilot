@@ -88,6 +88,49 @@ Use `--global` (`-g`) or `--local` (`-l`) to skip the interactive prompt.
 
 Verify: `/gsd:help`
 
+### Recommended: Skip Permissions Mode
+
+GSD is designed for frictionless automation. Run Claude Code with:
+
+```bash
+claude --dangerously-skip-permissions
+```
+
+This is how GSD is intended to be used — stopping to approve `date` and `git commit` 50 times defeats the purpose.
+
+If you prefer not to use that flag, add this to your project's `.claude/settings.json` to auto-approve GSD's commands:
+
+<details>
+<summary>Show settings.json permissions</summary>
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(date:*)",
+      "Bash(echo:*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(wc:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(sort:*)",
+      "Bash(grep:*)",
+      "Bash(tr:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git tag:*)"
+    ]
+  }
+}
+```
+
+</details>
+
 ---
 
 ## How It Works
