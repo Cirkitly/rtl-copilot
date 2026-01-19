@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ReactFlow, {
     Background,
     Controls,
@@ -21,6 +21,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useFSMStore, selectStates, selectTransitions } from '../../lib/fsm';
+import { FSM_TEMPLATES } from '../../lib/fsm/templates';
 import { StateNode } from './StateNode';
 import { TransitionEdge } from './TransitionEdge';
 import { Plus, Layout, Save, Trash2, Undo, Redo, Play } from 'lucide-react';
@@ -150,6 +151,16 @@ function FSMEditorContent() {
         }
     };
 
+    const [showTemplates, setShowTemplates] = useState(false);
+
+    const handleLoadTemplate = (template: typeof FSM_TEMPLATES[0]) => {
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm('Loading a template will replace current FSM. Continue?')) {
+            store.loadFSM(template.create());
+            setShowTemplates(false);
+        }
+    };
+
     return (
         <div className="h-full w-full bg-slate-50 relative">
             <ReactFlow
@@ -206,6 +217,33 @@ function FSMEditorContent() {
                         >
                             <Redo size={18} />
                         </button>
+                        <div className="w-px bg-slate-200 mx-1" />
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowTemplates(!showTemplates)}
+                                className="p-1.5 hover:bg-slate-100 rounded text-slate-600"
+                                title="Load Template"
+                            >
+                                <Layout size={18} />
+                            </button>
+                            {showTemplates && (
+                                <div className="absolute top-full left-0 mt-1 w-64 bg-white border rounded shadow-lg z-50 py-1">
+                                    <div className="px-3 py-1.5 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b mb-1">
+                                        Templates
+                                    </div>
+                                    {FSM_TEMPLATES.map(t => (
+                                        <button
+                                            key={t.id}
+                                            onClick={() => handleLoadTemplate(t)}
+                                            className="w-full text-left px-3 py-2 hover:bg-blue-50 text-slate-700 block transition-colors"
+                                        >
+                                            <div className="text-sm font-medium">{t.name}</div>
+                                            <div className="text-xs text-slate-400 truncate">{t.description}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </Panel>
 
