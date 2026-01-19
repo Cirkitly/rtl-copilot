@@ -101,10 +101,10 @@ Based on the proposal.md and implementation.md documents, implementing visual FS
 - [x] Output formatting constraints
 
 ### Week 13: LLM API Integration
-- [ ] Claude API client setup
-- [ ] Iterative refinement system (generate → validate → fix)
-- [ ] Token usage tracking and optimization
-- [ ] Error handling and retry logic
+- [x] Define LLM Provider Interface (Generic)
+- [x] Implement Anthropic (Claude) Provider
+- [x] Implement OpenAI (GPT/Ollama) Provider
+- [x] Create Generic API Route
 
 ### Week 14: Testbench Generation
 - [ ] Analyze module interface (inputs/outputs)
