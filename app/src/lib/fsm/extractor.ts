@@ -9,7 +9,20 @@
  * 5. Auto-layout states for visualization
  */
 
-import type { VerilogModule, Statement, AlwaysBlock, CaseStatement } from '../verilog/types';
+import type {
+    VerilogModule,
+    Statement,
+    AlwaysBlock,
+    CaseStatement,
+    Expression,
+    LocalparamDeclaration,
+    RegDeclaration,
+    IdentifierExpr,
+    BlockingAssignment,
+    NonBlockingAssignment,
+    IfStatement,
+    NumberExpr
+} from '../verilog/types';
 import type { FSM, FSMState, FSMTransition, FSMExtractionResult, FSMSignal } from './types';
 import { createEmptyFSM, createState, createTransition } from './types';
 
@@ -68,7 +81,7 @@ export function extractFSM(module: VerilogModule): FSMExtractionResult {
 
 interface StateParam {
     name: string;
-    value: string;
+    value: string; // Binary string "00"
     width: number;
 }
 
@@ -84,20 +97,18 @@ interface StateRegInfo {
 export function findStateParams(module: VerilogModule): StateParam[] {
     const params: StateParam[] = [];
 
+    // Check declarations array
     for (const decl of module.declarations) {
-        if (decl.declarationType === 'localparam') {
-            // Check if it has a binary value
-            for (const item of decl.variables) {
-                if (item.initialValue) {
-                    const match = item.initialValue.match(/(\d+)'b([01]+)/);
-                    if (match) {
-                        params.push({
-                            name: item.name,
-                            value: match[2],
-                            width: parseInt(match[1], 10),
-                        });
-                    }
-                }
+        if (decl.type === 'LocalparamDeclaration') {
+            const lp = decl as LocalparamDeclaration;
+            // Check value
+            const val = evaluateExpression(lp.value);
+            if (val && val.base === 'binary') {
+                params.push({
+                    name: lp.name,
+                    value: val.value,
+                    width: val.width || 1,
+                });
             }
         }
     }
@@ -117,19 +128,20 @@ export function findStateRegister(module: VerilogModule, stateParams: StateParam
     // Find reg declarations with matching width
     const stateRegs: string[] = [];
     for (const decl of module.declarations) {
-        if (decl.declarationType === 'reg') {
-            const declWidth = calculateWidth(decl.range);
-            if (declWidth === expectedWidth) {
-                stateRegs.push(...decl.variables.map(v => v.name));
+        if (decl.type === 'RegDeclaration') {
+            const reg = decl as RegDeclaration;
+            // Calculate width from range
+            const width = calculateWidth(reg.width);
+            if (width === expectedWidth) {
+                stateRegs.push(...reg.names);
             }
         }
     }
 
     // Look for sequential always block that assigns to state reg
-    for (const stmt of module.statements) {
-        if (stmt.statementType === 'always' && isSequentialBlock(stmt as AlwaysBlock)) {
-            const always = stmt as AlwaysBlock;
-            const assigned = findAssignedSignals(always.body);
+    for (const block of module.alwaysBlocks) {
+        if (block.blockType === 'sequential') {
+            const assigned = findAssignedSignals(block.body);
 
             // Look for current_state <= something pattern
             for (const reg of stateRegs) {
@@ -159,10 +171,9 @@ export function findStateRegister(module: VerilogModule, stateParams: StateParam
  * Find the next-state combinational logic block
  */
 export function findNextStateLogic(module: VerilogModule, currentState: string): CaseStatement | null {
-    for (const stmt of module.statements) {
-        if (stmt.statementType === 'always' && !isSequentialBlock(stmt as AlwaysBlock)) {
-            const always = stmt as AlwaysBlock;
-            const caseStmt = findCaseOnSignal(always.body, currentState);
+    for (const block of module.alwaysBlocks) {
+        if (block.blockType === 'combinational') {
+            const caseStmt = findCaseOnSignal(block.body, currentState);
             if (caseStmt) {
                 return caseStmt;
             }
@@ -182,15 +193,19 @@ export function extractTransitions(
     const transitions: Array<{ from: string; to: string; condition: string }> = [];
     const stateNames = new Set(stateParams.map(p => p.name));
 
-    for (const caseItem of caseStmt.cases) {
-        if (caseItem.isDefault) continue;
+    for (const caseItem of caseStmt.items) {
+        if (caseItem.conditions === 'default') continue;
 
         // The case value is the "from" state
-        const fromState = caseItem.values[0];
-        if (!fromState || !stateNames.has(fromState)) continue;
+        // Assuming simple Identifiers for now
+        const firstCond = caseItem.conditions[0];
+        if (firstCond.type !== 'Identifier') continue;
+
+        const fromState = (firstCond as IdentifierExpr).name;
+        if (!stateNames.has(fromState)) continue;
 
         // Find assignments to next_state in the case body
-        const bodyTransitions = extractBodyTransitions(caseItem.body, nextStateSignal, stateNames);
+        const bodyTransitions = extractBodyTransitions(caseItem.statements, nextStateSignal, stateNames);
 
         for (const { to, condition } of bodyTransitions) {
             transitions.push({ from: fromState, to, condition });
@@ -211,27 +226,41 @@ function extractBodyTransitions(
     const transitions: Array<{ to: string; condition: string }> = [];
 
     for (const stmt of statements) {
-        if (stmt.statementType === 'blocking_assignment' || stmt.statementType === 'assignment') {
+        if (stmt.type === 'BlockingAssignment' || stmt.type === 'NonBlockingAssignment') {
             // Direct assignment: next_state = STATE_X
-            const assignment = stmt as any;
-            if (assignment.target === nextStateSignal && stateNames.has(assignment.value)) {
-                transitions.push({ to: assignment.value, condition: "1'b1" });
-            }
-        } else if (stmt.statementType === 'if') {
-            // Conditional: if (cond) next_state = STATE_X
-            const ifStmt = stmt as any;
-            const ifTransitions = extractBodyTransitions([ifStmt.thenBlock], nextStateSignal, stateNames);
-            for (const t of ifTransitions) {
-                transitions.push({ to: t.to, condition: ifStmt.condition || "1'b1" });
-            }
+            const assignment = stmt as BlockingAssignment; // or NonBlocking
+            const target = getIdentifierName(assignment.lhs);
 
-            if (ifStmt.elseBlock) {
-                const elseTransitions = extractBodyTransitions([ifStmt.elseBlock], nextStateSignal, stateNames);
-                for (const t of elseTransitions) {
-                    // The else condition is the negation, but we simplify
-                    transitions.push({ to: t.to, condition: t.condition });
+            if (target === nextStateSignal) {
+                const value = getIdentifierName(assignment.rhs);
+                if (value && stateNames.has(value)) {
+                    transitions.push({ to: value, condition: "1'b1" });
                 }
             }
+        } else if (stmt.type === 'If') {
+            // Conditional: if (cond) next_state = STATE_X
+            const ifStmt = stmt as IfStatement;
+            const condStr = expressionToString(ifStmt.condition);
+
+            // Then branch
+            const thenStmts = Array.isArray(ifStmt.thenBranch) ? ifStmt.thenBranch : [ifStmt.thenBranch];
+            const ifTransitions = extractBodyTransitions(thenStmts, nextStateSignal, stateNames);
+
+            for (const t of ifTransitions) {
+                transitions.push({ to: t.to, condition: condStr });
+            }
+
+            // Else branch
+            if (ifStmt.elseBranch) {
+                const elseStmts = Array.isArray(ifStmt.elseBranch) ? ifStmt.elseBranch : [ifStmt.elseBranch];
+                const elseTransitions = extractBodyTransitions(elseStmts, nextStateSignal, stateNames);
+                for (const t of elseTransitions) {
+                    // Logic would be !condStr, but for now we simplify
+                    transitions.push({ to: t.to, condition: `!(${condStr})` });
+                }
+            }
+        } else if (stmt.type === 'BeginEnd') {
+            transitions.push(...extractBodyTransitions(stmt.statements, nextStateSignal, stateNames));
         }
     }
 
@@ -249,10 +278,9 @@ export function findInitialState(
     const stateNames = new Set(stateParams.map(p => p.name));
 
     // Look in sequential always blocks for reset assignments
-    for (const stmt of module.statements) {
-        if (stmt.statementType === 'always' && isSequentialBlock(stmt as AlwaysBlock)) {
-            const always = stmt as AlwaysBlock;
-            const resetAssignment = findResetAssignment(always.body, currentState, stateNames);
+    for (const block of module.alwaysBlocks) {
+        if (block.blockType === 'sequential') {
+            const resetAssignment = findResetAssignment(block.body, currentState, stateNames);
             if (resetAssignment) {
                 return resetAssignment;
             }
@@ -307,9 +335,10 @@ function buildFSM(
 
     // Extract inputs/outputs from ports
     for (const port of module.ports) {
+        const width = port.width ? calculateWidth(port.width) : 1;
         const signal: FSMSignal = {
             name: port.name,
-            width: calculateWidth(port.range),
+            width,
             direction: port.direction === 'output' ? 'output' : 'input',
         };
 
@@ -354,38 +383,67 @@ export function applyAutoLayout(fsm: FSM): void {
 
 // ==================== Helper Functions ====================
 
-function calculateWidth(range?: { msb: number; lsb: number }): number {
-    if (!range) return 1;
-    return Math.abs(range.msb - range.lsb) + 1;
+function calculateWidth(range?: any): number {
+    if (!range || !range.msb || !range.lsb) return 1;
+    // Assuming simple number width for now, AST visitor returns Expressions
+    const msb = evaluateExpression(range.msb);
+    const lsb = evaluateExpression(range.lsb);
+    if (msb && lsb) {
+        return Math.abs(parseInt(msb.value) - parseInt(lsb.value)) + 1;
+    }
+    return 1; // Fallback
 }
 
-function isSequentialBlock(always: AlwaysBlock): boolean {
-    // Check sensitivity list for posedge/negedge
-    return always.sensitivity.some(s => s.edge === 'posedge' || s.edge === 'negedge');
+function evaluateExpression(expr: Expression): { value: string, width?: number, base?: string } | null {
+    if (expr.type === 'Number') {
+        const num = expr as NumberExpr;
+        return { value: num.value, width: num.width, base: num.base };
+    }
+    // Handle others if needed
+    return null;
 }
 
-function findAssignedSignals(statements: Statement[]): Set<string> {
+function getIdentifierName(expr: Expression): string | null {
+    if (expr.type === 'Identifier') {
+        return (expr as IdentifierExpr).name;
+    }
+    return null;
+}
+
+function expressionToString(expr: Expression): string {
+    if (expr.type === 'Identifier') {
+        return (expr as IdentifierExpr).name;
+    }
+    if (expr.type === 'Number') {
+        const n = expr as NumberExpr;
+        if (n.base === 'binary') return `${n.width}'b${n.value}`;
+        return n.value;
+    }
+    // Very basic
+    return 'expr';
+}
+
+function findAssignedSignals(stmt: Statement | Statement[]): Set<string> {
     const assigned = new Set<string>();
+    const statements = Array.isArray(stmt) ? stmt : [stmt];
 
-    for (const stmt of statements) {
-        if (stmt.statementType === 'nonblocking_assignment' ||
-            stmt.statementType === 'blocking_assignment') {
-            const assignment = stmt as any;
-            if (assignment.target) {
-                assigned.add(assignment.target);
+    for (const s of statements) {
+        if (s.type === 'BlockingAssignment' || s.type === 'NonBlockingAssignment') {
+            const name = getIdentifierName((s as BlockingAssignment).lhs);
+            if (name) assigned.add(name);
+        } else if (s.type === 'If') {
+            const ifStmt = s as IfStatement;
+            if (ifStmt.thenBranch) {
+                const nested = findAssignedSignals(ifStmt.thenBranch);
+                nested.forEach(n => assigned.add(n));
             }
-        } else if (stmt.statementType === 'if') {
-            const ifStmt = stmt as any;
-            if (ifStmt.thenBlock) {
-                for (const s of findAssignedSignals(Array.isArray(ifStmt.thenBlock) ? ifStmt.thenBlock : [ifStmt.thenBlock])) {
-                    assigned.add(s);
-                }
+            if (ifStmt.elseBranch) {
+                const nested = findAssignedSignals(ifStmt.elseBranch);
+                nested.forEach(n => assigned.add(n));
             }
-            if (ifStmt.elseBlock) {
-                for (const s of findAssignedSignals(Array.isArray(ifStmt.elseBlock) ? ifStmt.elseBlock : [ifStmt.elseBlock])) {
-                    assigned.add(s);
-                }
-            }
+        } else if (s.type === 'BeginEnd') {
+            const nested = findAssignedSignals(s.statements);
+            nested.forEach(n => assigned.add(n));
         }
     }
 
@@ -393,71 +451,66 @@ function findAssignedSignals(statements: Statement[]): Set<string> {
 }
 
 function findNextStateSignal(regs: string[], currentState: string): string | null {
-    // Common patterns
-    if (currentState === 'current_state' && regs.includes('next_state')) {
-        return 'next_state';
-    }
-    if (currentState === 'state' && regs.includes('next_state')) {
-        return 'next_state';
-    }
+    if (currentState === 'current_state' && regs.includes('next_state')) return 'next_state';
+    if (currentState === 'state' && regs.includes('next_state')) return 'next_state';
     if (currentState.endsWith('_reg') && regs.includes(currentState.replace('_reg', '_next'))) {
         return currentState.replace('_reg', '_next');
     }
-
-    // Return any other reg that's not the current state
     return regs.find(r => r !== currentState) || null;
 }
 
-function findCaseOnSignal(statements: Statement[], signal: string): CaseStatement | null {
-    for (const stmt of statements) {
-        if (stmt.statementType === 'case') {
-            const caseStmt = stmt as CaseStatement;
-            if (caseStmt.expression === signal) {
-                return caseStmt;
-            }
+function findCaseOnSignal(stmt: Statement | Statement[], signal: string): CaseStatement | null {
+    const statements = Array.isArray(stmt) ? stmt : [stmt];
+
+    for (const s of statements) {
+        if (s.type === 'Case') {
+            const cs = s as CaseStatement;
+            const exprName = getIdentifierName(cs.expression);
+            if (exprName === signal) return cs;
+        } else if (s.type === 'BeginEnd') {
+            const res = findCaseOnSignal(s.statements, signal);
+            if (res) return res;
         }
     }
     return null;
 }
 
-function findResetAssignment(
-    statements: Statement[],
-    stateSignal: string,
-    stateNames: Set<string>
-): string | null {
-    for (const stmt of statements) {
-        if (stmt.statementType === 'if') {
-            const ifStmt = stmt as any;
-            // Look for reset condition (rst, reset, !rst_n)
-            if (isResetCondition(ifStmt.condition)) {
-                const assignments = findAssignmentsTo(
-                    Array.isArray(ifStmt.thenBlock) ? ifStmt.thenBlock : [ifStmt.thenBlock],
-                    stateSignal
-                );
-                for (const value of assignments) {
-                    if (stateNames.has(value)) {
-                        return value;
-                    }
+function findResetAssignment(stmt: Statement | Statement[], stateSignal: string, stateNames: Set<string>): string | null {
+    const statements = Array.isArray(stmt) ? stmt : [stmt];
+
+    for (const s of statements) {
+        if (s.type === 'If') {
+            const ifStmt = s as IfStatement;
+            const cond = expressionToString(ifStmt.condition);
+            if (isResetCondition(cond)) {
+                const assignments = findAssignmentsTo(ifStmt.thenBranch, stateSignal);
+                for (const val of assignments) {
+                    if (stateNames.has(val)) return val;
                 }
             }
+        } else if (s.type === 'BeginEnd') {
+            const res = findResetAssignment(s.statements, stateSignal, stateNames);
+            if (res) return res;
         }
     }
     return null;
 }
 
-function findAssignmentsTo(statements: Statement[], target: string): string[] {
+function findAssignmentsTo(stmt: Statement | Statement[], target: string): string[] {
     const values: string[] = [];
+    const statements = Array.isArray(stmt) ? stmt : [stmt];
 
-    for (const stmt of statements) {
-        if (stmt.statementType === 'nonblocking_assignment' ||
-            stmt.statementType === 'blocking_assignment') {
-            const assignment = stmt as any;
-            if (assignment.target === target && assignment.value) {
-                values.push(assignment.value);
+    for (const s of statements) {
+        if (s.type === 'NonBlockingAssignment' || s.type === 'BlockingAssignment') {
+            const assign = s as BlockingAssignment;
+            if (getIdentifierName(assign.lhs) === target) {
+                const val = getIdentifierName(assign.rhs);
+                if (val) values.push(val);
             }
+        } else if (s.type === 'BeginEnd') {
+            values.push(...findAssignmentsTo(s.statements, target));
         }
     }
-
     return values;
 }
 
@@ -483,23 +536,11 @@ function isResetSignal(name: string): boolean {
 
 function detectEncoding(params: StateParam[]): 'binary' | 'onehot' | 'gray' {
     if (params.length <= 1) return 'binary';
-
     // Check for one-hot (each value has exactly one bit set)
     const isOneHot = params.every(p => {
         const ones = p.value.split('').filter(c => c === '1').length;
         return ones === 1;
     });
     if (isOneHot) return 'onehot';
-
-    // Check for gray (adjacent values differ by one bit)
-    const isGray = params.every((p, i) => {
-        if (i === 0) return true;
-        const prev = parseInt(params[i - 1].value, 2);
-        const curr = parseInt(p.value, 2);
-        const diff = prev ^ curr;
-        return (diff & (diff - 1)) === 0 && diff !== 0;
-    });
-    if (isGray) return 'gray';
-
     return 'binary';
 }
