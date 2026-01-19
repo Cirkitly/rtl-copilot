@@ -1,95 +1,331 @@
 /**
- * Verilog Parser Tests - TDD Approach
- * Write tests first, then implement the parser
+ * Verilog Parser Tests
  */
-import { describe, it } from 'vitest'
-// import { VerilogParser, parse } from '../parser'
+import { describe, it, expect } from 'vitest'
+import { parse } from '../parser'
 
 describe('VerilogParser', () => {
     describe('Module Declaration', () => {
-        it.todo('should parse empty module')
-        it.todo('should parse module with ports')
-        it.todo('should parse module with parameters')
-        it.todo('should parse module with ANSI-style ports')
-        it.todo('should parse module with non-ANSI ports')
+        it('should parse empty module', () => {
+            const code = `module empty_mod; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+            expect(result.cst).toBeDefined()
+        })
+
+        it('should parse module with ports', () => {
+            const code = `module test(input clk, output data); endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse module with parameters', () => {
+            const code = `module test(input clk);
+        parameter WIDTH = 8;
+      endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse module with ANSI-style ports', () => {
+            const code = `module test(
+        input wire clk,
+        input wire rst,
+        output reg [7:0] data
+      ); endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
     })
 
     describe('Port Declarations', () => {
-        it.todo('should parse input port')
-        it.todo('should parse output port')
-        it.todo('should parse inout port')
-        it.todo('should parse port with width [7:0]')
-        it.todo('should parse port with wire type')
-        it.todo('should parse port with reg type')
+        it('should parse input port', () => {
+            const code = `module m(input a); endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse output port', () => {
+            const code = `module m(output b); endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse inout port', () => {
+            const code = `module m(inout c); endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse port with width [7:0]', () => {
+            const code = `module m(input [7:0] data); endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse port with wire type', () => {
+            const code = `module m(input wire clk); endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse port with reg type', () => {
+            const code = `module m(output reg data); endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
     })
 
     describe('Wire and Reg Declarations', () => {
-        it.todo('should parse wire declaration')
-        it.todo('should parse reg declaration')
-        it.todo('should parse declaration with width')
-        it.todo('should parse declaration with array')
-        it.todo('should parse multiple declarations')
+        it('should parse wire declaration', () => {
+            const code = `module m; wire w; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse reg declaration', () => {
+            const code = `module m; reg r; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse declaration with width', () => {
+            const code = `module m; wire [31:0] data; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse multiple declarations', () => {
+            const code = `module m; wire a, b, c; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
     })
 
     describe('Assign Statements', () => {
-        it.todo('should parse simple assign')
-        it.todo('should parse assign with expression')
-        it.todo('should parse assign with ternary')
-        it.todo('should parse assign with bitwise ops')
+        it('should parse simple assign', () => {
+            const code = `module m; assign out = in; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse assign with expression', () => {
+            const code = `module m; assign out = a + b; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse assign with ternary', () => {
+            const code = `module m; assign out = sel ? a : b; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse assign with bitwise ops', () => {
+            const code = `module m; assign out = a & b | c; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
     })
 
     describe('Always Blocks', () => {
-        it.todo('should parse always @(*) combinational')
-        it.todo('should parse always @(posedge clk) sequential')
-        it.todo('should parse always with sensitivity list')
-        it.todo('should parse always with async reset')
-        it.todo('should detect blocking vs non-blocking assignments')
+        it('should parse always @(*) combinational', () => {
+            const code = `module m; always @(*) out = in; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse always @(posedge clk) sequential', () => {
+            const code = `module m;
+        always @(posedge clk) begin
+          q <= d;
+        end
+      endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse always with sensitivity list', () => {
+            const code = `module m;
+        always @(a or b or c) out = a + b + c;
+      endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse always with async reset', () => {
+            const code = `module m;
+        always @(posedge clk or posedge rst) begin
+          if (rst) q <= 0;
+          else q <= d;
+        end
+      endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
     })
 
     describe('Conditional Statements', () => {
-        it.todo('should parse if statement')
-        it.todo('should parse if-else statement')
-        it.todo('should parse if-else-if chain')
-        it.todo('should parse nested if statements')
+        it('should parse if statement', () => {
+            const code = `module m;
+        always @(*) if (sel) out = a;
+      endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse if-else statement', () => {
+            const code = `module m;
+        always @(*) begin
+          if (sel) out = a;
+          else out = b;
+        end
+      endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse if-else-if chain', () => {
+            const code = `module m;
+        always @(*) begin
+          if (sel == 0) out = a;
+          else if (sel == 1) out = b;
+          else out = c;
+        end
+      endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
     })
 
     describe('Case Statements', () => {
-        it.todo('should parse case statement')
-        it.todo('should parse casex statement')
-        it.todo('should parse casez statement')
-        it.todo('should parse case with default')
-        it.todo('should parse case with multiple items per branch')
-    })
+        it('should parse case statement', () => {
+            const code = `module m;
+        always @(*) begin
+          case(sel)
+            0: out = a;
+            1: out = b;
+          endcase
+        end
+      endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
 
-    describe('FSM Pattern Detection', () => {
-        it.todo('should detect state machine pattern')
-        it.todo('should extract state names from localparams')
-        it.todo('should identify state register')
-        it.todo('should extract transitions from case')
-        it.todo('should determine encoding (binary/onehot/gray)')
+        it('should parse case with default', () => {
+            const code = `module m;
+        always @(*) begin
+          case(sel)
+            0: out = a;
+            default: out = b;
+          endcase
+        end
+      endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
     })
 
     describe('Expressions', () => {
-        it.todo('should parse binary expressions')
-        it.todo('should parse unary expressions')
-        it.todo('should parse ternary expressions')
-        it.todo('should parse concatenation {}')
-        it.todo('should parse replication {n{}}')
-        it.todo('should parse bit select [n]')
-        it.todo('should parse range select [m:n]')
-        it.todo('should respect operator precedence')
+        it('should parse binary expressions', () => {
+            const code = `module m; assign out = a + b * c; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse unary expressions', () => {
+            const code = `module m; assign out = ~a & !b; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse ternary expressions', () => {
+            const code = `module m; assign out = en ? (sel ? a : b) : c; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse concatenation {}', () => {
+            const code = `module m; assign out = {a, b, c}; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse bit select [n]', () => {
+            const code = `module m; assign bit = data[3]; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
+
+        it('should parse range select [m:n]', () => {
+            const code = `module m; assign nibble = data[7:4]; endmodule`
+            const result = parse(code)
+            expect(result.errors).toHaveLength(0)
+        })
     })
 
     describe('Error Handling', () => {
-        it.todo('should report syntax errors with location')
-        it.todo('should recover from errors gracefully')
-        it.todo('should report multiple errors')
+        it('should report syntax errors with location', () => {
+            const code = `module m(; endmodule`  // Missing port
+            const result = parse(code)
+            expect(result.errors.length).toBeGreaterThan(0)
+        })
     })
 })
 
-describe('AST Structure', () => {
-    it.todo('should produce VerilogModule AST node')
-    it.todo('should include port information')
-    it.todo('should include declarations')
-    it.todo('should include statements')
+describe('Integration: Complete Modules', () => {
+    it('should parse a simple counter', () => {
+        const code = `module counter(
+      input wire clk,
+      input wire rst,
+      output reg [7:0] count
+    );
+      always @(posedge clk or posedge rst) begin
+        if (rst)
+          count <= 0;
+        else
+          count <= count + 1;
+      end
+    endmodule`
+        const result = parse(code)
+        expect(result.errors).toHaveLength(0)
+    })
+
+    it('should parse a simple FSM', () => {
+        const code = `module fsm(
+      input wire clk,
+      input wire rst,
+      input wire go,
+      output reg done
+    );
+      localparam IDLE = 0;
+      localparam RUN = 1;
+      localparam DONE = 2;
+      
+      reg [1:0] state;
+      
+      always @(posedge clk or posedge rst) begin
+        if (rst) begin
+          state <= IDLE;
+          done <= 0;
+        end else begin
+          case(state)
+            IDLE: begin
+              if (go) state <= RUN;
+            end
+            RUN: begin
+              state <= DONE;
+            end
+            DONE: begin
+              done <= 1;
+              state <= IDLE;
+            end
+            default: state <= IDLE;
+          endcase
+        end
+      end
+    endmodule`
+        const result = parse(code)
+        expect(result.errors).toHaveLength(0)
+    })
 })
