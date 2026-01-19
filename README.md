@@ -110,6 +110,17 @@ NEXTAUTH_URL=http://localhost:3000
 | [Implementation Plan](docs/implementation.md) | Technical implementation guide |
 | [Task Breakdown](docs/task.md) | Development checklist (24 weeks) |
 
+### Visual Walkthrough
+
+#### FSM Editor with Real-time Verilog Sync
+
+![FSM Editor Preview](docs/assets/fsm_editor_preview.png)
+
+#### Auto-Layout Support
+
+![FSM Editor Layout](docs/assets/fsm_editor_layout.png)
+
+---
 ---
 
 ## Project Status
@@ -121,9 +132,9 @@ NEXTAUTH_URL=http://localhost:3000
 
 | Phase | Weeks | Status |
 |-------|-------|--------|
-| 1. Foundation | 1-3 | 🔲 Not Started |
-| 2. Verilog Core | 4-7 | 🔲 Not Started |
-| 3. FSM Editor | 8-11 | 🔲 Not Started |
+| 1. Foundation | 1-3 | ✅ Completed |
+| 2. Verilog Core | 4-7 | ✅ Completed |
+| 3. FSM Editor | 8-11 | ✅ Completed |
 | 4. LLM Integration | 12-15 | 🔲 Not Started |
 | 5. Code Editor & UI | 16-18 | 🔲 Not Started |
 | 6. Simulation | 19-21 | 🔲 Not Started |
