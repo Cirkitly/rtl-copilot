@@ -107,10 +107,10 @@ Based on the proposal.md and implementation.md documents, implementing visual FS
 - [x] Create Generic API Route
 
 ### Week 14: Testbench Generation
-- [ ] Analyze module interface (inputs/outputs)
-- [ ] Generate clock/reset stimulus
-- [ ] Generate test vectors for common cases
-- [ ] Add assertion checks
+- [x] Analyze module interface (inputs/outputs)
+- [x] Generate clock/reset stimulus
+- [x] Generate test vectors for common cases
+- [x] Add assertion checks
 
 ### Week 15: Context-Aware Suggestions
 - [ ] Autocomplete for signal names
