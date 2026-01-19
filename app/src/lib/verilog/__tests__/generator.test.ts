@@ -13,7 +13,7 @@ const num = (value: string): NumberExpr => ({ type: 'Number', value })
 describe('VerilogGenerator', () => {
     describe('Module Generation', () => {
         it('should generate empty module', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'empty',
                 ports: [],
@@ -24,13 +24,13 @@ describe('VerilogGenerator', () => {
                 assigns: [],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('module empty;')
             expect(code).toContain('endmodule')
         })
 
         it('should generate module with ports', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [
@@ -44,14 +44,14 @@ describe('VerilogGenerator', () => {
                 assigns: [],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('module test(')
             expect(code).toContain('input clk')
             expect(code).toContain('output data')
         })
 
         it('should generate module with parameters', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -66,14 +66,14 @@ describe('VerilogGenerator', () => {
                 assigns: [],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('parameter WIDTH = 8;')
         })
     })
 
     describe('Declaration Generation', () => {
         it('should generate wire declaration', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -87,12 +87,12 @@ describe('VerilogGenerator', () => {
                 assigns: [],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('wire a, b;')
         })
 
         it('should generate reg declaration', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -106,12 +106,12 @@ describe('VerilogGenerator', () => {
                 assigns: [],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('reg q;')
         })
 
         it('should generate with proper width', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -126,12 +126,12 @@ describe('VerilogGenerator', () => {
                 assigns: [],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('wire [7:0] data;')
         })
 
         it('should generate localparam declarations', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -146,14 +146,14 @@ describe('VerilogGenerator', () => {
                 assigns: [],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('localparam IDLE = 0;')
         })
     })
 
     describe('Statement Generation', () => {
         it('should generate assign statement', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -168,12 +168,12 @@ describe('VerilogGenerator', () => {
                 }],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('assign out = in;')
         })
 
         it('should generate always block', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -193,14 +193,14 @@ describe('VerilogGenerator', () => {
                 assigns: [],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('always @(*) begin')
             expect(code).toContain('out = in;')
             expect(code).toContain('end')
         })
 
         it('should generate if statement', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -229,7 +229,7 @@ describe('VerilogGenerator', () => {
                 assigns: [],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('always @(posedge clk) begin')
             expect(code).toContain('if (rst) begin')
             expect(code).toContain('q <= 0;')
@@ -238,7 +238,7 @@ describe('VerilogGenerator', () => {
         })
 
         it('should generate case statement', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -278,7 +278,7 @@ describe('VerilogGenerator', () => {
                 assigns: [],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('case(sel)')
             expect(code).toContain('0: begin')
             expect(code).toContain('out = a;')
@@ -289,7 +289,7 @@ describe('VerilogGenerator', () => {
 
     describe('Formatting', () => {
         it('should use 2-space indentation by default', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -300,12 +300,12 @@ describe('VerilogGenerator', () => {
                 assigns: [],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('  wire a;')
         })
 
         it('should add blank lines between sections', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -316,7 +316,7 @@ describe('VerilogGenerator', () => {
                 assigns: [{ type: 'Assign', lhs: ident('out'), rhs: ident('in') }],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             // Should have blank line between declarations and assigns
             expect(code).toMatch(/wire w;\n\n.*assign/)
         })
@@ -324,7 +324,7 @@ describe('VerilogGenerator', () => {
 
     describe('Expression Generation', () => {
         it('should generate binary expressions', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -344,12 +344,12 @@ describe('VerilogGenerator', () => {
                 }],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('assign out = a + b;')
         })
 
         it('should generate ternary expressions', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -369,12 +369,12 @@ describe('VerilogGenerator', () => {
                 }],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('assign out = sel ? a : b;')
         })
 
         it('should generate concatenation', () => {
-            const module: VerilogModule = {
+            const mod: VerilogModule = {
                 type: 'Module',
                 name: 'test',
                 ports: [],
@@ -392,7 +392,7 @@ describe('VerilogGenerator', () => {
                 }],
                 submodules: [],
             }
-            const code = generateVerilog(module)
+            const code = generateVerilog(mod)
             expect(code).toContain('assign out = {a, b};')
         })
     })
