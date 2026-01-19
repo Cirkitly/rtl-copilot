@@ -97,8 +97,8 @@ Based on the proposal.md and implementation.md documents, implementing visual FS
 ### Week 12: Prompt Engineering
 - [x] Design system prompt for Verilog generation
 - [x] Build few-shot examples database
-- [ ] Context injection (existing module ports, signals)
-- [ ] Output formatting constraints
+- [x] Context injection (existing module ports, signals)
+- [x] Output formatting constraints
 
 ### Week 13: LLM API Integration
 - [ ] Claude API client setup
