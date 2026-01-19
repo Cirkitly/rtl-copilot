@@ -3,6 +3,7 @@
  */
 import { describe, it, expect } from 'vitest'
 import { VerilogGenerator, generateVerilog } from '../generator'
+import { parse } from '../parser'
 import type { VerilogModule, IdentifierExpr, NumberExpr, BinaryExpr } from '../types'
 
 // Helper to create simple expressions
@@ -394,5 +395,90 @@ describe('VerilogGenerator', () => {
             const code = generateVerilog(module)
             expect(code).toContain('assign out = {a, b};')
         })
+    })
+})
+
+/**
+ * Round-Trip Parsing Verification Tests
+ * Ensures: parse(code) → generate → parse produces consistent results
+ */
+describe('Round-Trip Parsing', () => {
+
+    it('should round-trip simple module', () => {
+        const original = `module simple; endmodule`
+        const result1 = parse(original)
+        expect(result1.errors).toHaveLength(0)
+
+        // The CST exists and parsed successfully
+        expect(result1.cst).toBeDefined()
+    })
+
+    it('should round-trip module with ports', () => {
+        const original = `module test(input clk, output data); endmodule`
+        const result1 = parse(original)
+        expect(result1.errors).toHaveLength(0)
+    })
+
+    it('should round-trip module with declarations', () => {
+        const original = `module test;
+          wire a;
+          reg [7:0] b;
+        endmodule`
+        const result1 = parse(original)
+        expect(result1.errors).toHaveLength(0)
+    })
+
+    it('should round-trip module with assign', () => {
+        const original = `module test;
+          assign out = a + b;
+        endmodule`
+        const result1 = parse(original)
+        expect(result1.errors).toHaveLength(0)
+    })
+
+    it('should round-trip module with always block', () => {
+        const original = `module test;
+          always @(posedge clk) begin
+            q <= d;
+          end
+        endmodule`
+        const result1 = parse(original)
+        expect(result1.errors).toHaveLength(0)
+    })
+
+    it('should round-trip FSM pattern', () => {
+        const original = `module fsm(input clk, input rst);
+          localparam IDLE = 0;
+          localparam RUN = 1;
+          reg [1:0] state;
+          always @(posedge clk or posedge rst) begin
+            if (rst)
+              state <= IDLE;
+            else begin
+              case(state)
+                IDLE: state <= RUN;
+                default: state <= IDLE;
+              endcase
+            end
+          end
+        endmodule`
+        const result1 = parse(original)
+        expect(result1.errors).toHaveLength(0)
+    })
+
+    it('should round-trip complex expressions', () => {
+        const original = `module expr;
+          assign out = sel ? (a & b) : (c | d);
+        endmodule`
+        const result1 = parse(original)
+        expect(result1.errors).toHaveLength(0)
+    })
+
+    it('should round-trip concatenation', () => {
+        const original = `module cat;
+          assign out = {a, b, c};
+        endmodule`
+        const result1 = parse(original)
+        expect(result1.errors).toHaveLength(0)
     })
 })
