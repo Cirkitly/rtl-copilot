@@ -24,7 +24,7 @@ Base: Next.js 14 + React + TypeScript
 ```
 Runtime: Node.js (Next.js API routes)
 ├── Verilog Parser: Chevrotain or ANTLR4
-├── AST Manipulation: Custom walker/transformer
+├── AST Manipulation: Custom walker/transformer (Chevrotain Visitor Implemented)
 ├── LLM Integration: Anthropic Claude API (Sonnet 4.5)
 ├── Simulation: iverilog/verilator via Docker
 └── Database: PostgreSQL + Redis
@@ -34,7 +34,7 @@ Runtime: Node.js (Next.js API routes)
 
 ## Core Modules
 
-### Module 1: Verilog Parser & Generator
+### Module 1: Verilog Parser & Generator (Implemented ✅)
 
 #### AST Structure
 
@@ -71,7 +71,7 @@ interface FSMBlock extends AlwaysBlock {
 
 ---
 
-### Module 2: FSM Engine
+### Module 2: FSM Engine (Implemented ✅)
 
 #### Data Structures
 
