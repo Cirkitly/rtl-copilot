@@ -26,7 +26,8 @@ import { StateNode } from './StateNode';
 import { TransitionEdge } from './TransitionEdge';
 import { PropertiesPanel } from './PropertiesPanel';
 import { VerilogPreview } from './VerilogPreview';
-import { Plus, Layout, Save, Trash2, Undo, Redo, Play } from 'lucide-react';
+import { getLayoutedElements } from '../../lib/fsm/layout';
+import { Plus, Layout, Save, Trash2, Undo, Redo, Play, Wand2 } from 'lucide-react';
 
 const nodeTypes = {
     fsmState: StateNode,
@@ -163,6 +164,13 @@ function FSMEditorContent() {
         }
     };
 
+    const handleLayout = () => {
+        const { nodes: layoutedNodes } = getLayoutedElements(nodes, edges);
+        layoutedNodes.forEach(node => {
+            store.updateState(node.id, { position: node.position });
+        });
+    };
+
     return (
         <div className="flex h-full w-full">
             <div className="flex-1 flex flex-col h-full relative">
@@ -220,6 +228,14 @@ function FSMEditorContent() {
                                     title="Redo"
                                 >
                                     <Redo size={18} />
+                                </button>
+                                <div className="w-px bg-slate-200 mx-1" />
+                                <button
+                                    onClick={handleLayout}
+                                    className="p-1.5 hover:bg-slate-100 rounded text-slate-600"
+                                    title="Auto Layout"
+                                >
+                                    <Wand2 size={18} />
                                 </button>
                                 <div className="w-px bg-slate-200 mx-1" />
                                 <div className="relative">
