@@ -70,7 +70,7 @@ Based on the proposal.md and implementation.md documents, implementing visual FS
 - [x] Generate state register with reset logic
 - [x] Generate combinational next-state logic
 - [x] Generate output logic (Moore/Mealy)
-- [ ] Create FSM template system with customization options
+- [x] Create FSM template system with customization options
 - [x] Add FSM validation (unreachable states, dead transitions)
 
 ### Week 10: Verilog → FSM Extractor
