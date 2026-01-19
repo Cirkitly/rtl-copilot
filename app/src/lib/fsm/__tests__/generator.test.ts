@@ -7,6 +7,7 @@ import { generateFSMVerilog, generateTransitionCase, formatSignalAssignment } fr
 import { createState, createTransition, createEmptyFSM } from '../types';
 import type { FSM } from '../types';
 import { parse } from '../../verilog/parser';
+import { cstToAst } from '../../verilog/visitor';
 
 describe('FSM Verilog Generator', () => {
 
@@ -140,15 +141,17 @@ describe('FSM Verilog Generator', () => {
             expect(verilog).toContain("yellow = 1'b0");
         });
 
-        // Skip: FSM generator produces valid Verilog but parser may not support all patterns
-        it.skip('should generate parseable Verilog', () => {
+        it('should generate parseable Verilog', () => {
             const fsm = createSimpleFSM();
             const verilog = generateFSMVerilog(fsm);
 
             const result = parse(verilog);
             expect(result.errors).toHaveLength(0);
-            expect(result.ast).toBeDefined();
-            expect(result.ast?.name).toBe('traffic_light');
+
+            // Check AST using Visitor
+            const ast = cstToAst(result.cst);
+            expect(ast).toBeDefined();
+            expect(ast.name).toBe('traffic_light');
         });
     });
 
