@@ -23,6 +23,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "reactflow": "^11.11.4",
+    "uuid": "^13.0.0",
     "zustand": "^5.0.10"
   },
   "devDependencies": {
@@ -34,6 +35,7 @@
     "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.17",
     "drizzle-kit": "^0.31.8",
