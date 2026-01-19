@@ -2,7 +2,7 @@
  * Verilog Validator Tests - TDD Approach
  * Write tests first, then implement the validator
  */
-import { describe, it, expect } from 'vitest'
+import { describe, it } from 'vitest'
 // import { VerilogValidator, validate, LintRule } from '../validator'
 
 describe('VerilogValidator', () => {

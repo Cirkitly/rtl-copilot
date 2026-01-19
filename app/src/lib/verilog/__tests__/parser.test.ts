@@ -2,7 +2,7 @@
  * Verilog Parser Tests - TDD Approach
  * Write tests first, then implement the parser
  */
-import { describe, it, expect } from 'vitest'
+import { describe, it } from 'vitest'
 // import { VerilogParser, parse } from '../parser'
 
 describe('VerilogParser', () => {

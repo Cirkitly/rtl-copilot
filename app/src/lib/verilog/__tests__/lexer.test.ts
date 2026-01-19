@@ -2,7 +2,7 @@
  * Verilog Lexer Tests - TDD Approach
  * Write tests first, then implement the lexer
  */
-import { describe, it, expect } from 'vitest'
+import { describe, it } from 'vitest'
 // import { VerilogLexer, tokenize } from '../lexer'
 
 describe('VerilogLexer', () => {

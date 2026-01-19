@@ -2,7 +2,7 @@
  * Verilog Generator Tests - TDD Approach
  * Write tests first, then implement the generator
  */
-import { describe, it, expect } from 'vitest'
+import { describe, it } from 'vitest'
 // import { VerilogGenerator, generate } from '../generator'
 
 describe('VerilogGenerator', () => {
