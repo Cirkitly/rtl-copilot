@@ -1,32 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
+import { generateFSMVerilog } from '@/lib/fsm/generator';
+import type { FSM, FSMGeneratorOptions } from '@/lib/fsm/types';
 
-// POST /api/fsm/to-verilog - Convert FSM graph to Verilog code
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
     try {
-        const body = await request.json()
-        const { fsm } = body
+        const body = await req.json();
+        const { fsm, options } = body as { fsm: FSM; options?: FSMGeneratorOptions };
 
         if (!fsm) {
             return NextResponse.json(
-                { error: 'FSM graph is required' },
+                { error: 'FSM data is required' },
                 { status: 400 }
-            )
+            );
         }
 
-        // TODO: Implement FSM to Verilog conversion
-        // This will be implemented in Phase 3 (Week 9)
-        return NextResponse.json(
-            {
-                message: 'FSM to Verilog conversion not yet implemented',
-                verilogCode: null
-            },
-            { status: 501 }
-        )
+        const verilog = generateFSMVerilog(fsm, options);
+
+        return NextResponse.json({ verilog });
     } catch (error) {
-        console.error('Failed to convert FSM to Verilog:', error)
+        console.error('FSM Generation Error:', error);
         return NextResponse.json(
-            { error: 'Failed to convert FSM to Verilog' },
+            { error: error instanceof Error ? error.message : 'Failed to generate Verilog' },
             { status: 500 }
-        )
+        );
     }
 }
