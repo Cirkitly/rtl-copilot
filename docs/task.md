@@ -82,13 +82,13 @@ Based on the proposal.md and implementation.md documents, implementing visual FS
 - [x] Handle complex FSM patterns (nested states, multiple FSMs)
 
 ### Week 11: FSM Editor Features
-- [ ] State properties panel (name, outputs, isInitial)
-- [ ] Transition condition editor with autocomplete
-- [ ] Drag-and-drop state creation
-- [ ] Connection validation (no dangling transitions)
-- [ ] Auto-layout algorithm (force-directed)
-- [ ] Undo/redo support with Zustand middleware
-- [ ] Real-time Verilog sync (FSM changes → code updates)
+- [x] State properties panel (name, outputs, isInitial)
+- [x] Transition condition editor with autocomplete
+- [x] Drag-and-drop state creation
+- [x] Connection validation (no dangling transitions)
+- [x] Auto-layout algorithm (force-directed)
+- [x] Undo/redo support with Zustand middleware
+- [x] Real-time Verilog sync (FSM changes → code updates)
 
 ---
 
