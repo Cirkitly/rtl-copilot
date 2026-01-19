@@ -55,7 +55,7 @@ Based on the proposal.md and implementation.md documents, implementing visual FS
 
 ---
 
-## Phase 3: FSM Editor (Weeks 8-11) - IN PROGRESS
+## Phase 3: FSM Editor (Weeks 8-11) - COMPLETED ✅
 
 ### Week 8: FSM Data Model & Graph Representation
 - [x] Define FSM TypeScript interfaces (FSMState, FSMTransition, FSM)
@@ -95,7 +95,7 @@ Based on the proposal.md and implementation.md documents, implementing visual FS
 ## Phase 4: LLM Integration (Weeks 12-15)
 
 ### Week 12: Prompt Engineering
-- [ ] Design system prompt for Verilog generation
+- [x] Design system prompt for Verilog generation
 - [ ] Build few-shot examples database
 - [ ] Context injection (existing module ports, signals)
 - [ ] Output formatting constraints
