@@ -141,7 +141,7 @@ Based on the proposal.md and implementation.md documents, implementing visual FS
 
 ### Week 21: Waveform Viewer UI
 - [x] WaveformViewer Component (Canvas/SVG)
-- [ ] Integration with Toolbar
+- [x] Integration with Toolbar
 
 ---
 
