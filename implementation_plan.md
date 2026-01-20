@@ -202,3 +202,75 @@ The following criteria must be met to declare Phase 4 complete:
 - **Actions**:
     - Ensure Chakra UI theme matches Monaco editor theme.
 
+---
+
+## Phase 6: Simulation & Verification (Weeks 19-21)
+
+**Goal:** Enable users to compile, simulate, and visualize waveforms for their Verilog designs directly in the IDE.
+
+### Must-Haves
+| Truths (Observable behavior) | Artifacts (Code) | Key Links |
+|------------------------------|------------------|-----------|
+| User can compile Verilog and see errors | `app/src/lib/simulation/runner.ts` | API -> Docker/iverilog |
+| User can run testbench and generate VCD | `Dockerfile` | Simulation env |
+| User can view signal waveforms | `app/src/components/waveform/WaveformViewer.tsx` | VCD -> Canvas |
+
+### Plan 19: Docker Simulation Environment (Week 19)
+
+**Goal:** Create a containerized environment for safe Verilog compilation and simulation.
+
+#### [TASK] Dockerfile
+- **File**: `docker/Dockerfile`
+- **Actions**:
+    - Base image: `debian:bookworm-slim`
+    - Install `iverilog`, `verilator`, `gtkwave` (optional).
+    - Define entrypoint script for compile + simulate.
+
+#### [TASK] Simulation Runner
+- **File**: `app/src/lib/simulation/runner.ts`
+- **Actions**:
+    - `compileverilog(code)`: Runs `iverilog` via Docker.
+    - `runSimulation(tb, dut)`: Runs testbench, generates VCD.
+    - Parse output for errors/warnings.
+
+#### [TASK] Simulation API
+- **File**: `app/src/app/api/simulation/run/route.ts`
+- **Actions**:
+    - Accept `moduleCode`, `testbenchCode`.
+    - Return `{ success, errors, vcdPath }`.
+
+---
+
+### Plan 20: VCD Waveform Parser (Week 20)
+
+**Goal:** Parse VCD files and provide data for visualization.
+
+#### [TASK] VCD Parser
+- **File**: `app/src/lib/waveform/vcdParser.ts`
+- **Actions**:
+    - Parse VCD header (timescale, variables).
+    - Parse value changes into structured data.
+    - Output: `{ signals: { name, values: [{ time, value }][] } }`.
+
+#### [TASK] Unit Tests
+- **File**: `app/src/lib/waveform/__tests__/vcdParser.test.ts`
+- **Actions**:
+    - Test parsing of multi-bit signals, real numbers, and edge cases.
+
+---
+
+### Plan 21: Waveform Viewer UI (Week 21)
+
+**Goal:** Render interactive waveform diagrams in the IDE.
+
+#### [TASK] WaveformViewer Component
+- **File**: `app/src/components/waveform/WaveformViewer.tsx`
+- **Actions**:
+    - Render signal names on the left.
+    - Render waveform traces (using Canvas or SVG).
+    - Support zoom and pan.
+
+#### [TASK] Integration
+- **Actions**:
+    - Add "Run Simulation" button to toolbar.
+    - Display WaveformViewer in a collapsible panel below the editor.

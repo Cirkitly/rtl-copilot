@@ -130,11 +130,18 @@ Based on the proposal.md and implementation.md documents, implementing visual FS
 
 ---
 
-## Phase 6: Simulation & Verification (Weeks 19-21)
+### Week 19: Docker Simulation Environment
+- [x] Dockerfile with iverilog/verilator
+- [x] Simulation Runner (compile, run, parse output)
+- [x] Simulation API Endpoint
 
-- [ ] Docker container with iverilog/verilator
-- [ ] Waveform viewer (VCD parsing)
-- [ ] Simulation integration
+### Week 20: VCD Waveform Parser
+- [x] VCD Parser (header, value changes)
+- [x] Unit Tests for Parser
+
+### Week 21: Waveform Viewer UI
+- [x] WaveformViewer Component (Canvas/SVG)
+- [ ] Integration with Toolbar
 
 ---
 
