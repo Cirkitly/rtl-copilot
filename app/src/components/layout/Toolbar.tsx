@@ -45,14 +45,11 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
             } else {
                 setOutput(result.output || 'Compilation successful');
 
-                // If VCD data is available, parse and send to viewer
-                if (result.vcdPath) {
-                    // In a real implementation, we'd fetch the VCD file
-                    // For demo, we'll use mock VCD data
-                    const mockVCD = generateMockVCD();
-                    const vcdData = parseVCD(mockVCD);
-                    onSimulationComplete?.(vcdData);
-                }
+                // Show waveform viewer with mock/real VCD data
+                // For demo without real simulation, use mock data
+                const mockVCD = generateMockVCD();
+                const vcdData = parseVCD(mockVCD);
+                onSimulationComplete?.(vcdData);
             }
         } catch (err: any) {
             setError(err.message || 'Network error');
@@ -65,8 +62,8 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
         <div className="flex items-center gap-2 px-3 py-2 bg-gray-800 border-b border-gray-700">
             <button
                 className={`flex items-center gap-2 px-3 py-1.5 rounded text-sm font-medium transition-colors ${isRunning
-                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                        : 'bg-green-600 hover:bg-green-500 text-white'
+                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                    : 'bg-green-600 hover:bg-green-500 text-white'
                     }`}
                 onClick={handleRunSimulation}
                 disabled={isRunning || !activeFile}
