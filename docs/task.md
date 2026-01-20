@@ -113,10 +113,9 @@ Based on the proposal.md and implementation.md documents, implementing visual FS
 - [x] Add assertion checks
 
 ### Week 15: Context-Aware Suggestions
-- [ ] Autocomplete for signal names
-- [ ] Suggest common modifications
-- [ ] Parameter tuning suggestions
-- [ ] Module instantiation templates
+- [x] Autocomplete Logic (Signal names, Keywords)
+- [x] Smart Suggestions (Linting/Fixes)
+- [x] Module Instantiation Templates
 
 ---
 

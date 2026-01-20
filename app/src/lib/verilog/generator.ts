@@ -133,13 +133,13 @@ export class VerilogGenerator {
 
     // Generate range [msb:lsb]
     private generateRange(range: Range): string {
-        return `[${this.generateExpression(range.msb)}:${this.generateExpression(range.lsb)}]`
+        return `[${generateExpression(range.msb)}:${generateExpression(range.lsb)}]`
     }
 
     // Generate parameter
     private generateParameter(param: ParameterDeclaration): string {
         const width = param.width ? this.generateRange(param.width) + ' ' : ''
-        return `parameter ${width}${param.name} = ${this.generateExpression(param.value)};`
+        return `parameter ${width}${param.name} = ${generateExpression(param.value)};`
     }
 
     // Generate declaration (wire, reg, localparam)
@@ -171,12 +171,12 @@ export class VerilogGenerator {
 
     private generateLocalparam(decl: LocalparamDeclaration): string {
         const width = decl.width ? this.generateRange(decl.width) + ' ' : ''
-        return `localparam ${width}${decl.name} = ${this.generateExpression(decl.value)};`
+        return `localparam ${width}${decl.name} = ${generateExpression(decl.value)};`
     }
 
     // Generate assign statement
     private generateAssign(assign: AssignStatement): string {
-        return `assign ${this.generateExpression(assign.lhs)} = ${this.generateExpression(assign.rhs)};`
+        return `assign ${generateExpression(assign.lhs)} = ${generateExpression(assign.rhs)};`
     }
 
     // Generate always block
@@ -229,9 +229,9 @@ export class VerilogGenerator {
     private generateStatement(stmt: Statement): string[] {
         switch (stmt.type) {
             case 'BlockingAssignment':
-                return [`${this.generateExpression(stmt.lhs)} = ${this.generateExpression(stmt.rhs)};`]
+                return [`${generateExpression(stmt.lhs)} = ${generateExpression(stmt.rhs)};`]
             case 'NonBlockingAssignment':
-                return [`${this.generateExpression(stmt.lhs)} <= ${this.generateExpression(stmt.rhs)};`]
+                return [`${generateExpression(stmt.lhs)} <= ${generateExpression(stmt.rhs)};`]
             case 'If':
                 return this.generateIf(stmt)
             case 'Case':
@@ -246,7 +246,7 @@ export class VerilogGenerator {
     // Generate if statement
     private generateIf(stmt: IfStatement): string[] {
         const lines: string[] = []
-        const condition = this.generateExpression(stmt.condition)
+        const condition = generateExpression(stmt.condition)
 
         lines.push(`if (${condition}) begin`)
         lines.push(...this.generateStatements(stmt.thenBranch).map(l => this.indent(1) + l))
@@ -271,7 +271,7 @@ export class VerilogGenerator {
     // Generate case statement
     private generateCase(stmt: CaseStatement): string[] {
         const lines: string[] = []
-        lines.push(`${stmt.caseType}(${this.generateExpression(stmt.expression)})`)
+        lines.push(`${stmt.caseType}(${generateExpression(stmt.expression)})`)
 
         for (const item of stmt.items) {
             lines.push(...this.generateCaseItem(item).map(l => this.indent(1) + l))
@@ -286,7 +286,7 @@ export class VerilogGenerator {
         const lines: string[] = []
         const label = item.conditions === 'default'
             ? 'default'
-            : item.conditions.map(c => this.generateExpression(c)).join(', ')
+            : item.conditions.map(c => generateExpression(c)).join(', ')
 
         lines.push(`${label}: begin`)
         for (const stmt of item.statements) {
@@ -311,34 +311,34 @@ export class VerilogGenerator {
         return lines
     }
 
-    // Generate expression
-    private generateExpression(expr: Expression): string {
-        switch (expr.type) {
-            case 'Identifier':
-                return expr.name
-            case 'Number':
-                return expr.value
-            case 'BinaryExpr':
-                return `${this.generateExpression(expr.left)} ${expr.operator} ${this.generateExpression(expr.right)}`
-            case 'UnaryExpr':
-                return `${expr.operator}${this.generateExpression(expr.operand)}`
-            case 'TernaryExpr':
-                return `${this.generateExpression(expr.condition)} ? ${this.generateExpression(expr.ifTrue)} : ${this.generateExpression(expr.ifFalse)}`
-            case 'Concat':
-                return `{${expr.elements.map(e => this.generateExpression(e)).join(', ')}}`
-            case 'BitSelect':
-                return `${this.generateExpression(expr.signal)}[${this.generateExpression(expr.index)}]`
-            case 'RangeSelect':
-                return `${this.generateExpression(expr.signal)}[${this.generateExpression(expr.msb)}:${this.generateExpression(expr.lsb)}]`
-            default:
-                return '/* unknown */'
-        }
-    }
-
     // Indentation helper
     private indent(level: number): string {
         const base = this.options.indentChar.repeat(this.options.indentSize)
         return base.repeat(level)
+    }
+}
+
+// Standalone expression generator
+export function generateExpression(expr: Expression): string {
+    switch (expr.type) {
+        case 'Identifier':
+            return expr.name
+        case 'Number':
+            return expr.value
+        case 'BinaryExpr':
+            return `${generateExpression(expr.left)} ${expr.operator} ${generateExpression(expr.right)}`
+        case 'UnaryExpr':
+            return `${expr.operator}${generateExpression(expr.operand)}`
+        case 'TernaryExpr':
+            return `${generateExpression(expr.condition)} ? ${generateExpression(expr.ifTrue)} : ${generateExpression(expr.ifFalse)}`
+        case 'Concat':
+            return `{${expr.elements.map(e => generateExpression(e)).join(', ')}}`
+        case 'BitSelect':
+            return `${generateExpression(expr.signal)}[${generateExpression(expr.index)}]`
+        case 'RangeSelect':
+            return `${generateExpression(expr.signal)}[${generateExpression(expr.msb)}:${generateExpression(expr.lsb)}]`
+        default:
+            return '/* unknown */'
     }
 }
 
