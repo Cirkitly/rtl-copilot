@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
+    "@monaco-editor/react": "^4.7.0",
     "chevrotain": "^11.1.0",
     "dagre": "^0.8.5",
     "drizzle-orm": "^0.45.1",

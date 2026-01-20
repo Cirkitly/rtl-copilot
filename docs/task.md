@@ -121,7 +121,9 @@ Based on the proposal.md and implementation.md documents, implementing visual FS
 
 ## Phase 5: Code Editor & UI (Weeks 16-18)
 
-- [ ] Monaco Editor with Verilog syntax
+- [x] Editor Setup (Monaco Install, Theme)
+- [x] Language Features (Completion, Linting)
+- [x] Template Insertion Actions
 - [ ] Split-view layout (FSM + Code)
 - [ ] Project management UI
 - [ ] UI polish & dark mode
