@@ -63,7 +63,7 @@ export function extractFSM(module: VerilogModule): FSMExtractionResult {
         confidence += 0.2;
 
         // Step 5: Detect initial state from reset logic
-        const initialStateName = findInitialState(module, stateReg.currentState, stateParams);
+        const initialStateName = findInitialStateFromAST(module, stateReg.currentState, stateParams);
 
         // Step 6: Build FSM structure
         const fsm = buildFSM(module, stateParams, transitions, initialStateName, stateReg);
@@ -268,9 +268,9 @@ function extractBodyTransitions(
 }
 
 /**
- * Find initial state from reset logic
+ * Find initial state from reset logic (AST analysis)
  */
-export function findInitialState(
+export function findInitialStateFromAST(
     module: VerilogModule,
     currentState: string,
     stateParams: StateParam[]

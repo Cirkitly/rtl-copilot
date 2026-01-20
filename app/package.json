@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
+    "@chakra-ui/icons": "^2.2.4",
     "@monaco-editor/react": "^4.7.0",
     "chevrotain": "^11.1.0",
     "dagre": "^0.8.5",
@@ -26,6 +27,8 @@
     "pg": "^8.17.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-icons": "^5.5.0",
+    "react-resizable-panels": "^4.4.1",
     "reactflow": "^11.11.4",
     "uuid": "^13.0.0",
     "zustand": "^5.0.10"

@@ -124,9 +124,9 @@ Based on the proposal.md and implementation.md documents, implementing visual FS
 - [x] Editor Setup (Monaco Install, Theme)
 - [x] Language Features (Completion, Linting)
 - [x] Template Insertion Actions
-- [ ] Split-view layout (FSM + Code)
-- [ ] Project management UI
-- [ ] UI polish & dark mode
+- [x] File Tree: Visual explorer for projects/modules
+- [x] Tab System: Manage state for multiple open files
+- [x] Split-View: Integrate Code + FSM editors side-by-side
 
 ---
 
