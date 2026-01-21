@@ -1,16 +1,42 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { Panel, Group, Separator } from 'react-resizable-panels';
 
-import { FSMEditor } from '@/components/fsm';
-import VerilogEditor from '@/components/editor/VerilogEditor';
 import FileTree from '@/components/layout/FileTree';
 import EditorTabs from '@/components/layout/EditorTabs';
 import Toolbar from '@/components/layout/Toolbar';
-import WaveformViewer from '@/components/waveform/WaveformViewer';
 import { useEditorStore } from '@/lib/store/editor';
 import { VCDData } from '@/lib/waveform/vcdParser';
+
+// Dynamic imports for heavy components (code splitting)
+const FSMEditor = dynamic(() => import('@/components/fsm').then(mod => mod.FSMEditor), {
+    loading: () => <EditorLoading label="Loading FSM Editor..." />,
+    ssr: false,
+});
+
+const VerilogEditor = dynamic(() => import('@/components/editor/VerilogEditor'), {
+    loading: () => <EditorLoading label="Loading Code Editor..." />,
+    ssr: false,
+});
+
+const WaveformViewer = dynamic(() => import('@/components/waveform/WaveformViewer'), {
+    loading: () => <EditorLoading label="Loading Waveform Viewer..." />,
+    ssr: false,
+});
+
+// Loading placeholder component
+function EditorLoading({ label }: { label: string }) {
+    return (
+        <div className="flex h-full items-center justify-center bg-[var(--surface)]">
+            <div className="flex flex-col items-center gap-3 text-[var(--text-muted)]">
+                <div className="w-8 h-8 border-2 border-[var(--accent-primary)]/30 border-t-[var(--accent-primary)] rounded-full animate-spin" />
+                <span className="text-sm">{label}</span>
+            </div>
+        </div>
+    );
+}
 
 export default function IDEPage() {
     const { files, activeFileId } = useEditorStore();
@@ -47,13 +73,15 @@ export default function IDEPage() {
                                 <Panel id="code-panel" defaultSize={50} minSize={20}>
                                     <div className="h-full bg-[var(--surface)] border-r border-[var(--border-subtle)]">
                                         {activeFile ? (
-                                            <VerilogEditor
-                                                value={activeFile.content}
-                                                onChange={(newContent) => {
-                                                    useEditorStore.getState().updateFileContent(activeFile.id, newContent || '');
-                                                }}
-                                                height="100%"
-                                            />
+                                            <Suspense fallback={<EditorLoading label="Loading..." />}>
+                                                <VerilogEditor
+                                                    value={activeFile.content}
+                                                    onChange={(newContent) => {
+                                                        useEditorStore.getState().updateFileContent(activeFile.id, newContent || '');
+                                                    }}
+                                                    height="100%"
+                                                />
+                                            </Suspense>
                                         ) : (
                                             <div className="flex h-full flex-col items-center justify-center text-[var(--text-muted)] gap-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-30">
@@ -75,7 +103,9 @@ export default function IDEPage() {
                                 {/* FSM Editor Panel */}
                                 <Panel id="fsm-panel" defaultSize={50} minSize={20}>
                                     <div className="h-full overflow-hidden bg-slate-50">
-                                        <FSMEditor />
+                                        <Suspense fallback={<EditorLoading label="Loading FSM..." />}>
+                                            <FSMEditor />
+                                        </Suspense>
                                     </div>
                                 </Panel>
                             </Group>
@@ -101,7 +131,9 @@ export default function IDEPage() {
                                                 <line x1="6" y1="6" x2="18" y2="18" />
                                             </svg>
                                         </button>
-                                        <WaveformViewer data={vcdData} width={1000} height={300} />
+                                        <Suspense fallback={<EditorLoading label="Loading..." />}>
+                                            <WaveformViewer data={vcdData} width={1000} height={300} />
+                                        </Suspense>
                                     </div>
                                 </Panel>
                             </>
