@@ -257,14 +257,12 @@ const clockDomainCrossingRule: LintRule = {
     severity: 'warning',
     check: (module: VerilogModule): LintViolation[] => {
         const violations: LintViolation[] = []
-
-        // Map signals to their clock domains (by clock signal name)
         const signalDomains = new Map<string, Set<string>>()
 
+        // Pass 1: Collect all signal domains (where signals are driven)
         for (const always of module.alwaysBlocks) {
             if (!hasClockEdge(always) || always.sensitivity === '*') continue
 
-            // Get clock signal from sensitivity list
             const clockSignals = always.sensitivity
                 .filter(s => s.edge === 'posedge' || s.edge === 'negedge')
                 .map(s => s.signal)
@@ -272,23 +270,51 @@ const clockDomainCrossingRule: LintRule = {
             if (clockSignals.length === 0) continue
             const clockDomain = clockSignals[0] // Primary clock
 
-            // Find all signals driven in this block
             const drivenSignals = new Set<string>()
             collectDrivenSignalsFromStatements(always.body, drivenSignals)
 
-            // Find all signals read in this block
-            const readSignals = new Set<string>()
-            collectReadSignals(always.body, readSignals)
-
-            // Register the domain for driven signals
             for (const sig of drivenSignals) {
                 if (!signalDomains.has(sig)) {
                     signalDomains.set(sig, new Set())
                 }
                 signalDomains.get(sig)!.add(clockDomain)
             }
+        }
 
-            // Check if reading signals from other domains
+        // Pass 2: Check for crossings (Read signals & Async signals)
+        for (const always of module.alwaysBlocks) {
+            if (!hasClockEdge(always) || always.sensitivity === '*') continue
+
+            const clockSignals = always.sensitivity
+                .filter(s => s.edge === 'posedge' || s.edge === 'negedge')
+                .map(s => s.signal)
+
+            if (clockSignals.length === 0) continue
+            const clockDomain = clockSignals[0] // Primary clock
+
+            // Check Async Signals (Sensitivity list items other than primary clock)
+            // e.g., always @(posedge clk or posedge rst) -> rst is async
+            if (clockSignals.length > 1) {
+                for (let i = 1; i < clockSignals.length; i++) {
+                    const asyncSig = clockSignals[i]
+                    const domains = signalDomains.get(asyncSig)
+
+                    if (domains && domains.size > 0 && !domains.has(clockDomain)) {
+                        const otherDomains = Array.from(domains).join(', ')
+                        violations.push({
+                            rule: 'clock-domain-crossing',
+                            message: `Async signal '${asyncSig}' may be from a different clock domain (driven by ${otherDomains}, used in ${clockDomain} block)`,
+                            severity: 'warning',
+                            suggestion: `Ensure async control signal '${asyncSig}' is synchronized to '${clockDomain}' or comes from a safe source`,
+                        })
+                    }
+                }
+            }
+
+            // Check Read Signals (Body)
+            const readSignals = new Set<string>()
+            collectReadSignals(always.body, readSignals)
+
             for (const sig of readSignals) {
                 const domains = signalDomains.get(sig)
                 if (domains && domains.size > 0 && !domains.has(clockDomain)) {

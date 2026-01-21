@@ -21,6 +21,58 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
     const [output, setOutput] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [saveSuccess, setSaveSuccess] = useState(false);
+    const [isGeneratingTB, setIsGeneratingTB] = useState(false);
+
+    // Generate Testbench
+    const handleGenerateTB = async () => {
+        if (!activeFile) return;
+
+        setIsGeneratingTB(true);
+        setError(null);
+        setOutput(null);
+
+        try {
+            const moduleNameMatch = activeFile.content.match(/module\s+(\w+)/);
+            const moduleName = moduleNameMatch ? moduleNameMatch[1] : 'unknown';
+
+            const response = await fetch('/api/llm/testbench', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    code: activeFile.content,
+                    moduleName
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.error) {
+                setError(result.error);
+            } else if (result.code) {
+                // Create new file
+                const tbFilename = `${activeFile.name.replace(/\.[^/.]+$/, "")}_tb.v`;
+                const { openFile, setActiveFile } = useEditorStore.getState();
+
+                // Add file to store
+                openFile({
+                    id: tbFilename, // Simple ID for now
+                    name: tbFilename,
+                    content: result.code,
+                    type: 'verilog'
+                });
+
+                // Switch to it
+                // setActiveFile(tbFilename); // openFile already sets specific file active? Check store.
+                // Store says: openFile sets activeFileId to newFile.id. So we don't need setActiveFile explicit call if openFile does it.
+
+                setOutput(`Generated ${tbFilename}`);
+            }
+        } catch (err: any) {
+            setError(err.message || 'Failed to generate testbench');
+        } finally {
+            setIsGeneratingTB(false);
+        }
+    };
 
     // Save file function
     const handleSave = useCallback(async () => {
@@ -61,6 +113,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [handleSave]);
 
+
     const handleRunSimulation = async () => {
         if (!activeFile) {
             setError('No file selected');
@@ -94,6 +147,36 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
             setError(err instanceof Error ? err.message : 'Network error');
         } finally {
             setIsRunning(false);
+        }
+    };
+
+    const [isVerifying, setIsVerifying] = useState(false);
+
+    // Verify (Formal)
+    const handleVerify = async () => {
+        if (!activeFile) return;
+        setIsVerifying(true);
+        setError(null);
+        setOutput(null);
+
+        try {
+            const response = await fetch('/api/verification/prove', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    code: activeFile.content
+                })
+            });
+            const result = await response.json();
+            if (result.success) {
+                setOutput('Verification PASSED');
+            } else {
+                setError(result.errors.join('\n') || 'Verification FAILED');
+            }
+        } catch (err: any) {
+            setError(err.message || 'Verification failed');
+        } finally {
+            setIsVerifying(false);
         }
     };
 
@@ -155,6 +238,48 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
                         <span>Run</span>
                     </>
                 )}
+            </button>
+
+            {/* Generate TB Button */}
+            <button
+                className={`
+                    flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                    ${isGeneratingTB
+                        ? 'bg-[var(--surface-elevated)] text-[var(--text-muted)] cursor-not-allowed'
+                        : 'btn-secondary'
+                    }
+                `}
+                onClick={handleGenerateTB}
+                disabled={isGeneratingTB || !activeFile}
+                title="Generate Testbench using LLM"
+            >
+                {isGeneratingTB ? (
+                    <FiLoader className="animate-spin" size={14} />
+                ) : (
+                    <FiCheck size={14} />
+                )}
+                <span>Gen TB</span>
+            </button>
+
+            {/* Verify Button (Formal) */}
+            <button
+                className={`
+                    flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                    ${isVerifying
+                        ? 'bg-[var(--surface-elevated)] text-[var(--text-muted)] cursor-not-allowed'
+                        : 'btn-secondary'
+                    }
+                `}
+                onClick={handleVerify}
+                disabled={isVerifying || !activeFile}
+                title="Run Formal Verification (SBY)"
+            >
+                {isVerifying ? (
+                    <FiLoader className="animate-spin" size={14} />
+                ) : (
+                    <FiCheck size={14} /> // Or another icon like 'FiShield' if imported
+                )}
+                <span>Verify</span>
             </button>
 
             {/* Lint Button */}
