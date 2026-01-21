@@ -2,9 +2,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LLMFactory, ProviderType } from '@/lib/llm/factory';
 import { constructPrompt } from '@/lib/llm/context';
+import { checkRateLimit, rateLimitHeaders, getClientId, LLM_RATE_LIMIT } from '@/lib/rateLimit';
 
 export async function POST(req: NextRequest) {
     try {
+        // Rate limiting check
+        const clientId = getClientId(req);
+        const rateLimitResult = checkRateLimit(`llm:generate:${clientId}`, LLM_RATE_LIMIT);
+
+        if (!rateLimitResult.success) {
+            return NextResponse.json(
+                { error: 'Rate limit exceeded. Please try again later.' },
+                {
+                    status: 429,
+                    headers: rateLimitHeaders(rateLimitResult, LLM_RATE_LIMIT)
+                }
+            );
+        }
+
         const body = await req.json();
         const {
             provider = 'anthropic',
