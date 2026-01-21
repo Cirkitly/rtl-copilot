@@ -57,31 +57,48 @@ const FileTree: React.FC = () => {
         };
 
         const getIcon = () => {
-            if (node.type === 'folder') return isOpen ? FiFolder : FiFolder;
+            if (node.type === 'folder') return FiFolder;
             if (node.fileType === 'fsm') return FiGrid;
             if (node.fileType === 'testbench') return FiCpu;
             return FiFile;
         };
 
+        const getIconColor = () => {
+            if (node.type === 'folder') return 'text-amber-400';
+            if (node.fileType === 'fsm') return 'text-purple-400';
+            if (node.fileType === 'verilog') return 'text-blue-400';
+            if (node.fileType === 'testbench') return 'text-emerald-400';
+            return 'text-[var(--text-muted)]';
+        };
+
         const Icon = getIcon();
 
         return (
-            <div>
+            <div className="animate-fade-in" style={{ animationDelay: `${level * 30}ms` }}>
                 <div
-                    className={`flex items-center py-1 cursor-pointer hover:bg-gray-700 ${isActive ? 'bg-gray-600 text-blue-400' : ''}`}
-                    style={{ paddingLeft: `${level * 16}px` }}
+                    className={`
+                        flex items-center py-1.5 cursor-pointer rounded-md mx-1 px-2
+                        transition-all duration-150 ease-out group
+                        ${isActive
+                            ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)] border-l-2 border-[var(--accent-primary)]'
+                            : 'hover:bg-[var(--surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                        }
+                    `}
+                    style={{ paddingLeft: `${level * 12 + 8}px` }}
                     onClick={handleClick}
                 >
-                    <div className="w-5 flex justify-center">
+                    <div className="w-4 flex justify-center mr-1">
                         {node.type === 'folder' && (
-                            isOpen ? <FiChevronDown className="text-gray-500" /> : <FiChevronRight className="text-gray-500" />
+                            <span className="text-[var(--text-muted)] transition-transform duration-150">
+                                {isOpen ? <FiChevronDown size={12} /> : <FiChevronRight size={12} />}
+                            </span>
                         )}
                     </div>
-                    <Icon className={`mr-2 ${node.fileType === 'fsm' ? 'text-purple-400' : node.fileType === 'verilog' ? 'text-blue-400' : 'text-orange-400'}`} />
-                    <span className="text-sm">{node.name}</span>
+                    <Icon className={`mr-2 flex-shrink-0 ${getIconColor()}`} size={14} />
+                    <span className="text-xs font-medium truncate">{node.name}</span>
                 </div>
                 {node.type === 'folder' && isOpen && (
-                    <div>
+                    <div className="animate-slide-in-up">
                         {node.children?.map(child => (
                             <FileItem key={child.id} node={child} level={level + 1} />
                         ))}
@@ -92,11 +109,27 @@ const FileTree: React.FC = () => {
     };
 
     return (
-        <div className="w-60 h-full bg-gray-800 border-r border-gray-700 pt-2 text-gray-300">
-            <p className="px-4 mb-2 text-xs font-bold text-gray-500 uppercase">Explorer</p>
-            {initialTree.map(node => (
-                <FileItem key={node.id} node={node} level={1} />
-            ))}
+        <div className="w-56 h-full glass border-r border-[var(--border-subtle)] flex flex-col">
+            {/* Header */}
+            <div className="px-4 py-3 border-b border-[var(--border-subtle)]">
+                <p className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
+                    Explorer
+                </p>
+            </div>
+
+            {/* File Tree */}
+            <div className="flex-1 overflow-y-auto py-2">
+                {initialTree.map(node => (
+                    <FileItem key={node.id} node={node} level={0} />
+                ))}
+            </div>
+
+            {/* Footer */}
+            <div className="px-4 py-2 border-t border-[var(--border-subtle)]">
+                <p className="text-[10px] text-[var(--text-muted)]">
+                    {initialTree.reduce((acc, n) => acc + (n.children?.length || 0), 0)} files
+                </p>
+            </div>
         </div>
     );
 };

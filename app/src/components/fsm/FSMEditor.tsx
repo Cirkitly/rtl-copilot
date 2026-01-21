@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ReactFlow, {
     Background,
     Controls,
@@ -6,13 +6,10 @@ import ReactFlow, {
     Node,
     Edge,
     Connection,
-    addEdge,
     useNodesState,
     useEdgesState,
     OnNodesChange,
     OnEdgesChange,
-    NodeChange,
-    EdgeChange,
     applyNodeChanges,
     applyEdgeChanges,
     ReactFlowProvider,
@@ -20,14 +17,14 @@ import ReactFlow, {
     MarkerType,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { useFSMStore, selectStates, selectTransitions } from '../../lib/fsm';
+import { useFSMStore } from '../../lib/fsm';
 import { FSM_TEMPLATES } from '../../lib/fsm/templates';
 import { StateNode } from './StateNode';
 import { TransitionEdge } from './TransitionEdge';
 import { PropertiesPanel } from './PropertiesPanel';
 import { VerilogPreview } from './VerilogPreview';
 import { getLayoutedElements } from '../../lib/fsm/layout';
-import { Plus, Layout, Save, Trash2, Undo, Redo, Play, Wand2 } from 'lucide-react';
+import { Plus, Layout, Trash2, Undo, Redo, Wand2, ChevronDown, CheckCircle, AlertCircle, AlertTriangle } from 'lucide-react';
 
 const nodeTypes = {
     fsmState: StateNode,
@@ -40,11 +37,9 @@ const edgeTypes = {
 function FSMEditorContent() {
     const store = useFSMStore();
 
-    // ReactFlow local state
     const [nodes, setNodes] = useNodesState([]);
     const [edges, setEdges] = useEdgesState([]);
 
-    // Sync from Store -> ReactFlow
     useEffect(() => {
         const fsmNodes: Node[] = store.fsm.states.map(state => ({
             id: state.id,
@@ -84,10 +79,8 @@ function FSMEditorContent() {
         setEdges
     ]);
 
-    // Handlers
     const onNodesChange: OnNodesChange = useCallback(
         (changes) => {
-            // Handle selection changes
             const selectionChange = changes.find(c => c.type === 'select');
             if (selectionChange) {
                 if (selectionChange.selected) {
@@ -96,12 +89,6 @@ function FSMEditorContent() {
                     store.selectState(null);
                 }
             }
-
-            // Handle position changes (only update store on drag stop usually, but here we can try direct)
-            // For performance, we might want to debounce or only sync on drag stop
-            // but simpler for now to let ReactFlow handle visual and we verify separate sync?
-            // Actually, we should let ReactFlow handle the visual state and sync back
-
             setNodes((nds) => applyNodeChanges(changes, nds));
         },
         [store, setNodes]
@@ -157,7 +144,6 @@ function FSMEditorContent() {
     const [showTemplates, setShowTemplates] = useState(false);
 
     const handleLoadTemplate = (template: typeof FSM_TEMPLATES[0]) => {
-        // eslint-disable-next-line no-restricted-globals
         if (confirm('Loading a template will replace current FSM. Continue?')) {
             store.loadFSM(template.create());
             setShowTemplates(false);
@@ -187,101 +173,136 @@ function FSMEditorContent() {
                         fitView
                         attributionPosition="bottom-right"
                     >
-                        <Background gap={12} size={1} />
-                        <Controls />
-                        <MiniMap zoomable pannable />
+                        <Background gap={16} size={1} color="#e2e8f0" />
+                        <Controls className="!bg-white !border-slate-200 !shadow-lg" />
+                        <MiniMap
+                            zoomable
+                            pannable
+                            className="!bg-white !border-slate-200"
+                            nodeColor="#6366f1"
+                        />
 
-                        <Panel position="top-left" className="bg-white p-2 rounded shadow-md border border-slate-200 flex flex-col gap-2">
-                            <div className="font-bold text-sm text-slate-700 pb-1 border-b">
-                                {store.fsm.name}
-                            </div>
+                        {/* Toolbar Panel */}
+                        <Panel position="top-left" className="!m-3">
+                            <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-2.5 flex flex-col gap-2.5">
+                                {/* FSM Name */}
+                                <div className="px-2 pb-2 border-b border-slate-100">
+                                    <span className="font-semibold text-sm text-slate-700">
+                                        {store.fsm.name}
+                                    </span>
+                                </div>
 
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={handleAddState}
-                                    className="p-1.5 hover:bg-slate-100 rounded text-slate-600"
-                                    title="Add State"
-                                >
-                                    <Plus size={18} />
-                                </button>
-                                <button
-                                    onClick={handleDelete}
-                                    disabled={!store.selectedStateId && !store.selectedTransitionId}
-                                    className="p-1.5 hover:bg-slate-100 rounded text-red-500 disabled:opacity-50"
-                                    title="Delete Selected"
-                                >
-                                    <Trash2 size={18} />
-                                </button>
-                                <div className="w-px bg-slate-200 mx-1" />
-                                <button
-                                    onClick={store.undo}
-                                    disabled={!store.canUndo()}
-                                    className="p-1.5 hover:bg-slate-100 rounded text-slate-600 disabled:opacity-50"
-                                    title="Undo"
-                                >
-                                    <Undo size={18} />
-                                </button>
-                                <button
-                                    onClick={store.redo}
-                                    disabled={!store.canRedo()}
-                                    className="p-1.5 hover:bg-slate-100 rounded text-slate-600 disabled:opacity-50"
-                                    title="Redo"
-                                >
-                                    <Redo size={18} />
-                                </button>
-                                <div className="w-px bg-slate-200 mx-1" />
-                                <button
-                                    onClick={handleLayout}
-                                    className="p-1.5 hover:bg-slate-100 rounded text-slate-600"
-                                    title="Auto Layout"
-                                >
-                                    <Wand2 size={18} />
-                                </button>
-                                <div className="w-px bg-slate-200 mx-1" />
-                                <div className="relative">
+                                {/* Action Buttons */}
+                                <div className="flex gap-1">
                                     <button
-                                        onClick={() => setShowTemplates(!showTemplates)}
-                                        className="p-1.5 hover:bg-slate-100 rounded text-slate-600"
-                                        title="Load Template"
+                                        onClick={handleAddState}
+                                        className="p-2 hover:bg-indigo-50 rounded-lg text-slate-600 hover:text-indigo-600 transition-colors"
+                                        title="Add State"
                                     >
-                                        <Layout size={18} />
+                                        <Plus size={16} />
                                     </button>
-                                    {showTemplates && (
-                                        <div className="absolute top-full left-0 mt-1 w-64 bg-white border rounded shadow-lg z-50 py-1">
-                                            <div className="px-3 py-1.5 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b mb-1">
-                                                Templates
+                                    <button
+                                        onClick={handleDelete}
+                                        disabled={!store.selectedStateId && !store.selectedTransitionId}
+                                        className="p-2 hover:bg-red-50 rounded-lg text-slate-400 hover:text-red-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                        title="Delete Selected"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+
+                                    <div className="w-px bg-slate-200 mx-1" />
+
+                                    <button
+                                        onClick={store.undo}
+                                        disabled={!store.canUndo()}
+                                        className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                        title="Undo"
+                                    >
+                                        <Undo size={16} />
+                                    </button>
+                                    <button
+                                        onClick={store.redo}
+                                        disabled={!store.canRedo()}
+                                        className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                        title="Redo"
+                                    >
+                                        <Redo size={16} />
+                                    </button>
+
+                                    <div className="w-px bg-slate-200 mx-1" />
+
+                                    <button
+                                        onClick={handleLayout}
+                                        className="p-2 hover:bg-purple-50 rounded-lg text-slate-600 hover:text-purple-600 transition-colors"
+                                        title="Auto Layout"
+                                    >
+                                        <Wand2 size={16} />
+                                    </button>
+
+                                    {/* Templates Dropdown */}
+                                    <div className="relative">
+                                        <button
+                                            onClick={() => setShowTemplates(!showTemplates)}
+                                            className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors flex items-center gap-1"
+                                            title="Load Template"
+                                        >
+                                            <Layout size={16} />
+                                            <ChevronDown size={12} className={`transition-transform ${showTemplates ? 'rotate-180' : ''}`} />
+                                        </button>
+                                        {showTemplates && (
+                                            <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl z-50 py-2 animate-fade-in">
+                                                <div className="px-3 py-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                                                    Templates
+                                                </div>
+                                                {FSM_TEMPLATES.map(t => (
+                                                    <button
+                                                        key={t.id}
+                                                        onClick={() => handleLoadTemplate(t)}
+                                                        className="w-full text-left px-3 py-2.5 hover:bg-indigo-50 text-slate-700 block transition-colors"
+                                                    >
+                                                        <div className="text-sm font-medium">{t.name}</div>
+                                                        <div className="text-xs text-slate-400 truncate">{t.description}</div>
+                                                    </button>
+                                                ))}
                                             </div>
-                                            {FSM_TEMPLATES.map(t => (
-                                                <button
-                                                    key={t.id}
-                                                    onClick={() => handleLoadTemplate(t)}
-                                                    className="w-full text-left px-3 py-2 hover:bg-blue-50 text-slate-700 block transition-colors"
-                                                >
-                                                    <div className="text-sm font-medium">{t.name}</div>
-                                                    <div className="text-xs text-slate-400 truncate">{t.description}</div>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </Panel>
 
-                        <Panel position="top-right" className="bg-white p-2 rounded shadow-md border text-xs">
-                            <div className="flex flex-col gap-1">
-                                <div className="font-semibold px-1">Validation</div>
+                        {/* Validation Panel */}
+                        <Panel position="top-right" className="!m-3">
+                            <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-3 min-w-[160px]">
+                                <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                                    Validation
+                                </div>
                                 {store.validationErrors.length === 0 ? (
-                                    <div className="text-green-600 px-1">✓ Valid FSM</div>
+                                    <div className="flex items-center gap-2 text-emerald-600 text-xs font-medium">
+                                        <CheckCircle size={14} />
+                                        <span>Valid FSM</span>
+                                    </div>
                                 ) : (
-                                    <div className="flex flex-col gap-1 max-h-[150px] overflow-y-auto">
+                                    <div className="flex flex-col gap-1.5 max-h-[150px] overflow-y-auto">
                                         {store.validationErrors.map((err, idx) => (
-                                            <div key={idx} className={`
-                         px-2 py-1 rounded border
-                         ${err.severity === 'error' ? 'bg-red-50 border-red-200 text-red-700' :
-                                                    err.severity === 'warning' ? 'bg-yellow-50 border-yellow-200 text-yellow-700' :
-                                                        'bg-blue-50 border-blue-200 text-blue-700'}
-                       `}>
-                                                {err.message}
+                                            <div
+                                                key={idx}
+                                                className={`
+                                                    flex items-start gap-2 px-2 py-1.5 rounded-lg text-xs
+                                                    ${err.severity === 'error'
+                                                        ? 'bg-red-50 text-red-700'
+                                                        : err.severity === 'warning'
+                                                            ? 'bg-amber-50 text-amber-700'
+                                                            : 'bg-blue-50 text-blue-700'
+                                                    }
+                                                `}
+                                            >
+                                                {err.severity === 'error' ? (
+                                                    <AlertCircle size={12} className="flex-shrink-0 mt-0.5" />
+                                                ) : (
+                                                    <AlertTriangle size={12} className="flex-shrink-0 mt-0.5" />
+                                                )}
+                                                <span>{err.message}</span>
                                             </div>
                                         ))}
                                     </div>

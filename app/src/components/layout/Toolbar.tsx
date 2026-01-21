@@ -1,10 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiPlay, FiTerminal, FiZap, FiX } from 'react-icons/fi';
+import { FiPlay, FiTerminal, FiZap, FiX, FiLoader, FiCheck, FiAlertCircle } from 'react-icons/fi';
 import { useEditorStore } from '@/lib/store/editor';
 import { parseVCD, VCDData } from '@/lib/waveform/vcdParser';
-import WaveformViewer from '@/components/waveform/WaveformViewer';
 
 interface ToolbarProps {
     onSimulationComplete?: (vcdData: VCDData) => void;
@@ -34,7 +33,6 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     moduleCode: activeFile.content,
-                    // For now, no testbench - just compilation check
                 })
             });
 
@@ -44,9 +42,6 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
                 setError(result.errors?.join('\n') || 'Simulation failed');
             } else {
                 setOutput(result.output || 'Compilation successful');
-
-                // Show waveform viewer with mock/real VCD data
-                // For demo without real simulation, use mock data
                 const mockVCD = generateMockVCD();
                 const vcdData = parseVCD(mockVCD);
                 onSimulationComplete?.(vcdData);
@@ -59,56 +54,81 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
     };
 
     return (
-        <div className="flex items-center gap-2 px-3 py-2 bg-gray-800 border-b border-gray-700">
+        <div className="flex items-center gap-3 px-4 py-2.5 glass border-b border-[var(--border-subtle)]">
+            {/* Primary Action - Run */}
             <button
-                className={`flex items-center gap-2 px-3 py-1.5 rounded text-sm font-medium transition-colors ${isRunning
-                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                    : 'bg-green-600 hover:bg-green-500 text-white'
-                    }`}
+                className={`
+                    flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                    ${isRunning
+                        ? 'bg-[var(--surface-elevated)] text-[var(--text-muted)] cursor-not-allowed'
+                        : 'btn-primary'
+                    }
+                `}
                 onClick={handleRunSimulation}
                 disabled={isRunning || !activeFile}
             >
                 {isRunning ? (
                     <>
-                        <span className="animate-spin">⏳</span>
-                        Running...
+                        <FiLoader className="animate-spin-slow" size={14} />
+                        <span>Running...</span>
                     </>
                 ) : (
                     <>
-                        <FiPlay />
-                        Run Simulation
+                        <FiPlay size={14} />
+                        <span>Run</span>
                     </>
                 )}
             </button>
 
+            {/* Secondary Action - Lint */}
             <button
-                className="flex items-center gap-2 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded text-sm"
+                className="btn-secondary flex items-center gap-2 px-3 py-2 text-sm"
                 title="Lint with Verilator"
             >
-                <FiZap />
-                Lint
+                <FiZap size={14} />
+                <span>Lint</span>
             </button>
 
+            {/* Spacer */}
             <div className="flex-1" />
 
-            {/* Status indicator */}
+            {/* Status Indicators */}
             {error && (
-                <div className="flex items-center gap-2 text-red-400 text-sm">
-                    <FiX />
-                    {error.substring(0, 50)}
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--error)]/10 border border-[var(--error)]/20 animate-fade-in">
+                    <FiAlertCircle className="text-[var(--error)]" size={14} />
+                    <span className="text-xs text-[var(--error)] max-w-[200px] truncate">
+                        {error}
+                    </span>
+                    <button
+                        onClick={() => setError(null)}
+                        className="text-[var(--error)] hover:text-[var(--error)]/80 transition-colors"
+                    >
+                        <FiX size={12} />
+                    </button>
                 </div>
             )}
+
             {output && !error && (
-                <div className="flex items-center gap-2 text-green-400 text-sm">
-                    <FiTerminal />
-                    {output.substring(0, 50)}
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--success)]/10 border border-[var(--success)]/20 animate-fade-in">
+                    <FiCheck className="text-[var(--success)]" size={14} />
+                    <span className="text-xs text-[var(--success)] max-w-[200px] truncate">
+                        {output}
+                    </span>
+                </div>
+            )}
+
+            {/* File indicator */}
+            {activeFile && (
+                <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                    <FiTerminal size={12} />
+                    <span>{activeFile.name}</span>
                 </div>
             )}
         </div>
     );
 };
 
-// Mock VCD for demonstration when Docker is not available
+// Mock VCD for demonstration
 function generateMockVCD(): string {
     return `$date
     Mon Jan 20 10:00:00 2026
