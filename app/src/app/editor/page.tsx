@@ -8,6 +8,7 @@ import FileTree from '@/components/layout/FileTree';
 import EditorTabs from '@/components/layout/EditorTabs';
 import Toolbar from '@/components/layout/Toolbar';
 import { useEditorStore } from '@/lib/store/editor';
+import { useFSMStore } from '@/lib/fsm/store';
 import { VCDData } from '@/lib/waveform/vcdParser';
 
 // Dynamic imports for heavy components (code splitting)
@@ -40,6 +41,7 @@ function EditorLoading({ label }: { label: string }) {
 
 export default function IDEPage() {
     const { files, activeFileId } = useEditorStore();
+    const { fsm, setActiveState } = useFSMStore();
     const activeFile = files.find(f => f.id === activeFileId);
 
     const [vcdData, setVcdData] = useState<VCDData | null>(null);
@@ -48,6 +50,43 @@ export default function IDEPage() {
     const handleSimulationComplete = (data: VCDData) => {
         setVcdData(data);
         setShowWaveform(true);
+    };
+
+    const handleCursorChange = (time: number | null) => {
+        if (time === null || !vcdData) {
+            setActiveState(null);
+            return;
+        }
+
+        // Find state signal (heuristic: contains 'state' but not 'next')
+        const stateSignalName = Array.from(vcdData.signals.keys()).find(k =>
+            k.toLowerCase().includes('state') && !k.toLowerCase().includes('next')
+        );
+
+        if (stateSignalName) {
+            const changes = vcdData.changes.get(stateSignalName);
+            if (changes) {
+                let value = '';
+                for (const change of changes) {
+                    if (change.time > time) break;
+                    value = change.value;
+                }
+
+                if (value) {
+                    // Logic: Map VCD value to FSM state
+                    // value is e.g. "10" (binary)
+                    const normalizedSignalVal = parseInt(value, 2);
+
+                    // Simple heuristic: Assume binary encoding corresponds to states array index
+                    if (!isNaN(normalizedSignalVal) && normalizedSignalVal < fsm.states.length) {
+                        const activeState = fsm.states[normalizedSignalVal];
+                        if (activeState) {
+                            setActiveState(activeState.id, time);
+                        }
+                    }
+                }
+            }
+        }
     };
 
     return (
@@ -132,7 +171,12 @@ export default function IDEPage() {
                                             </svg>
                                         </button>
                                         <Suspense fallback={<EditorLoading label="Loading..." />}>
-                                            <WaveformViewer data={vcdData} width={1000} height={300} />
+                                            <WaveformViewer
+                                                data={vcdData}
+                                                width={1000}
+                                                height={300}
+                                                onCursorChange={handleCursorChange}
+                                            />
                                         </Suspense>
                                     </div>
                                 </Panel>

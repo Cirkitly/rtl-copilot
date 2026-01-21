@@ -5,25 +5,37 @@ import { Play } from 'lucide-react';
 interface StateNodeData {
     label: string;
     isInitial?: boolean;
+    isActive?: boolean; // For simulation highlighting
     onLabelChange?: (id: string, newLabel: string) => void;
     outputs?: Array<{ signal: string; value: string }>;
 }
 
 export const StateNode = memo(({ data, id, selected }: NodeProps<StateNodeData>) => {
+    const isActive = data.isActive;
+
     return (
         <div
             className={`
                 relative min-w-[130px] rounded-xl border-2 bg-white px-4 py-3 
                 shadow-md transition-all duration-200 group
-                ${selected
-                    ? 'border-indigo-500 shadow-lg shadow-indigo-500/20 ring-4 ring-indigo-100'
-                    : 'border-slate-200 hover:border-slate-300 hover:shadow-lg'
+                ${isActive
+                    ? 'border-emerald-500 shadow-lg shadow-emerald-500/40 ring-4 ring-emerald-100 animate-pulse'
+                    : selected
+                        ? 'border-indigo-500 shadow-lg shadow-indigo-500/20 ring-4 ring-indigo-100'
+                        : 'border-slate-200 hover:border-slate-300 hover:shadow-lg'
                 }
-                ${data.isInitial ? 'border-l-4 border-l-indigo-600' : ''}
+                ${data.isInitial && !isActive ? 'border-l-4 border-l-indigo-600' : ''}
             `}
         >
+            {/* Active state indicator (simulation) */}
+            {isActive && (
+                <div className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
+                    <div className="w-2 h-2 rounded-full bg-white animate-ping" />
+                </div>
+            )}
+
             {/* Initial state animated indicator */}
-            {data.isInitial && (
+            {data.isInitial && !isActive && (
                 <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-indigo-600 animate-pulse" />
             )}
 

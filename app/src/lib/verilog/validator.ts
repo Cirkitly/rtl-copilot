@@ -249,6 +249,64 @@ const multiDrivenSignalRule: LintRule = {
     },
 }
 
+// Rule: Clock Domain Crossing
+// Detects potential clock domain crossing issues (signals used across different clock edges)
+const clockDomainCrossingRule: LintRule = {
+    name: 'clock-domain-crossing',
+    description: 'Detects potential clock domain crossing issues',
+    severity: 'warning',
+    check: (module: VerilogModule): LintViolation[] => {
+        const violations: LintViolation[] = []
+
+        // Map signals to their clock domains (by clock signal name)
+        const signalDomains = new Map<string, Set<string>>()
+
+        for (const always of module.alwaysBlocks) {
+            if (!hasClockEdge(always) || always.sensitivity === '*') continue
+
+            // Get clock signal from sensitivity list
+            const clockSignals = always.sensitivity
+                .filter(s => s.edge === 'posedge' || s.edge === 'negedge')
+                .map(s => s.signal)
+
+            if (clockSignals.length === 0) continue
+            const clockDomain = clockSignals[0] // Primary clock
+
+            // Find all signals driven in this block
+            const drivenSignals = new Set<string>()
+            collectDrivenSignalsFromStatements(always.body, drivenSignals)
+
+            // Find all signals read in this block
+            const readSignals = new Set<string>()
+            collectReadSignals(always.body, readSignals)
+
+            // Register the domain for driven signals
+            for (const sig of drivenSignals) {
+                if (!signalDomains.has(sig)) {
+                    signalDomains.set(sig, new Set())
+                }
+                signalDomains.get(sig)!.add(clockDomain)
+            }
+
+            // Check if reading signals from other domains
+            for (const sig of readSignals) {
+                const domains = signalDomains.get(sig)
+                if (domains && domains.size > 0 && !domains.has(clockDomain)) {
+                    const otherDomains = Array.from(domains).join(', ')
+                    violations.push({
+                        rule: 'clock-domain-crossing',
+                        message: `Signal '${sig}' crosses clock domain (driven by ${otherDomains}, read in ${clockDomain} domain)`,
+                        severity: 'warning',
+                        suggestion: `Add synchronizer (2 or 3 flip-flop chain) for CDC signal '${sig}'`,
+                    })
+                }
+            }
+        }
+
+        return violations
+    },
+}
+
 // ============================================================================
 // Helper Functions
 // ============================================================================
@@ -292,6 +350,78 @@ function collectDrivenSignalsFromStatements(body: Statement | Statement[], signa
                 collectDrivenSignalsFromStatements(stmt.statements, signals)
                 break
         }
+    }
+}
+
+
+function collectReadSignals(body: Statement | Statement[], signals: Set<string>): void {
+    const statements = Array.isArray(body) ? body : [body]
+
+    for (const stmt of statements) {
+        switch (stmt.type) {
+            case 'BlockingAssignment':
+            case 'NonBlockingAssignment':
+                collectReadSignalsFromExpression(stmt.rhs, signals)
+                break
+            case 'If':
+                collectReadSignalsFromExpression(stmt.condition, signals)
+                collectReadSignals(stmt.thenBranch, signals)
+                if (stmt.elseBranch) {
+                    collectReadSignals(stmt.elseBranch, signals)
+                }
+                break
+            case 'Case':
+                collectReadSignalsFromExpression(stmt.expression, signals)
+                for (const item of stmt.items) {
+                    // Collect from case conditions (unless default)
+                    if (Array.isArray(item.conditions)) {
+                        for (const cond of item.conditions) {
+                            collectReadSignalsFromExpression(cond, signals)
+                        }
+                    }
+                    for (const s of item.statements) {
+                        collectReadSignals(s, signals)
+                    }
+                }
+                break
+            case 'BeginEnd':
+                collectReadSignals(stmt.statements, signals)
+                break
+        }
+    }
+}
+
+function collectReadSignalsFromExpression(expr: Expression, signals: Set<string>): void {
+    if (!expr) return
+
+    if (expr.type === 'Identifier') {
+        signals.add(expr.name)
+    } else if (expr.type === 'BitSelect' || expr.type === 'RangeSelect') {
+        collectReadSignalsFromExpression(expr.signal, signals)
+        if (expr.type === 'BitSelect') {
+            collectReadSignalsFromExpression(expr.index, signals)
+        } else {
+            collectReadSignalsFromExpression(expr.msb, signals)
+            collectReadSignalsFromExpression(expr.lsb, signals)
+        }
+    } else if (expr.type === 'Concat') {
+        for (const elem of expr.elements) {
+            collectReadSignalsFromExpression(elem, signals)
+        }
+    } else if (expr.type === 'Replication') {
+        collectReadSignalsFromExpression(expr.count, signals)
+        for (const elem of expr.elements) {
+            collectReadSignalsFromExpression(elem, signals)
+        }
+    } else if (expr.type === 'BinaryExpr') {
+        collectReadSignalsFromExpression(expr.left, signals)
+        collectReadSignalsFromExpression(expr.right, signals)
+    } else if (expr.type === 'UnaryExpr') {
+        collectReadSignalsFromExpression(expr.operand, signals)
+    } else if (expr.type === 'TernaryExpr') {
+        collectReadSignalsFromExpression(expr.condition, signals)
+        collectReadSignalsFromExpression(expr.ifTrue, signals)
+        collectReadSignalsFromExpression(expr.ifFalse, signals)
     }
 }
 

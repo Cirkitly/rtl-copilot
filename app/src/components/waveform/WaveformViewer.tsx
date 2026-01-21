@@ -8,6 +8,7 @@ interface WaveformViewerProps {
     data: VCDData;
     width?: number;
     height?: number;
+    onCursorChange?: (time: number | null) => void;
 }
 
 const SIGNAL_HEIGHT = 30;
@@ -15,7 +16,7 @@ const SIGNAL_PADDING = 5;
 const LABEL_WIDTH = 120;
 const TIME_HEADER_HEIGHT = 25;
 
-const WaveformViewer: React.FC<WaveformViewerProps> = ({ data, width = 800, height = 400 }) => {
+const WaveformViewer: React.FC<WaveformViewerProps> = ({ data, width = 800, height = 400, onCursorChange }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [zoom, setZoom] = useState(1);
@@ -75,6 +76,7 @@ const WaveformViewer: React.FC<WaveformViewerProps> = ({ data, width = 800, heig
         const x = e.clientX - rect.left;
 
         if (isPanning) {
+            // ... (panning logic remains same)
             const dx = e.clientX - panStart.x;
             const { min: startTime, max: endTime } = getTimeRange();
             const timeRange = (endTime - startTime) / zoom;
@@ -92,8 +94,9 @@ const WaveformViewer: React.FC<WaveformViewerProps> = ({ data, width = 800, heig
             const drawableWidth = width - LABEL_WIDTH;
             const time = startTime + timeOffset + ((x - LABEL_WIDTH) / drawableWidth) * timeRange;
             setCursorTime(time);
+            onCursorChange?.(time);
         }
-    }, [isPanning, panStart, getTimeRange, zoom, offset, width]);
+    }, [isPanning, panStart, getTimeRange, zoom, offset, width, onCursorChange]);
 
     const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
         if (e.button === 0) { // Left click
@@ -109,7 +112,8 @@ const WaveformViewer: React.FC<WaveformViewerProps> = ({ data, width = 800, heig
     const handleMouseLeave = useCallback(() => {
         setIsPanning(false);
         setCursorTime(null);
-    }, []);
+        onCursorChange?.(null);
+    }, [onCursorChange]);
 
     // Handle wheel for zoom
     const handleWheel = useCallback((e: React.WheelEvent<HTMLCanvasElement>) => {
