@@ -1,21 +1,65 @@
 'use client';
 
-import React, { useState } from 'react';
-import { FiPlay, FiTerminal, FiZap, FiX, FiLoader, FiCheck, FiAlertCircle } from 'react-icons/fi';
+import React, { useState, useEffect, useCallback } from 'react';
+import { FiPlay, FiZap, FiSave, FiLoader, FiCheck, FiAlertCircle, FiX } from 'react-icons/fi';
 import { useEditorStore } from '@/lib/store/editor';
+import { useProjectStore } from '@/lib/store/project';
 import { parseVCD, VCDData } from '@/lib/waveform/vcdParser';
+import ProjectSelector from './ProjectSelector';
 
 interface ToolbarProps {
     onSimulationComplete?: (vcdData: VCDData) => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
-    const { files, activeFileId } = useEditorStore();
+    const { files, activeFileId, markAsDirty } = useEditorStore();
+    const { updateModule } = useProjectStore();
     const activeFile = files.find(f => f.id === activeFileId);
 
     const [isRunning, setIsRunning] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [output, setOutput] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [saveSuccess, setSaveSuccess] = useState(false);
+
+    // Save file function
+    const handleSave = useCallback(async () => {
+        if (!activeFile || !activeFile.isDirty) return;
+
+        setIsSaving(true);
+        setError(null);
+
+        try {
+            const result = await updateModule(activeFile.id, {
+                verilogCode: activeFile.content,
+            });
+
+            if (result) {
+                markAsDirty(activeFile.id, false);
+                setSaveSuccess(true);
+                setTimeout(() => setSaveSuccess(false), 2000);
+            } else {
+                setError('Failed to save');
+            }
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Save failed');
+        } finally {
+            setIsSaving(false);
+        }
+    }, [activeFile, updateModule, markAsDirty]);
+
+    // Keyboard shortcut (Ctrl+S)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                handleSave();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [handleSave]);
 
     const handleRunSimulation = async () => {
         if (!activeFile) {
@@ -46,8 +90,8 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
                 const vcdData = parseVCD(mockVCD);
                 onSimulationComplete?.(vcdData);
             }
-        } catch (err: any) {
-            setError(err.message || 'Network error');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Network error');
         } finally {
             setIsRunning(false);
         }
@@ -55,7 +99,40 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
 
     return (
         <div className="flex items-center gap-3 px-4 py-2.5 glass border-b border-[var(--border-subtle)]">
-            {/* Primary Action - Run */}
+            {/* Project Selector */}
+            <ProjectSelector />
+
+            {/* Divider */}
+            <div className="w-px h-6 bg-[var(--border-subtle)]" />
+
+            {/* Save Button */}
+            <button
+                className={`
+                    flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                    ${!activeFile?.isDirty
+                        ? 'bg-[var(--surface-elevated)] text-[var(--text-muted)] cursor-not-allowed'
+                        : isSaving
+                            ? 'bg-[var(--surface-elevated)] text-[var(--text-muted)]'
+                            : saveSuccess
+                                ? 'bg-[var(--success)]/20 text-[var(--success)] border border-[var(--success)]/30'
+                                : 'btn-secondary'
+                    }
+                `}
+                onClick={handleSave}
+                disabled={!activeFile?.isDirty || isSaving}
+                title="Save (Ctrl+S)"
+            >
+                {isSaving ? (
+                    <FiLoader className="animate-spin" size={14} />
+                ) : saveSuccess ? (
+                    <FiCheck size={14} />
+                ) : (
+                    <FiSave size={14} />
+                )}
+                <span>Save</span>
+            </button>
+
+            {/* Run Button */}
             <button
                 className={`
                     flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
@@ -69,7 +146,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
             >
                 {isRunning ? (
                     <>
-                        <FiLoader className="animate-spin-slow" size={14} />
+                        <FiLoader className="animate-spin" size={14} />
                         <span>Running...</span>
                     </>
                 ) : (
@@ -80,7 +157,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
                 )}
             </button>
 
-            {/* Secondary Action - Lint */}
+            {/* Lint Button */}
             <button
                 className="btn-secondary flex items-center gap-2 px-3 py-2 text-sm"
                 title="Lint with Verilator"
@@ -114,14 +191,6 @@ const Toolbar: React.FC<ToolbarProps> = ({ onSimulationComplete }) => {
                     <span className="text-xs text-[var(--success)] max-w-[200px] truncate">
                         {output}
                     </span>
-                </div>
-            )}
-
-            {/* File indicator */}
-            {activeFile && (
-                <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
-                    <FiTerminal size={12} />
-                    <span>{activeFile.name}</span>
                 </div>
             )}
         </div>
