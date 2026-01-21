@@ -39,6 +39,11 @@ interface FSMStore {
     selectedStateId: string | null;
     selectedTransitionId: string | null;
 
+    // Simulation state (for highlighting active state)
+    simulationActive: boolean;
+    activeStateId: string | null;
+    simulationTime: number;
+
     // Validation
     validationErrors: FSMValidationError[];
 
@@ -73,6 +78,11 @@ interface FSMStore {
     selectState: (id: string | null) => void;
     selectTransition: (id: string | null) => void;
     clearSelection: () => void;
+
+    // Actions - Simulation
+    setSimulationActive: (active: boolean) => void;
+    setActiveState: (stateId: string | null, time?: number) => void;
+    setActiveStateByName: (stateName: string, time?: number) => void;
 
     // Actions - History
     undo: () => void;
@@ -114,6 +124,9 @@ export const useFSMStore = create<FSMStore>()(
             fsm: createEmptyFSM('fsm'),
             selectedStateId: null,
             selectedTransitionId: null,
+            simulationActive: false,
+            activeStateId: null,
+            simulationTime: 0,
             validationErrors: [],
             history: [],
             historyIndex: -1,
@@ -311,6 +324,31 @@ export const useFSMStore = create<FSMStore>()(
                 selectedStateId: null,
                 selectedTransitionId: null
             }, false, 'clearSelection'),
+
+            // ========== Simulation ==========
+
+            setSimulationActive: (active) => set({
+                simulationActive: active,
+                activeStateId: active ? get().activeStateId : null,
+                simulationTime: active ? get().simulationTime : 0,
+            }, false, 'setSimulationActive'),
+
+            setActiveState: (stateId, time = 0) => set({
+                activeStateId: stateId,
+                simulationTime: time,
+            }, false, 'setActiveState'),
+
+            setActiveStateByName: (stateName, time = 0) => {
+                const state = get().fsm.states.find(s =>
+                    s.name.toLowerCase() === stateName.toLowerCase()
+                );
+                if (state) {
+                    set({
+                        activeStateId: state.id,
+                        simulationTime: time,
+                    }, false, 'setActiveStateByName');
+                }
+            },
 
             // ========== History ==========
 

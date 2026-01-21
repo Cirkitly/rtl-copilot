@@ -180,6 +180,59 @@ export async function lintVerilog(code: string): Promise<LintResult> {
     }
 }
 
+/**
+ * Run formal verification with SymbiYosys
+ */
+export async function runProof(code: string): Promise<SimulationResult> {
+    const { exec } = await import('child_process');
+    const { promisify } = await import('util');
+    const { writeFile, mkdir } = await import('fs/promises');
+    const path = await import('path');
+
+    const execAsync = promisify(exec);
+    const workDir = path.join(WORKSPACE_DIR, 'proof-' + Date.now().toString());
+    await mkdir(workDir, { recursive: true });
+
+    const moduleFile = path.join(workDir, 'input.sv');
+    await writeFile(moduleFile, code);
+
+    // Create .sby config
+    const sbyConfig = `
+[options]
+mode prove
+
+[engines]
+smtbmc yices
+
+[script]
+read -formal input.sv
+prep -top top_module
+
+[files]
+input.sv
+`;
+    await writeFile(path.join(workDir, 'task.sby'), sbyConfig);
+
+    try {
+        const cmd = `docker run --rm -v ${workDir}:/workspace ${DOCKER_IMAGE} sby -f task.sby`;
+        const { stdout } = await execAsync(cmd, { timeout: 60000 });
+
+        return {
+            success: stdout.includes('Status: PASSED'),
+            errors: [],
+            output: stdout
+        };
+    } catch (error: any) {
+        // sby returns exit code 1 on failure
+        const output = error.stdout || error.message || '';
+        return {
+            success: false,
+            errors: output.includes('Status: FAILED') ? ['Verification Failed'] : [error.message],
+            output: output
+        };
+    }
+}
+
 // Helper functions
 function parseIverilogErrors(stderr: string): string[] {
     const lines = stderr.split('\n');

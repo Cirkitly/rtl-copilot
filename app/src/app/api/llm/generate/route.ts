@@ -4,6 +4,12 @@ import { LLMFactory, ProviderType } from '@/lib/llm/factory';
 import { constructPrompt } from '@/lib/llm/context';
 import { checkRateLimit, rateLimitHeaders, getClientId, LLM_RATE_LIMIT } from '@/lib/rateLimit';
 
+// Helper to extract code block
+function extractCodeBlock(text: string): string {
+    const match = text.match(/```(?:verilog|systemverilog)?\n([\s\S]*?)\n```/);
+    return match ? match[1] : text;
+}
+
 export async function POST(req: NextRequest) {
     try {
         // Rate limiting check
@@ -27,51 +33,25 @@ export async function POST(req: NextRequest) {
             userQuery,
             projectFiles = [],
             systemOptions = {},
-            stream = false
+            stream = false,
+            mode = 'standard' // 'standard' | 'iterative'
         } = body;
 
         const llmProvider = LLMFactory.createProvider(provider as ProviderType, { defaultModel: model });
 
-        const fullPrompt = constructPrompt(userQuery, projectFiles, { systemOptions });
-
-        const requestPayload = {
-            systemPrompt: fullPrompt.split('USER REQUEST:')[0], // Split strictly for API that support 'system' role
-            userPrompt: `USER REQUEST:\n${userQuery}`, // Or keep full prompt if needed, but providers split system/user
-            // Actually, constructPrompt combines them. Providers expect separate system/user often.
-            // Let's adjust usage:
-            // constructPrompt returns a big string.
-            // But LLMRequest interface has systemPrompt and userPrompt.
-            // We should probably rely on constructPrompt for the "System" part primarily, 
-            // but generic providers might work better if we separate them.
-            //
-            // Valid Strategy: 
-            // 1. extract system part from constructPrompt logic (or call getSystemPrompt directly)
-            // 2. build user part with context and query
-        };
-
-        // Refined prompt handling
+        // Base Prompt Construction
         const systemPromptText = constructPrompt('', [], { systemOptions }).split('USER REQUEST:')[0].trim();
-        // Re-construct the user logic part (Context + Examples + Query)
-        // We can cheat: constructPrompt(userQuery, projectFiles) contains everything.
-        // If we pass everything as "User Prompt" it works for most models, but setting "System Prompt" is better.
+        let currentPrompt = constructPrompt(userQuery, projectFiles, { systemOptions }).replace(systemPromptText, '').trim();
 
-        // Let's do:
-        // System = getSystemPrompt()
-        // User = Context + Examples + Query
-
-        // We need to import helper functions again properly or just use constructPrompt's logic.
-        // For now, let's use the constructPrompt result as the USER prompt (and empty system default? no, system is strong).
-        // Better: let's update constructPrompt in future to support separation.
-        // Current workaround:
-
+        // Initial Generation
         const llmRequest = {
-            systemPrompt: systemPromptText, // The Persona + Rues
-            userPrompt: fullPrompt.replace(systemPromptText, '').trim(), // The Context + Examples + Query
+            systemPrompt: systemPromptText,
+            userPrompt: currentPrompt,
             maxTokens: 4096
         };
 
+        // If streaming, we just return the stream (Iterative not supported in streaming yet)
         if (stream) {
-            // Simple streaming response setup
             const encoder = new TextEncoder();
             const customStream = new ReadableStream({
                 async start(controller) {
@@ -85,10 +65,74 @@ export async function POST(req: NextRequest) {
             return new NextResponse(customStream, {
                 headers: { 'Content-Type': 'text/plain; charset=utf-8' }
             });
-        } else {
-            const response = await llmProvider.generate(llmRequest);
-            return NextResponse.json(response);
         }
+
+        // Standard Generation
+        let response = await llmProvider.generate(llmRequest);
+
+        // Iterative Refinement Loop
+        if (mode === 'iterative') {
+            const { parse } = await import('@/lib/verilog/parser');
+            const { cstToAst } = await import('@/lib/verilog/visitor');
+            const { validateModule } = await import('@/lib/verilog/validator');
+
+            let iterations = 0;
+            const maxIterations = 3;
+            let isValid = false;
+
+            while (iterations < maxIterations && !isValid) {
+                try {
+                    const code = extractCodeBlock(response.content);
+                    const parseResult = parse(code);
+
+                    if (parseResult.errors.length > 0) {
+                        // Syntax errors
+                        const errorMsg = parseResult.errors.map(e => `Line ${e.line}: ${e.message}`).join('\n');
+                        const refinementPrompt = `
+The generated code had syntax errors:
+${errorMsg}
+
+Please fix the syntax and regenerate the code.
+`;
+                        llmRequest.userPrompt += `\n\nAssistant: ${response.content}\n\nUser: ${refinementPrompt}`;
+                        response = await llmProvider.generate(llmRequest);
+                        iterations++;
+                        continue;
+                    }
+
+                    // CST -> AST -> Validate
+                    const ast = cstToAst(parseResult.cst);
+                    const validation = validateModule(ast);
+
+                    if (validation.isValid) {
+                        isValid = true;
+                        break;
+                    }
+
+                    // Logic errors
+                    const errors = validation.errors.map(e => `- Line ${e.line}: ${e.message}`).join('\n');
+                    const refinementPrompt = `
+The previous generation had the following lint errors:
+${errors}
+
+Please fix these errors and regenerate the full module code.
+`;
+                    llmRequest.userPrompt += `\n\nAssistant: ${response.content}\n\nUser: ${refinementPrompt}`;
+
+                    console.log(`[Iterative] Retrying... (${iterations + 1}) Errors: ${validation.errors.length}`);
+
+                    response = await llmProvider.generate(llmRequest);
+                    iterations++;
+
+                } catch (err: any) {
+                    console.error('Refinement loop error:', err);
+                    break; // Exit loop on unexpected error to return what we have
+                }
+            }
+        }
+
+
+        return NextResponse.json(response);
 
     } catch (error: any) {
         console.error('LLM API Error:', error);
