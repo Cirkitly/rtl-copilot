@@ -6,7 +6,9 @@
 
 A web-based tool combining natural language Verilog generation with visual FSM editing for rapid prototyping and verification of digital logic designs.
 
+[![CI](https://github.com/cirkitly/rtl-copilot-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/cirkitly/rtl-copilot-plugin/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 
 </div>
 
